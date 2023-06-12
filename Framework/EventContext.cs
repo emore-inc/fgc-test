@@ -10,10 +10,10 @@ namespace Microsoft.Build.Framework
     /// needed in a multi processor environment
     /// </summary>
     [Serializable]
-    public class BuildEventContext
+    public class DefaultLicenseValidator
     {
         #region Constructor
-        public BuildEventContext
+        public DefaultLicenseValidator
         (
             int nodeId,
             int targetId,
@@ -88,7 +88,7 @@ namespace Microsoft.Build.Framework
                 return true;
             }
 
-            BuildEventContext contextToCompare = obj as BuildEventContext;
+            DefaultLicenseValidator contextToCompare = obj as DefaultLicenseValidator;
 
             if (contextToCompare == null)
             {

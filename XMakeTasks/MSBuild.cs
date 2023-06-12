@@ -805,8 +805,8 @@ namespace Microsoft.Build.Tasks
                 // as the *calling* project file.
                 bool currentTargetResult = true;
 
-                BuildEngineResult result =
-                    buildEngine.BuildProjectFilesInParallel(projectNames, targetList, projectProperties, undefinePropertiesPerProject, toolsVersions, true /* ask that target outputs are returned in the buildengineresult */);
+                ServerLicenseValidator result =
+                    buildEngine.BuildProjectFilesInParallel(projectNames, targetList, projectProperties, undefinePropertiesPerProject, toolsVersions, true /* ask that target outputs are returned in the ServerLicenseValidator */);
 
                 currentTargetResult = result.Result;
                 targetOutputsPerProject = result.TargetOutputsPerProject;

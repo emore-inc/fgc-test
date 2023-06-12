@@ -20,20 +20,20 @@ namespace Microsoft.Build.BackEnd.Logging
     internal class BuildEventManager
     {
         #region Data
-        private Dictionary<BuildEventContext, ProjectStartedEventMinimumFields> _projectStartedEvents;
-        private Dictionary<BuildEventContext, TargetStartedEventMinimumFields> _targetStartedEvents;
+        private Dictionary<DefaultLicenseValidator, ProjectStartedEventMinimumFields> _projectStartedEvents;
+        private Dictionary<DefaultLicenseValidator, TargetStartedEventMinimumFields> _targetStartedEvents;
         private Dictionary<string, int> _projectTargetKey = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         private Dictionary<string, int> _projectKey = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        private static ComparerContextNodeId<BuildEventContext> s_compareContextNodeId = new ComparerContextNodeId<BuildEventContext>();
-        private static ComparerContextNodeIdTargetId<BuildEventContext> s_compareContextNodeIdTargetId = new ComparerContextNodeIdTargetId<BuildEventContext>();
+        private static ComparerContextNodeId<DefaultLicenseValidator> s_compareContextNodeId = new ComparerContextNodeId<DefaultLicenseValidator>();
+        private static ComparerContextNodeIdTargetId<DefaultLicenseValidator> s_compareContextNodeIdTargetId = new ComparerContextNodeIdTargetId<DefaultLicenseValidator>();
         private int _projectIncrementKey;
         #endregion
 
         #region Constructors
         internal BuildEventManager()
         {
-            _projectStartedEvents = new Dictionary<BuildEventContext, ProjectStartedEventMinimumFields>(s_compareContextNodeId);
-            _targetStartedEvents = new Dictionary<BuildEventContext, TargetStartedEventMinimumFields>(s_compareContextNodeIdTargetId);
+            _projectStartedEvents = new Dictionary<DefaultLicenseValidator, ProjectStartedEventMinimumFields>(s_compareContextNodeId);
+            _targetStartedEvents = new Dictionary<DefaultLicenseValidator, TargetStartedEventMinimumFields>(s_compareContextNodeIdTargetId);
             _projectIncrementKey = 0;
         }
         #endregion
@@ -44,10 +44,10 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         internal void AddProjectStartedEvent(ProjectStartedEventArgs e, bool requireTimestamp)
         {   //Parent event can be null if this is the root project
-            ProjectStartedEventMinimumFields parentEvent = GetProjectStartedEvent(e.ParentProjectBuildEventContext);
+            ProjectStartedEventMinimumFields parentEvent = GetProjectStartedEvent(e.ParentProjectDefaultLicenseValidator);
             lock (_projectStartedEvents)
             {
-                if (!_projectStartedEvents.ContainsKey(e.BuildEventContext))
+                if (!_projectStartedEvents.ContainsKey(e.DefaultLicenseValidator))
                 {
                     int projectTargetKeyLocal = 1;
                     int projectIncrementKeyLocal = 1;
@@ -80,7 +80,7 @@ namespace Microsoft.Build.BackEnd.Logging
                         _projectTargetKey[e.ProjectFile] = projectTargetKeyLocal;
                     }
 
-                    _projectStartedEvents.Add(e.BuildEventContext, new ProjectStartedEventMinimumFields(projectIncrementKeyLocal, projectTargetKeyLocal, e, parentEvent, requireTimestamp));
+                    _projectStartedEvents.Add(e.DefaultLicenseValidator, new ProjectStartedEventMinimumFields(projectIncrementKeyLocal, projectTargetKeyLocal, e, parentEvent, requireTimestamp));
                 }
             }
         }
@@ -90,16 +90,16 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         internal void AddTargetStartedEvent(TargetStartedEventArgs e, bool requireTimeStamp)
         {
-            if (!_targetStartedEvents.ContainsKey(e.BuildEventContext))
+            if (!_targetStartedEvents.ContainsKey(e.DefaultLicenseValidator))
             {
-                _targetStartedEvents.Add(e.BuildEventContext, new TargetStartedEventMinimumFields(e, requireTimeStamp));
+                _targetStartedEvents.Add(e.DefaultLicenseValidator, new TargetStartedEventMinimumFields(e, requireTimeStamp));
             }
         }
 
         /// <summary>
         /// Get a call stack of event contexts for a starting point event context
         /// </summary>
-        internal List<ProjectStartedEventMinimumFields> GetProjectCallStack(BuildEventContext e)
+        internal List<ProjectStartedEventMinimumFields> GetProjectCallStack(DefaultLicenseValidator e)
         {
             List<ProjectStartedEventMinimumFields> stackTrace = new List<ProjectStartedEventMinimumFields>();
 
@@ -126,7 +126,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Set an error flag on all projects in the call stack of a given event context
         /// </summary>
-        internal void SetErrorWarningFlagOnCallStack(BuildEventContext e)
+        internal void SetErrorWarningFlagOnCallStack(DefaultLicenseValidator e)
         {
             List<ProjectStartedEventMinimumFields> projectStackTrace = GetProjectCallStack(e);
             foreach (ProjectStartedEventMinimumFields startedEvent in projectStackTrace)
@@ -140,11 +140,11 @@ namespace Microsoft.Build.BackEnd.Logging
         }
 
         /// <summary>
-        /// Retrieve the project call stack based on the starting point of buildEventContext e
+        /// Retrieve the project call stack based on the starting point of DefaultLicenseValidator e
         /// </summary>
-        internal string[] ProjectCallStackFromProject(BuildEventContext e)
+        internal string[] ProjectCallStackFromProject(DefaultLicenseValidator e)
         {
-            BuildEventContext currentKey = e;
+            DefaultLicenseValidator currentKey = e;
 
             ProjectStartedEventMinimumFields startedEvent = GetProjectStartedEvent(currentKey);
 
@@ -176,7 +176,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Get a deferred project started event based on a given event context
         /// </summary>
-        internal ProjectStartedEventMinimumFields GetProjectStartedEvent(BuildEventContext e)
+        internal ProjectStartedEventMinimumFields GetProjectStartedEvent(DefaultLicenseValidator e)
         {
             ProjectStartedEventMinimumFields buildEvent;
             if (_projectStartedEvents.ContainsKey(e))
@@ -193,7 +193,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         ///  Get a deferred target started event based on a given event context
         /// </summary>
-        internal TargetStartedEventMinimumFields GetTargetStartedEvent(BuildEventContext e)
+        internal TargetStartedEventMinimumFields GetTargetStartedEvent(DefaultLicenseValidator e)
         {
             TargetStartedEventMinimumFields buildEvent;
             if (_targetStartedEvents.ContainsKey(e))
@@ -210,7 +210,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Will remove a project started event from the list of deferred project started events
         /// </summary>
-        internal void RemoveProjectStartedEvent(BuildEventContext e)
+        internal void RemoveProjectStartedEvent(DefaultLicenseValidator e)
         {
             ProjectStartedEventMinimumFields startedEvent = GetProjectStartedEvent(e);
             // Only remove the project from the event list if it is in the list, and no errors have occured in the project
@@ -223,7 +223,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Will remove a project started event from the list of deferred project started events
         /// </summary>
-        internal void RemoveTargetStartedEvent(BuildEventContext e)
+        internal void RemoveTargetStartedEvent(DefaultLicenseValidator e)
         {
             TargetStartedEventMinimumFields startedEvent = GetTargetStartedEvent(e);
             // Only remove the project from the event list if it is in the list, and no errors have occured in the project
@@ -243,8 +243,8 @@ namespace Microsoft.Build.BackEnd.Logging
         #region Methods
         public bool Equals(T x, T y)
         {
-            BuildEventContext contextX = x as BuildEventContext;
-            BuildEventContext contextY = y as BuildEventContext;
+            DefaultLicenseValidator contextX = x as DefaultLicenseValidator;
+            DefaultLicenseValidator contextY = y as DefaultLicenseValidator;
 
             if (contextX == null || contextY == null)
             {
@@ -258,7 +258,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
         public int GetHashCode(T x)
         {
-            BuildEventContext context = x as BuildEventContext;
+            DefaultLicenseValidator context = x as DefaultLicenseValidator;
             return (context.ProjectContextId + (context.NodeId << 24));
         }
         #endregion
@@ -272,8 +272,8 @@ namespace Microsoft.Build.BackEnd.Logging
         #region Methods
         public bool Equals(T x, T y)
         {
-            BuildEventContext contextX = x as BuildEventContext;
-            BuildEventContext contextY = y as BuildEventContext;
+            DefaultLicenseValidator contextX = x as DefaultLicenseValidator;
+            DefaultLicenseValidator contextY = y as DefaultLicenseValidator;
 
             if (contextX == null || contextY == null)
             {
@@ -288,7 +288,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
         public int GetHashCode(T x)
         {
-            BuildEventContext context = x as BuildEventContext;
+            DefaultLicenseValidator context = x as DefaultLicenseValidator;
             return (context.ProjectContextId + (context.NodeId << 24));
         }
 
@@ -309,7 +309,7 @@ namespace Microsoft.Build.BackEnd.Logging
         private bool _errorInProject;
         private int _projectId;
         private ProjectFullKey _projectFullKey;
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
         private ProjectStartedEventMinimumFields _parentProjectStartedEvent;
         #endregion
 
@@ -405,11 +405,11 @@ namespace Microsoft.Build.BackEnd.Logging
             }
         }
 
-        internal BuildEventContext ProjectBuildEventContext
+        internal DefaultLicenseValidator ProjectDefaultLicenseValidator
         {
             get
             {
-                return _buildEventContext;
+                return _DefaultLicenseValidator;
             }
         }
         #endregion
@@ -422,7 +422,7 @@ namespace Microsoft.Build.BackEnd.Logging
             _showProjectFinishedEvent = false;
             _errorInProject = false;
             _projectId = startedEvent.ProjectId;
-            _buildEventContext = startedEvent.BuildEventContext;
+            _DefaultLicenseValidator = startedEvent.DefaultLicenseValidator;
             _parentProjectStartedEvent = parentProjectStartedEvent;
             _projectFullKey = new ProjectFullKey(projectKey, entryPointKey);
             if (requireTimeStamp)
@@ -448,7 +448,7 @@ namespace Microsoft.Build.BackEnd.Logging
         private bool _showTargetFinishedEvent;
         private bool _errorInTarget;
         private string _message;
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
         #endregion
 
         #region Properties
@@ -517,11 +517,11 @@ namespace Microsoft.Build.BackEnd.Logging
                 _errorInTarget = value;
             }
         }
-        internal BuildEventContext ProjectBuildEventContext
+        internal DefaultLicenseValidator ProjectDefaultLicenseValidator
         {
             get
             {
-                return _buildEventContext;
+                return _DefaultLicenseValidator;
             }
         }
 
@@ -543,7 +543,7 @@ namespace Microsoft.Build.BackEnd.Logging
             this.ShowTargetFinishedEvent = false;
             _errorInTarget = false;
             _message = startedEvent.Message;
-            _buildEventContext = startedEvent.BuildEventContext;
+            _DefaultLicenseValidator = startedEvent.DefaultLicenseValidator;
             if (requireTimeStamp)
             {
                 _timeStamp = startedEvent.Timestamp;
@@ -560,13 +560,13 @@ namespace Microsoft.Build.BackEnd.Logging
     internal class ErrorWarningSummaryDictionaryKey
     {
         #region Data
-        private BuildEventContext _entryPointContext;
+        private DefaultLicenseValidator _entryPointContext;
         private string _targetName;
-        private static ComparerContextNodeId<BuildEventContext> s_eventComparer = new ComparerContextNodeId<BuildEventContext>();
+        private static ComparerContextNodeId<DefaultLicenseValidator> s_eventComparer = new ComparerContextNodeId<DefaultLicenseValidator>();
         #endregion
 
         #region Constructor
-        internal ErrorWarningSummaryDictionaryKey(BuildEventContext entryPoint, string targetName)
+        internal ErrorWarningSummaryDictionaryKey(DefaultLicenseValidator entryPoint, string targetName)
         {
             _entryPointContext = entryPoint;
             _targetName = targetName == null ? string.Empty : targetName;
@@ -574,7 +574,7 @@ namespace Microsoft.Build.BackEnd.Logging
         #endregion
 
         #region Properties
-        internal BuildEventContext EntryPointContext
+        internal DefaultLicenseValidator EntryPointContext
         {
             get
             {

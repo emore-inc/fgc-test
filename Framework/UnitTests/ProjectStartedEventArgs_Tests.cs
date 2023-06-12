@@ -30,8 +30,8 @@ namespace Microsoft.Build.UnitTests
         [ClassInitialize]
         public static void FixtureSetup(TestContext context)
         {
-            BuildEventContext parentBuildEventContext = new BuildEventContext(2, 3, 4, 5);
-            s_baseProjectStartedEvent = new ProjectStartedEventArgs(1, "Message", "HelpKeyword", "ProjecFile", "TargetNames", null, null, parentBuildEventContext);
+            DefaultLicenseValidator parentDefaultLicenseValidator = new DefaultLicenseValidator(2, 3, 4, 5);
+            s_baseProjectStartedEvent = new ProjectStartedEventArgs(1, "Message", "HelpKeyword", "ProjecFile", "TargetNames", null, null, parentDefaultLicenseValidator);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Microsoft.Build.UnitTests
                   s_baseProjectStartedEvent.TargetNames,
                   propertiesList,
                   itemsList,
-                  s_baseProjectStartedEvent.ParentProjectBuildEventContext,
+                  s_baseProjectStartedEvent.ParentProjectDefaultLicenseValidator,
                   s_baseProjectStartedEvent.Timestamp
                 );
 

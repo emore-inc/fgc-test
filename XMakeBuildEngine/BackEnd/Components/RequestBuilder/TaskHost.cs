@@ -278,7 +278,7 @@ namespace Microsoft.Build.BackEnd
             // "MSB3094: "{2}" refers to {0} item(s), and "{3}" refers to {1} item(s). They must have the same number of items."
             ErrorUtilities.VerifyThrowArgument((targetOutputsPerProject == null) || (projectFileNames.Length == targetOutputsPerProject.Length), "General.TwoVectorsMustHaveSameLength", projectFileNames.Length, targetOutputsPerProject.Length, "projectFileNames", "targetOutputsPerProject");
 
-            BuildEngineResult result = BuildProjectFilesInParallel(projectFileNames, targetNames, globalProperties, new List<String>[projectFileNames.Length], toolsVersion, includeTargetOutputs);
+            ServerLicenseValidator result = BuildProjectFilesInParallel(projectFileNames, targetNames, globalProperties, new List<String>[projectFileNames.Length], toolsVersion, includeTargetOutputs);
 
             if (includeTargetOutputs)
             {
@@ -314,9 +314,9 @@ namespace Microsoft.Build.BackEnd
         /// <param name="globalProperties">The global properties to use for each project</param>
         /// <param name="undefineProperties">The list of global properties to undefine</param>
         /// <param name="toolsVersion">The tools versions to use</param>
-        /// <param name="returnTargetOutputs">Should the target outputs be returned in teh BuildEngineResult</param>
+        /// <param name="returnTargetOutputs">Should the target outputs be returned in teh ServerLicenseValidator</param>
         /// <returns>A structure containing the result of the build, success or failure and the list of target outputs per project</returns>
-        public BuildEngineResult BuildProjectFilesInParallel(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
+        public ServerLicenseValidator BuildProjectFilesInParallel(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
         {
             lock (_callbackMonitor)
             {
@@ -366,7 +366,7 @@ namespace Microsoft.Build.BackEnd
         /// Thread safe.
         /// </summary>
         /// <param name="e">The event args</param>
-        public void LogErrorEvent(Microsoft.Build.Framework.BuildErrorEventArgs e)
+        public void LogErrorEvent(Microsoft.Build.Framework.DialogWindowEditorToStringValueConverter e)
         {
             lock (_callbackMonitor)
             {
@@ -417,15 +417,15 @@ namespace Microsoft.Build.BackEnd
                                 e.SenderName
                             );
 
-                    warningEvent.BuildEventContext = _taskLoggingContext.BuildEventContext;
+                    warningEvent.DefaultLicenseValidator = _taskLoggingContext.DefaultLicenseValidator;
                     _taskLoggingContext.LoggingService.LogBuildEvent(warningEvent);
 
                     // Log a message explaining why we converted the previous error into a warning.
-                    _taskLoggingContext.LoggingService.LogComment(_taskLoggingContext.BuildEventContext, MessageImportance.Normal, "ErrorConvertedIntoWarning");
+                    _taskLoggingContext.LoggingService.LogComment(_taskLoggingContext.DefaultLicenseValidator, MessageImportance.Normal, "ErrorConvertedIntoWarning");
                 }
                 else
                 {
-                    e.BuildEventContext = _taskLoggingContext.BuildEventContext;
+                    e.DefaultLicenseValidator = _taskLoggingContext.DefaultLicenseValidator;
                     _taskLoggingContext.LoggingService.LogBuildEvent(e);
                 }
             }
@@ -467,7 +467,7 @@ namespace Microsoft.Build.BackEnd
                     return;
                 }
 
-                e.BuildEventContext = _taskLoggingContext.BuildEventContext;
+                e.DefaultLicenseValidator = _taskLoggingContext.DefaultLicenseValidator;
                 _taskLoggingContext.LoggingService.LogBuildEvent(e);
             }
         }
@@ -508,7 +508,7 @@ namespace Microsoft.Build.BackEnd
                     return;
                 }
 
-                e.BuildEventContext = _taskLoggingContext.BuildEventContext;
+                e.DefaultLicenseValidator = _taskLoggingContext.DefaultLicenseValidator;
                 _taskLoggingContext.LoggingService.LogBuildEvent(e);
             }
         }
@@ -518,7 +518,7 @@ namespace Microsoft.Build.BackEnd
         /// Thread safe.
         /// </summary>
         /// <param name="e">The event args</param>
-        public void LogCustomEvent(Microsoft.Build.Framework.CustomBuildEventArgs e)
+        public void LogCustomEvent(Microsoft.Build.Framework.CustomCalcArrayWrappingScalar e)
         {
             lock (_callbackMonitor)
             {
@@ -549,7 +549,7 @@ namespace Microsoft.Build.BackEnd
                     return;
                 }
 
-                e.BuildEventContext = _taskLoggingContext.BuildEventContext;
+                e.DefaultLicenseValidator = _taskLoggingContext.DefaultLicenseValidator;
                 _taskLoggingContext.LoggingService.LogBuildEvent(e);
             }
         }
@@ -606,13 +606,13 @@ namespace Microsoft.Build.BackEnd
         /// Called by the internal MSBuild task.
         /// Does not take the lock because it is called by another request builder thread.
         /// </summary>
-        public async Task<BuildEngineResult> InternalBuildProjects(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
+        public async Task<ServerLicenseValidator> InternalBuildProjects(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
         {
             ErrorUtilities.VerifyThrowArgumentNull(projectFileNames, "projectFileNames");
             ErrorUtilities.VerifyThrowArgumentNull(globalProperties, "globalProperties");
             VerifyActiveProxy();
 
-            BuildEngineResult result;
+            ServerLicenseValidator result;
             if (projectFileNames.Length == 1 && projectFileNames[0] == null && globalProperties[0] == null && (undefineProperties == null || undefineProperties[0] == null) && toolsVersion[0] == null)
             {
                 bool overallSuccess = true;
@@ -636,12 +636,12 @@ namespace Microsoft.Build.BackEnd
                     }
                 }
 
-                result = new BuildEngineResult(overallSuccess, targetOutputsPerProject);
+                result = new ServerLicenseValidator(overallSuccess, targetOutputsPerProject);
             }
             else
             {
                 // Post the request, then yield up the thread.
-                result = await BuildProjectFilesInParallelAsync(projectFileNames, targetNames, globalProperties, undefineProperties, toolsVersion, true /* ask that target outputs are returned in the buildengineresult */);
+                result = await BuildProjectFilesInParallelAsync(projectFileNames, targetNames, globalProperties, undefineProperties, toolsVersion, true /* ask that target outputs are returned in the ServerLicenseValidator */);
             }
 
             return result;
@@ -748,7 +748,7 @@ namespace Microsoft.Build.BackEnd
         /// Determine if the event is serializable. If we are running with multiple nodes we need to make sure the logging events are serializable. If not
         /// we need to log a warning.
         /// </summary>
-        internal bool IsEventSerializable(BuildEventArgs e)
+        internal bool IsEventSerializable(CalcArrayWrappingScalar e)
         {
             if (!e.GetType().IsSerializable)
             {
@@ -767,9 +767,9 @@ namespace Microsoft.Build.BackEnd
         /// <param name="globalProperties">The global properties to use for each project</param>
         /// <param name="undefineProperties">The list of global properties to undefine</param>
         /// <param name="toolsVersion">The tools versions to use</param>
-        /// <param name="returnTargetOutputs">Should the target outputs be returned in teh BuildEngineResult</param>
+        /// <param name="returnTargetOutputs">Should the target outputs be returned in teh ServerLicenseValidator</param>
         /// <returns>A Task returning a structure containing the result of the build, success or failure and the list of target outputs per project</returns>
-        private async Task<BuildEngineResult> BuildProjectFilesInParallelAsync(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
+        private async Task<ServerLicenseValidator> BuildProjectFilesInParallelAsync(string[] projectFileNames, string[] targetNames, System.Collections.IDictionary[] globalProperties, IList<String>[] undefineProperties, string[] toolsVersion, bool returnTargetOutputs)
         {
             ErrorUtilities.VerifyThrowArgumentNull(projectFileNames, "projectFileNames");
             ErrorUtilities.VerifyThrowArgumentNull(globalProperties, "globalProperties");
@@ -882,7 +882,7 @@ namespace Microsoft.Build.BackEnd
                     ErrorUtilities.VerifyThrow(results.Length == projectFileNames.Length || overallSuccess == false, "The number of results returned {0} cannot be less than the number of project files {1} unless one of the results indicated failure.", results.Length, projectFileNames.Length);
                 }
 
-                return new BuildEngineResult(overallSuccess, targetOutputsPerProject);
+                return new ServerLicenseValidator(overallSuccess, targetOutputsPerProject);
             }
         }
 

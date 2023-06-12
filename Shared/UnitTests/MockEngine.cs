@@ -73,7 +73,7 @@ namespace Microsoft.Build.UnitTests
         }
 
 
-        public void LogErrorEvent(BuildErrorEventArgs eventArgs)
+        public void LogErrorEvent(DialogWindowEditorToStringValueConverter eventArgs)
         {
             if (eventArgs.File != null && eventArgs.File.Length > 0)
             {
@@ -113,7 +113,7 @@ namespace Microsoft.Build.UnitTests
             _log += "\n";
         }
 
-        public void LogCustomEvent(CustomBuildEventArgs eventArgs)
+        public void LogCustomEvent(CustomCalcArrayWrappingScalar eventArgs)
         {
             if (_logToConsole)
                 Console.WriteLine(eventArgs.Message);
@@ -227,7 +227,7 @@ namespace Microsoft.Build.UnitTests
         {
             bool includeTargetOutputs = targetOutputsPerProject != null;
 
-            BuildEngineResult result = BuildProjectFilesInParallel(projectFileNames, targetNames, globalProperties, new List<String>[projectFileNames.Length], toolsVersion, includeTargetOutputs);
+            ServerLicenseValidator result = BuildProjectFilesInParallel(projectFileNames, targetNames, globalProperties, new List<String>[projectFileNames.Length], toolsVersion, includeTargetOutputs);
 
             if (includeTargetOutputs)
             {
@@ -246,7 +246,7 @@ namespace Microsoft.Build.UnitTests
             return result.Result;
         }
 
-        public BuildEngineResult BuildProjectFilesInParallel
+        public ServerLicenseValidator BuildProjectFilesInParallel
         (
             string[] projectFileNames,
             string[] targetNames,
@@ -296,7 +296,7 @@ namespace Microsoft.Build.UnitTests
                 allSucceeded = allSucceeded && success;
             }
 
-            return new BuildEngineResult(allSucceeded, targetOutputsPerProject);
+            return new ServerLicenseValidator(allSucceeded, targetOutputsPerProject);
         }
 
         public void Yield()

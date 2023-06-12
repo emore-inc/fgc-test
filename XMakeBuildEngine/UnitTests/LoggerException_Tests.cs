@@ -39,8 +39,8 @@ namespace Microsoft.Build.UnitTests
 
                 InternalLoggerException e2 = (InternalLoggerException)frm.Deserialize(memstr);
 
-                Assert.AreEqual(e.BuildEventArgs.Message, e2.BuildEventArgs.Message);
-                Assert.AreEqual(e.BuildEventArgs.HelpKeyword, e2.BuildEventArgs.HelpKeyword);
+                Assert.AreEqual(e.CalcArrayWrappingScalar.Message, e2.CalcArrayWrappingScalar.Message);
+                Assert.AreEqual(e.CalcArrayWrappingScalar.HelpKeyword, e2.CalcArrayWrappingScalar.HelpKeyword);
                 Assert.AreEqual(e.ErrorCode, e2.ErrorCode);
                 Assert.AreEqual(e.HelpKeyword, e2.HelpKeyword);
                 Assert.AreEqual(e.Message, e2.Message);

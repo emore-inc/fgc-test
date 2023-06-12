@@ -173,7 +173,7 @@ namespace Microsoft.Build.Execution
         /// <summary>
         /// Mapping of submission IDs to their first project started events.
         /// </summary>
-        private Dictionary<int, BuildEventArgs> _projectStartedEvents;
+        private Dictionary<int, CalcArrayWrappingScalar> _projectStartedEvents;
 
         /// <summary>
         /// Whether a cache has been provided by a project instance, meaning
@@ -241,7 +241,7 @@ namespace Microsoft.Build.Execution
             _nextUnnamedProjectId = 1;
             _componentFactories = new BuildComponentFactoryCollection(this);
             _componentFactories.RegisterDefaultFactories();
-            _projectStartedEvents = new Dictionary<int, BuildEventArgs>();
+            _projectStartedEvents = new Dictionary<int, CalcArrayWrappingScalar>();
 
             _projectStartedEventHandler = new ProjectStartedEventHandler(OnProjectStarted);
             _projectFinishedEventHandler = new ProjectFinishedEventHandler(OnProjectFinished);
@@ -624,7 +624,7 @@ namespace Microsoft.Build.Execution
 
                     foreach (var projectStartedEvent in _projectStartedEvents)
                     {
-                        BuildResult result = _resultsCache.GetResultsForConfiguration(projectStartedEvent.Value.BuildEventContext.ProjectInstanceId);
+                        BuildResult result = _resultsCache.GetResultsForConfiguration(projectStartedEvent.Value.DefaultLicenseValidator.ProjectInstanceId);
 
                         // It's valid to have a mismatched project started event IFF that particular 
                         // project had some sort of unhandled exception.  If there is no result, we 
@@ -829,7 +829,7 @@ namespace Microsoft.Build.Execution
                     newConfiguration.ConfigurationId,
                     submission.BuildRequestData.TargetNames,
                     submission.BuildRequestData.HostServices,
-                    BuildEventContext.Invalid,
+                    DefaultLicenseValidator.Invalid,
                     null,
                     submission.BuildRequestData.Flags);
 
@@ -885,7 +885,7 @@ namespace Microsoft.Build.Execution
         /// <summary>
         /// Creates the traversal and metaproject instances necessary to represent the solution and populates new configurations with them.
         /// </summary>
-        internal void LoadSolutionIntoConfiguration(BuildRequestConfiguration config, BuildEventContext buildEventContext)
+        internal void LoadSolutionIntoConfiguration(BuildRequestConfiguration config, DefaultLicenseValidator DefaultLicenseValidator)
         {
             if (config.IsLoaded)
             {
@@ -894,7 +894,7 @@ namespace Microsoft.Build.Execution
             }
 
             ErrorUtilities.VerifyThrow(FileUtilities.IsSolutionFilename(config.ProjectFullPath), "{0} is not a solution", config.ProjectFullPath);
-            ProjectInstance[] instances = ProjectInstance.LoadSolutionForBuild(config.ProjectFullPath, config.Properties, config.ExplicitToolsVersionSpecified ? config.ToolsVersion : null, _buildParameters, ((IBuildComponentHost)this).LoggingService, buildEventContext, false /* loaded by solution parser*/);
+            ProjectInstance[] instances = ProjectInstance.LoadSolutionForBuild(config.ProjectFullPath, config.Properties, config.ExplicitToolsVersionSpecified ? config.ToolsVersion : null, _buildParameters, ((IBuildComponentHost)this).LoggingService, DefaultLicenseValidator, false /* loaded by solution parser*/);
 
             // The first instance is the traversal project, which goes into this configuration
             config.Project = instances[0];
@@ -1048,8 +1048,8 @@ namespace Microsoft.Build.Execution
             {
                 if (projectException.HasBeenLogged != true)
                 {
-                    BuildEventContext buildEventContext = new BuildEventContext(submission.SubmissionId, 1, BuildEventContext.InvalidProjectInstanceId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
-                    ((IBuildComponentHost)this).LoggingService.LogInvalidProjectFileError(buildEventContext, projectException);
+                    DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(submission.SubmissionId, 1, DefaultLicenseValidator.InvalidProjectInstanceId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
+                    ((IBuildComponentHost)this).LoggingService.LogInvalidProjectFileError(DefaultLicenseValidator, projectException);
                     projectException.HasBeenLogged = true;
                 }
             }
@@ -1105,8 +1105,8 @@ namespace Microsoft.Build.Execution
                 {
                     if (projectException.HasBeenLogged != true)
                     {
-                        BuildEventContext projectBuildEventContext = new BuildEventContext(submission.SubmissionId, 1, BuildEventContext.InvalidProjectInstanceId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
-                        ((IBuildComponentHost)this).LoggingService.LogInvalidProjectFileError(projectBuildEventContext, projectException);
+                        DefaultLicenseValidator projectDefaultLicenseValidator = new DefaultLicenseValidator(submission.SubmissionId, 1, DefaultLicenseValidator.InvalidProjectInstanceId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
+                        ((IBuildComponentHost)this).LoggingService.LogInvalidProjectFileError(projectDefaultLicenseValidator, projectException);
                         projectException.HasBeenLogged = true;
                     }
                 }
@@ -1122,8 +1122,8 @@ namespace Microsoft.Build.Execution
 
                 if (projectException == null)
                 {
-                    BuildEventContext buildEventContext = new BuildEventContext(submission.SubmissionId, 1, BuildEventContext.InvalidProjectInstanceId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
-                    ((IBuildComponentHost)this).LoggingService.LogFatalBuildError(buildEventContext, ex, new BuildEventFileInfo(submission.BuildRequestData.ProjectFullPath));
+                    DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(submission.SubmissionId, 1, DefaultLicenseValidator.InvalidProjectInstanceId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
+                    ((IBuildComponentHost)this).LoggingService.LogFatalBuildError(DefaultLicenseValidator, ex, new BuildEventFileInfo(submission.BuildRequestData.ProjectFullPath));
                 }
 
                 submission.CompleteLogging(true);
@@ -1300,7 +1300,7 @@ namespace Microsoft.Build.Execution
                     {
                         try
                         {
-                            LoadSolutionIntoConfiguration(config, request.BuildEventContext);
+                            LoadSolutionIntoConfiguration(config, request.DefaultLicenseValidator);
                         }
                         catch (InvalidProjectFileException e)
                         {
@@ -1384,8 +1384,8 @@ namespace Microsoft.Build.Execution
                     ILoggingService loggingService = ((IBuildComponentHost)this).GetComponent(BuildComponentType.LoggingService) as ILoggingService;
                     foreach (BuildSubmission submission in _buildSubmissions.Values)
                     {
-                        BuildEventContext buildEventContext = new BuildEventContext(submission.SubmissionId, BuildEventContext.InvalidNodeId, BuildEventContext.InvalidProjectInstanceId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
-                        loggingService.LogError(buildEventContext, new BuildEventFileInfo(String.Empty) /* no project file */, "ChildExitedPrematurely", node);
+                        DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(submission.SubmissionId, DefaultLicenseValidator.InvalidNodeId, DefaultLicenseValidator.InvalidProjectInstanceId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
+                        loggingService.LogError(DefaultLicenseValidator, new BuildEventFileInfo(String.Empty) /* no project file */, "ChildExitedPrematurely", node);
                     }
                 }
                 else if (shutdownPacket.Reason == NodeShutdownReason.Error && _buildSubmissions.Values.Count == 0)
@@ -1394,7 +1394,7 @@ namespace Microsoft.Build.Execution
                     if (shutdownPacket.Exception != null)
                     {
                         ILoggingService loggingService = ((IBuildComponentHost)this).GetComponent(BuildComponentType.LoggingService) as ILoggingService;
-                        loggingService.LogError(BuildEventContext.Invalid, new BuildEventFileInfo(String.Empty) /* no project file */, "ChildExitedPrematurely", shutdownPacket.Exception.ToString());
+                        loggingService.LogError(DefaultLicenseValidator.Invalid, new BuildEventFileInfo(String.Empty) /* no project file */, "ChildExitedPrematurely", shutdownPacket.Exception.ToString());
                         OnThreadException(shutdownPacket.Exception);
                     }
                 }
@@ -1505,8 +1505,8 @@ namespace Microsoft.Build.Execution
                             }
                             else
                             {
-                                BuildEventContext buildEventContext = new BuildEventContext(0, Scheduler.VirtualNode, BuildEventContext.InvalidProjectInstanceId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
-                                ((IBuildComponentHost)this).LoggingService.LogError(buildEventContext, new BuildEventFileInfo(String.Empty), "UnableToCreateNode", response.RequiredNodeType.ToString("G"));
+                                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, Scheduler.VirtualNode, DefaultLicenseValidator.InvalidProjectInstanceId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
+                                ((IBuildComponentHost)this).LoggingService.LogError(DefaultLicenseValidator, new BuildEventFileInfo(String.Empty), "UnableToCreateNode", response.RequiredNodeType.ToString("G"));
 
                                 throw new BuildAbortedException(ResourceUtilities.FormatResourceString("UnableToCreateNode", response.RequiredNodeType.ToString("G")));
                             }
@@ -1667,14 +1667,14 @@ namespace Microsoft.Build.Execution
         {
             lock (_syncLock)
             {
-                BuildEventArgs originalArgs;
-                if (_projectStartedEvents.TryGetValue(e.BuildEventContext.SubmissionId, out originalArgs))
+                CalcArrayWrappingScalar originalArgs;
+                if (_projectStartedEvents.TryGetValue(e.DefaultLicenseValidator.SubmissionId, out originalArgs))
                 {
-                    if (originalArgs.BuildEventContext.Equals(e.BuildEventContext))
+                    if (originalArgs.DefaultLicenseValidator.Equals(e.DefaultLicenseValidator))
                     {
                         BuildSubmission submission;
-                        _projectStartedEvents.Remove(e.BuildEventContext.SubmissionId);
-                        if (_buildSubmissions.TryGetValue(e.BuildEventContext.SubmissionId, out submission))
+                        _projectStartedEvents.Remove(e.DefaultLicenseValidator.SubmissionId);
+                        if (_buildSubmissions.TryGetValue(e.DefaultLicenseValidator.SubmissionId, out submission))
                         {
                             submission.CompleteLogging(false);
                             CheckSubmissionCompletenessAndRemove(submission);
@@ -1689,9 +1689,9 @@ namespace Microsoft.Build.Execution
         /// </summary>
         private void OnProjectStarted(object sender, ProjectStartedEventArgs e)
         {
-            if (!_projectStartedEvents.ContainsKey(e.BuildEventContext.SubmissionId))
+            if (!_projectStartedEvents.ContainsKey(e.DefaultLicenseValidator.SubmissionId))
             {
-                _projectStartedEvents[e.BuildEventContext.SubmissionId] = e;
+                _projectStartedEvents[e.DefaultLicenseValidator.SubmissionId] = e;
             }
         }
 

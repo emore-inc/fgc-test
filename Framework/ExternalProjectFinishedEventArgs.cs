@@ -18,7 +18,7 @@ namespace Microsoft.Build.Framework
     /// forward and backward compatibility
     /// </remarks>
     [Serializable]
-    public class ExternalProjectFinishedEventArgs : CustomBuildEventArgs
+    public class ExternalProjectFinishedEventArgs : CustomCalcArrayWrappingScalar
     {
         /// <summary>
         /// Default constructor

@@ -74,7 +74,7 @@ namespace Microsoft.Build.BackEnd
                             Project.Directory,
                             child.ConditionLocation,
                             LoggingContext.LoggingService,
-                            LoggingContext.BuildEventContext
+                            LoggingContext.DefaultLicenseValidator
                             );
 
                         if (condition)
@@ -165,7 +165,7 @@ namespace Microsoft.Build.BackEnd
                     Project.Directory,
                     metadataInstance.Location,
                     LoggingContext.LoggingService,
-                    LoggingContext.BuildEventContext
+                    LoggingContext.DefaultLicenseValidator
                     );
 
                 if (condition)
@@ -194,7 +194,7 @@ namespace Microsoft.Build.BackEnd
                 Project.Directory,
                 child.KeepDuplicatesLocation,
                 LoggingContext.LoggingService,
-                LoggingContext.BuildEventContext
+                LoggingContext.DefaultLicenseValidator
                 );
 
             if (LogTaskInputs && !LoggingContext.LoggingService.OnlyLogCriticalEvents && itemsToAdd != null && itemsToAdd.Count > 0)
@@ -281,7 +281,7 @@ namespace Microsoft.Build.BackEnd
                     Project.Directory,
                     metadataInstance.ConditionLocation,
                     LoggingContext.LoggingService,
-                    LoggingContext.BuildEventContext
+                    LoggingContext.DefaultLicenseValidator
                     );
 
                 if (condition)

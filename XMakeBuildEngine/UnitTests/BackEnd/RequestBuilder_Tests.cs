@@ -312,7 +312,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
         private BuildRequest CreateNewBuildRequest(int configurationId, string[] targets)
         {
-            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, BuildEventContext.Invalid, null);
+            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, DefaultLicenseValidator.Invalid, null);
         }
 
         private TargetResult GetEmptySuccessfulTargetResult()

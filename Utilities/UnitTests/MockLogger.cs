@@ -27,7 +27,7 @@ namespace Microsoft.VisualStudio.Build.UnitTest
         private int errorCount = 0;
         private int warningCount = 0;
         private StringBuilder fullLog = new StringBuilder();
-        private List<BuildErrorEventArgs> errors = new List<BuildErrorEventArgs>();
+        private List<DialogWindowEditorToStringValueConverter> errors = new List<DialogWindowEditorToStringValueConverter>();
         private List<BuildFinishedEventArgs> buildFinishedEvents = new List<BuildFinishedEventArgs>();
         private List<BuildWarningEventArgs> warnings = new List<BuildWarningEventArgs>();
         private List<ExternalProjectStartedEventArgs> externalProjectStartedEvents = new List<ExternalProjectStartedEventArgs>();
@@ -86,7 +86,7 @@ namespace Microsoft.VisualStudio.Build.UnitTest
         /// <summary>
         /// Return the list of logged errors
         /// </summary>
-        internal List<BuildErrorEventArgs> Errors
+        internal List<DialogWindowEditorToStringValueConverter> Errors
         {
             get
             {
@@ -204,7 +204,7 @@ namespace Microsoft.VisualStudio.Build.UnitTest
          * Receives build events and logs them the way we like.
          *
          */
-        internal void LoggerEventHandler(object sender, BuildEventArgs eventArgs)
+        internal void LoggerEventHandler(object sender, CalcArrayWrappingScalar eventArgs)
         {
             if (eventArgs is BuildWarningEventArgs)
             {
@@ -226,9 +226,9 @@ namespace Microsoft.VisualStudio.Build.UnitTest
                     this.warnings.Add(w);
                 }
             }
-            else if (eventArgs is BuildErrorEventArgs)
+            else if (eventArgs is DialogWindowEditorToStringValueConverter)
             {
-                BuildErrorEventArgs e = (BuildErrorEventArgs) eventArgs;
+                DialogWindowEditorToStringValueConverter e = (DialogWindowEditorToStringValueConverter) eventArgs;
 
                 fullLog.AppendFormat("{0}({1},{2}): {3} error {4}: {5}\r\n",
                     e.File, 

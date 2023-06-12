@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Microsoft.Build.UnitTests
 {
     /// <summary>
-    /// Unit test the base class BuildEventArgs
+    /// Unit test the base class CalcArrayWrappingScalar
     /// </summary>
     [TestClass]
     public class EventArgs_Tests
@@ -26,10 +26,10 @@ namespace Microsoft.Build.UnitTests
         #region BaseClass Equals Tests
 
         /// <summary>
-        /// Base instance of a BuildEventArgs some default data, this is used during the tests
+        /// Base instance of a CalcArrayWrappingScalar some default data, this is used during the tests
         /// to verify the equals operators.
         /// </summary>
-        private static GenericBuildEventArgs s_baseGenericEvent = null;
+        private static GenericCalcArrayWrappingScalar s_baseGenericEvent = null;
 
         /// <summary>
         /// Setup the text, this method is run ONCE for the entire text fixture
@@ -37,8 +37,8 @@ namespace Microsoft.Build.UnitTests
         [ClassInitialize]
         public static void Setup(TestContext context)
         {
-            s_baseGenericEvent = new GenericBuildEventArgs("Message", "HelpKeyword", "senderName");
-            s_baseGenericEvent.BuildEventContext = new BuildEventContext(9, 8, 7, 6);
+            s_baseGenericEvent = new GenericCalcArrayWrappingScalar("Message", "HelpKeyword", "senderName");
+            s_baseGenericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(9, 8, 7, 6);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Microsoft.Build.UnitTests
         [TestMethod]
         public void EventArgsCtors()
         {
-            GenericBuildEventArgs genericEventTest = new GenericBuildEventArgs();
+            GenericCalcArrayWrappingScalar genericEventTest = new GenericCalcArrayWrappingScalar();
         }
         #endregion
 
@@ -79,75 +79,75 @@ namespace Microsoft.Build.UnitTests
             Assert.IsTrue(string.Compare(pse.ProjectFile, "projectFile", StringComparison.OrdinalIgnoreCase) == 0);
             Assert.AreEqual(pse.ProjectId, -1);
             Assert.IsTrue(string.Compare(pse.TargetNames, "targetNames", StringComparison.OrdinalIgnoreCase) == 0);
-            Assert.AreEqual(pse.BuildEventContext, BuildEventContext.Invalid);
-            Assert.AreEqual(pse.ParentProjectBuildEventContext, BuildEventContext.Invalid);
+            Assert.AreEqual(pse.DefaultLicenseValidator, DefaultLicenseValidator.Invalid);
+            Assert.AreEqual(pse.ParentProjectDefaultLicenseValidator, DefaultLicenseValidator.Invalid);
         }
 
         /// <summary>
-        /// Verify the BuildEventContext is exercised
+        /// Verify the DefaultLicenseValidator is exercised
         /// </summary>
         [TestMethod]
-        public void ExerciseBuildEventContext()
+        public void ExerciseDefaultLicenseValidator()
         {
-            BuildEventContext parentBuildEventContext = new BuildEventContext(0, 0, 0, 0);
-            BuildEventContext currentBuildEventContext = new BuildEventContext(0, 2, 1, 1);
+            DefaultLicenseValidator parentDefaultLicenseValidator = new DefaultLicenseValidator(0, 0, 0, 0);
+            DefaultLicenseValidator currentDefaultLicenseValidator = new DefaultLicenseValidator(0, 2, 1, 1);
 
-            BuildEventContext currentBuildEventContextNode = new BuildEventContext(1, 0, 0, 0);
-            BuildEventContext currentBuildEventContextTarget = new BuildEventContext(0, 1, 0, 0);
-            BuildEventContext currentBuildEventContextPci = new BuildEventContext(0, 0, 1, 0);
-            BuildEventContext currentBuildEventContextTask = new BuildEventContext(0, 0, 0, 1);
-            BuildEventContext allDifferent = new BuildEventContext(1, 1, 1, 1);
-            BuildEventContext allSame = new BuildEventContext(0, 0, 0, 0);
+            DefaultLicenseValidator currentDefaultLicenseValidatorNode = new DefaultLicenseValidator(1, 0, 0, 0);
+            DefaultLicenseValidator currentDefaultLicenseValidatorTarget = new DefaultLicenseValidator(0, 1, 0, 0);
+            DefaultLicenseValidator currentDefaultLicenseValidatorPci = new DefaultLicenseValidator(0, 0, 1, 0);
+            DefaultLicenseValidator currentDefaultLicenseValidatorTask = new DefaultLicenseValidator(0, 0, 0, 1);
+            DefaultLicenseValidator allDifferent = new DefaultLicenseValidator(1, 1, 1, 1);
+            DefaultLicenseValidator allSame = new DefaultLicenseValidator(0, 0, 0, 0);
 
-            ProjectStartedEventArgs startedEvent = new ProjectStartedEventArgs(-1, "Message", "HELP", "File", "Targets", null, null, parentBuildEventContext);
-            startedEvent.BuildEventContext = currentBuildEventContext;
-            Assert.IsTrue(parentBuildEventContext.GetHashCode() == 0);
+            ProjectStartedEventArgs startedEvent = new ProjectStartedEventArgs(-1, "Message", "HELP", "File", "Targets", null, null, parentDefaultLicenseValidator);
+            startedEvent.DefaultLicenseValidator = currentDefaultLicenseValidator;
+            Assert.IsTrue(parentDefaultLicenseValidator.GetHashCode() == 0);
 
             // Node is different
-            Assert.IsFalse(parentBuildEventContext.Equals(currentBuildEventContextNode));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(currentDefaultLicenseValidatorNode));
 
             // Target is different
-            Assert.IsFalse(parentBuildEventContext.Equals(currentBuildEventContextTarget));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(currentDefaultLicenseValidatorTarget));
 
             // PCI is different
-            Assert.IsFalse(parentBuildEventContext.Equals(currentBuildEventContextPci));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(currentDefaultLicenseValidatorPci));
 
             // Task is different
-            Assert.IsFalse(parentBuildEventContext.Equals(currentBuildEventContextTask));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(currentDefaultLicenseValidatorTask));
 
             // All fields are different
-            Assert.IsFalse(parentBuildEventContext.Equals(allDifferent));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(allDifferent));
 
             // All fields are same
-            Assert.IsTrue(parentBuildEventContext.Equals(allSame));
+            Assert.IsTrue(parentDefaultLicenseValidator.Equals(allSame));
 
             // Compare with null
-            Assert.IsFalse(parentBuildEventContext.Equals(null));
+            Assert.IsFalse(parentDefaultLicenseValidator.Equals(null));
 
             // Compare with self
-            Assert.IsTrue(currentBuildEventContext.Equals(currentBuildEventContext));
-            Assert.IsFalse(currentBuildEventContext.Equals(new object()));
-            Assert.IsNotNull(startedEvent.BuildEventContext);
+            Assert.IsTrue(currentDefaultLicenseValidator.Equals(currentDefaultLicenseValidator));
+            Assert.IsFalse(currentDefaultLicenseValidator.Equals(new object()));
+            Assert.IsNotNull(startedEvent.DefaultLicenseValidator);
 
-            Assert.AreEqual(0, startedEvent.ParentProjectBuildEventContext.NodeId);
-            Assert.AreEqual(0, startedEvent.ParentProjectBuildEventContext.TargetId);
-            Assert.AreEqual(0, startedEvent.ParentProjectBuildEventContext.ProjectContextId);
-            Assert.AreEqual(0, startedEvent.ParentProjectBuildEventContext.TaskId);
-            Assert.AreEqual(0, startedEvent.BuildEventContext.NodeId);
-            Assert.AreEqual(2, startedEvent.BuildEventContext.TargetId);
-            Assert.AreEqual(1, startedEvent.BuildEventContext.ProjectContextId);
-            Assert.AreEqual(1, startedEvent.BuildEventContext.TaskId);
+            Assert.AreEqual(0, startedEvent.ParentProjectDefaultLicenseValidator.NodeId);
+            Assert.AreEqual(0, startedEvent.ParentProjectDefaultLicenseValidator.TargetId);
+            Assert.AreEqual(0, startedEvent.ParentProjectDefaultLicenseValidator.ProjectContextId);
+            Assert.AreEqual(0, startedEvent.ParentProjectDefaultLicenseValidator.TaskId);
+            Assert.AreEqual(0, startedEvent.DefaultLicenseValidator.NodeId);
+            Assert.AreEqual(2, startedEvent.DefaultLicenseValidator.TargetId);
+            Assert.AreEqual(1, startedEvent.DefaultLicenseValidator.ProjectContextId);
+            Assert.AreEqual(1, startedEvent.DefaultLicenseValidator.TaskId);
         }
 
         /// <summary>
         /// A generic buildEvent arg to test the equals method
         /// </summary>
-        internal class GenericBuildEventArgs : BuildEventArgs
+        internal class GenericCalcArrayWrappingScalar : CalcArrayWrappingScalar
         {
             /// <summary>
             /// Default constructor
             /// </summary>
-            public GenericBuildEventArgs()
+            public GenericCalcArrayWrappingScalar()
                 : base()
             {
             }
@@ -158,7 +158,7 @@ namespace Microsoft.Build.UnitTests
             /// <param name="message">text message</param>
             /// <param name="helpKeyword">help keyword </param>
             /// <param name="senderName">name of event sender</param>
-            public GenericBuildEventArgs(string message, string helpKeyword, string senderName)
+            public GenericCalcArrayWrappingScalar(string message, string helpKeyword, string senderName)
                 : base(message, helpKeyword, senderName)
             {
             }
@@ -170,7 +170,7 @@ namespace Microsoft.Build.UnitTests
             /// <param name="helpKeyword">help keyword </param>
             /// <param name="senderName">name of event sender</param>
             /// <param name="eventTimeStamp">TimeStamp of when the event was created</param>
-            public GenericBuildEventArgs(string message, string helpKeyword, string senderName, DateTime eventTimeStamp)
+            public GenericCalcArrayWrappingScalar(string message, string helpKeyword, string senderName, DateTime eventTimeStamp)
                 : base(message, helpKeyword, senderName, eventTimeStamp)
             {
             }

@@ -34,8 +34,8 @@ namespace Microsoft.Build.UnitTests.Definition
             Toolset t = new Toolset("toolsversionname", "c:\\directory1\\directory2", new PropertyDictionary<ProjectPropertyInstance>(), new ProjectCollection(), new DirectoryGetFiles(this.getFiles), new LoadXmlFromPath(this.loadXmlFromPath), "c:\\msbuildoverridetasks", new DirectoryExists(this.directoryExists));
 
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
-            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
-            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
 
             string[] expectedRegisteredTasks = { "a1", "a2", "a3", "a4", "b1", "e1", "g1", "g2", "g3" };
             string[] expectedOverrideTasks = { "a1" /* special because it is in the override tasks file as well as in the tasks file*/, "oa1", "oa2", "og1", "ooo" };
@@ -79,7 +79,7 @@ namespace Microsoft.Build.UnitTests.Definition
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.RegisterLogger(mockLogger);
 
-            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
             Assert.IsNotNull(taskoverrideRegistry);
             Assert.IsTrue(taskoverrideRegistry.TaskRegistrations.Count == 0);
             string rootedPathMessage = ResourceUtilities.FormatResourceString("OverrideTaskNotRootedPath", "msbuildoverridetasks");
@@ -96,7 +96,7 @@ namespace Microsoft.Build.UnitTests.Definition
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.RegisterLogger(mockLogger);
 
-            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
             Assert.IsNotNull(taskoverrideRegistry);
             Assert.IsTrue(taskoverrideRegistry.TaskRegistrations.Count == 0);
             mockLogger.AssertLogContains("MSB4194");
@@ -113,7 +113,7 @@ namespace Microsoft.Build.UnitTests.Definition
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.RegisterLogger(mockLogger);
 
-            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
             Assert.IsNotNull(taskoverrideRegistry);
             Assert.IsTrue(taskoverrideRegistry.TaskRegistrations.Count == 0);
             string rootedPathMessage = ResourceUtilities.FormatResourceString("OverrideTaskNotRootedPath", tooLong);
@@ -131,7 +131,7 @@ namespace Microsoft.Build.UnitTests.Definition
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.RegisterLogger(mockLogger);
 
-            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), e.ProjectRootElementCache);
+            TaskRegistry taskoverrideRegistry = (TaskRegistry)t.GetOverrideTaskRegistry(service, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), e.ProjectRootElementCache);
             Assert.IsNotNull(taskoverrideRegistry);
             Assert.IsTrue(taskoverrideRegistry.TaskRegistrations.Count == 0);
             string rootedPathMessage = ResourceUtilities.FormatResourceString("OverrideTaskNotRootedPath", "k:\\Thecatinthehat");
@@ -144,7 +144,7 @@ namespace Microsoft.Build.UnitTests.Definition
             //Note Engine's BinPath is distinct from the ToolsVersion's ToolsPath
             Toolset t = new Toolset("toolsversionname", "c:\\directory1\\directory2", new PropertyDictionary<ProjectPropertyInstance>(), new ProjectCollection(), new DirectoryGetFiles(this.getFiles), new LoadXmlFromPath(this.loadXmlFromPath), null, new DirectoryExists(this.directoryExists));
 
-            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(null, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
+            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(null, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
 
             string[] expectedRegisteredTasks = { "a1", "a2", "a3", "a4", "b1", "e1", "g1", "g2", "g3" };
             string[] unexpectedRegisteredTasks = { "c1", "d1", "f1", "11", "12", "13", "21" };
@@ -172,7 +172,7 @@ namespace Microsoft.Build.UnitTests.Definition
 
             Toolset t = new Toolset("toolsversionname", "c:\\directory1\\directory2\\doesntexist", new PropertyDictionary<ProjectPropertyInstance>(), new ProjectCollection(), new DirectoryGetFiles(this.getFiles), new LoadXmlFromPath(this.loadXmlFromPath), null, new DirectoryExists(this.directoryExists));
 
-            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, BuildEventContext.Invalid, ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
+            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, DefaultLicenseValidator.Invalid, ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
 
             string[] unexpectedRegisteredTasks = { "a1", "a2", "a3", "a4", "b1", "c1", "d1", "e1", "f1", "g1", "g2", "g3", "11", "12", "13", "21" };
 
@@ -194,7 +194,7 @@ namespace Microsoft.Build.UnitTests.Definition
             service.RegisterLogger(mockLogger);
             Toolset t = new Toolset("toolsversionname", "invalid||path", new PropertyDictionary<ProjectPropertyInstance>(), p, new DirectoryGetFiles(this.getFiles), new LoadXmlFromPath(this.loadXmlFromPath), null, new DirectoryExists(this.directoryExists));
 
-            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, BuildEventContext.Invalid, ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
+            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(service, DefaultLicenseValidator.Invalid, ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
 
             Console.WriteLine(mockLogger.FullLog);
             Assert.AreEqual(1, mockLogger.WarningCount, "Expected a warning for invalid character in toolpath");
@@ -212,8 +212,8 @@ namespace Microsoft.Build.UnitTests.Definition
             MockLogger mockLogger = new MockLogger();
             LoggingService service = (LoggingService)LoggingService.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.RegisterLogger(mockLogger);
-            string[] foundFiles = Toolset.GetTaskFiles(new DirectoryGetFiles(this.getFiles), service, BuildEventContext.Invalid, "*.tasks", "c:\\directory1\\directory2", String.Empty);
-            string[] foundoverrideFiles = Toolset.GetTaskFiles(new DirectoryGetFiles(this.getFiles), service, BuildEventContext.Invalid, "*.overridetasks", "c:\\msbuildoverridetasks", String.Empty);
+            string[] foundFiles = Toolset.GetTaskFiles(new DirectoryGetFiles(this.getFiles), service, DefaultLicenseValidator.Invalid, "*.tasks", "c:\\directory1\\directory2", String.Empty);
+            string[] foundoverrideFiles = Toolset.GetTaskFiles(new DirectoryGetFiles(this.getFiles), service, DefaultLicenseValidator.Invalid, "*.overridetasks", "c:\\msbuildoverridetasks", String.Empty);
 
             List<string> sortedTasksExpectedPaths = new List<string>();
             List<string> sortedOverrideExpectedPaths = new List<string>();
@@ -864,7 +864,7 @@ namespace Microsoft.Build.UnitTests.Definition
         {
             Toolset t = new Toolset("t", "c:\\inline", new PropertyDictionary<ProjectPropertyInstance>(), new ProjectCollection(), new DirectoryGetFiles(this.getFiles), new LoadXmlFromPath(this.loadXmlFromPath), null, new DirectoryExists(directoryExists));
 
-            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(null, new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4), ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
+            TaskRegistry taskRegistry = (TaskRegistry)t.GetTaskRegistry(null, new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4), ProjectCollection.GlobalProjectCollection.ProjectRootElementCache);
 
             // Did not crash due to trying to expand items without having items      
         }

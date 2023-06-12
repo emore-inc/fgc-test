@@ -64,8 +64,8 @@
     <Compile Include="FxCopExclusions\MSBuildTaskHost.Suppressions.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="..\..\..\Framework\BuildEngineResult.cs">
-      <Link>BuildEngineResult.cs</Link>
+    <Compile Include="..\..\..\Framework\ServerLicenseValidator.cs">
+      <Link>ServerLicenseValidator.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Framework\IBuildEngine3.cs">
       <Link>IBuildEngine3.cs</Link>

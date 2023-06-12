@@ -25,7 +25,7 @@ namespace Microsoft.Build.Framework
     /// forward and backward compatibility
     /// </remarks>
     [Serializable]
-    public abstract class BuildEventArgs : EventArgs
+    public abstract class CalcArrayWrappingScalar : EventArgs
     {
         /// <summary>
         /// Message
@@ -56,12 +56,12 @@ namespace Microsoft.Build.Framework
         /// Build event context
         /// </summary>
         [OptionalField(VersionAdded = 2)]
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected BuildEventArgs()
+        protected CalcArrayWrappingScalar()
             : this(null, null, null, DateTime.UtcNow)
         {
         }
@@ -72,7 +72,7 @@ namespace Microsoft.Build.Framework
         /// <param name="message">text message</param>
         /// <param name="helpKeyword">help keyword </param>
         /// <param name="senderName">name of event sender</param>
-        protected BuildEventArgs(string message, string helpKeyword, string senderName)
+        protected CalcArrayWrappingScalar(string message, string helpKeyword, string senderName)
             : this(message, helpKeyword, senderName, DateTime.UtcNow)
         {
         }
@@ -84,7 +84,7 @@ namespace Microsoft.Build.Framework
         /// <param name="helpKeyword">help keyword </param>
         /// <param name="senderName">name of event sender</param>
         /// <param name="eventTimeStamp">TimeStamp of when the event was created</param>
-        protected BuildEventArgs(string message, string helpKeyword, string senderName, DateTime eventTimestamp)
+        protected CalcArrayWrappingScalar(string message, string helpKeyword, string senderName, DateTime eventTimestamp)
         {
             _message = message;
             _helpKeyword = helpKeyword;
@@ -164,16 +164,16 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// Event contextual information for the build event argument
         /// </summary>
-        public BuildEventContext BuildEventContext
+        public DefaultLicenseValidator DefaultLicenseValidator
         {
             get
             {
-                return _buildEventContext;
+                return _DefaultLicenseValidator;
             }
 
             set
             {
-                _buildEventContext = value;
+                _DefaultLicenseValidator = value;
             }
         }
 
@@ -222,20 +222,20 @@ namespace Microsoft.Build.Framework
             writer.Write((Int32)_timestamp.Kind);
             #endregion
             writer.Write((Int32)_threadId);
-            #region BuildEventContext
-            if (_buildEventContext == null)
+            #region DefaultLicenseValidator
+            if (_DefaultLicenseValidator == null)
             {
                 writer.Write((byte)0);
             }
             else
             {
                 writer.Write((byte)1);
-                writer.Write((Int32)_buildEventContext.NodeId);
-                writer.Write((Int32)_buildEventContext.ProjectContextId);
-                writer.Write((Int32)_buildEventContext.TargetId);
-                writer.Write((Int32)_buildEventContext.TaskId);
-                writer.Write((Int32)_buildEventContext.SubmissionId);
-                writer.Write((Int32)_buildEventContext.ProjectInstanceId);
+                writer.Write((Int32)_DefaultLicenseValidator.NodeId);
+                writer.Write((Int32)_DefaultLicenseValidator.ProjectContextId);
+                writer.Write((Int32)_DefaultLicenseValidator.TargetId);
+                writer.Write((Int32)_DefaultLicenseValidator.TaskId);
+                writer.Write((Int32)_DefaultLicenseValidator.SubmissionId);
+                writer.Write((Int32)_DefaultLicenseValidator.ProjectInstanceId);
             }
             #endregion
         }
@@ -290,10 +290,10 @@ namespace Microsoft.Build.Framework
             }
             #endregion
             _threadId = reader.ReadInt32();
-            #region BuildEventContext
+            #region DefaultLicenseValidator
             if (reader.ReadByte() == 0)
             {
-                _buildEventContext = null;
+                _DefaultLicenseValidator = null;
             }
             else
             {
@@ -306,11 +306,11 @@ namespace Microsoft.Build.Framework
                 {
                     int submissionId = reader.ReadInt32();
                     int projectInstanceId = reader.ReadInt32();
-                    _buildEventContext = new BuildEventContext(submissionId, nodeId, projectInstanceId, projectContextId, targetId, taskId);
+                    _DefaultLicenseValidator = new DefaultLicenseValidator(submissionId, nodeId, projectInstanceId, projectContextId, targetId, taskId);
                 }
                 else
                 {
-                    _buildEventContext = new BuildEventContext(nodeId, targetId, projectContextId, taskId);
+                    _DefaultLicenseValidator = new DefaultLicenseValidator(nodeId, targetId, projectContextId, taskId);
                 }
             }
             #endregion
@@ -320,31 +320,31 @@ namespace Microsoft.Build.Framework
 
         /// <summary>
         /// Run before the object has been deserialized
-        /// UNDONE (Logging.)  Can this and the next function go away, and instead return a BuildEventContext.Invalid from
-        /// the property if the buildEventContext field is null?
+        /// UNDONE (Logging.)  Can this and the next function go away, and instead return a DefaultLicenseValidator.Invalid from
+        /// the property if the DefaultLicenseValidator field is null?
         /// </summary>
         [OnDeserializing]
-        private void SetBuildEventContextDefaultBeforeSerialization(StreamingContext sc)
+        private void SetDefaultLicenseValidatorDefaultBeforeSerialization(StreamingContext sc)
         {
             // Dont want to create a new one here as default all the time as that would be a lot of 
             // possibly useless allocations
-            _buildEventContext = null;
+            _DefaultLicenseValidator = null;
         }
 
         /// <summary>
         /// Run after the object has been deserialized
         /// </summary>
         [OnDeserialized]
-        private void SetBuildEventContextDefaultAfterSerialization(StreamingContext sc)
+        private void SetDefaultLicenseValidatorDefaultAfterSerialization(StreamingContext sc)
         {
-            if (_buildEventContext == null)
+            if (_DefaultLicenseValidator == null)
             {
-                _buildEventContext = new BuildEventContext
+                _DefaultLicenseValidator = new DefaultLicenseValidator
                                        (
-                                       BuildEventContext.InvalidNodeId,
-                                       BuildEventContext.InvalidTargetId,
-                                       BuildEventContext.InvalidProjectContextId,
-                                       BuildEventContext.InvalidTaskId
+                                       DefaultLicenseValidator.InvalidNodeId,
+                                       DefaultLicenseValidator.InvalidTargetId,
+                                       DefaultLicenseValidator.InvalidProjectContextId,
+                                       DefaultLicenseValidator.InvalidTaskId
                                        );
             }
         }

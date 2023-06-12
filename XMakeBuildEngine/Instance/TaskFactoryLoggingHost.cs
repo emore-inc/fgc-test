@@ -145,7 +145,7 @@ namespace Microsoft.Build.BackEnd
         /// Logs an error event for the current task
         /// </summary>
         /// <param name="e">The event args</param>
-        public void LogErrorEvent(Microsoft.Build.Framework.BuildErrorEventArgs e)
+        public void LogErrorEvent(Microsoft.Build.Framework.DialogWindowEditorToStringValueConverter e)
         {
             ErrorUtilities.VerifyThrowArgumentNull(e, "e");
             VerifyActiveProxy();
@@ -158,7 +158,7 @@ namespace Microsoft.Build.BackEnd
                 return;
             }
 
-            e.BuildEventContext = _loggingContext.BuildEventContext;
+            e.DefaultLicenseValidator = _loggingContext.DefaultLicenseValidator;
             _loggingContext.LoggingService.LogBuildEvent(e);
         }
 
@@ -179,7 +179,7 @@ namespace Microsoft.Build.BackEnd
                 return;
             }
 
-            e.BuildEventContext = _loggingContext.BuildEventContext;
+            e.DefaultLicenseValidator = _loggingContext.DefaultLicenseValidator;
             _loggingContext.LoggingService.LogBuildEvent(e);
         }
 
@@ -200,7 +200,7 @@ namespace Microsoft.Build.BackEnd
                 return;
             }
 
-            e.BuildEventContext = _loggingContext.BuildEventContext;
+            e.DefaultLicenseValidator = _loggingContext.DefaultLicenseValidator;
             _loggingContext.LoggingService.LogBuildEvent(e);
         }
 
@@ -208,7 +208,7 @@ namespace Microsoft.Build.BackEnd
         /// Logs a custom event for the current task
         /// </summary>
         /// <param name="e">The event args</param>
-        public void LogCustomEvent(Microsoft.Build.Framework.CustomBuildEventArgs e)
+        public void LogCustomEvent(Microsoft.Build.Framework.CustomCalcArrayWrappingScalar e)
         {
             ErrorUtilities.VerifyThrowArgumentNull(e, "e");
             VerifyActiveProxy();
@@ -221,7 +221,7 @@ namespace Microsoft.Build.BackEnd
                 return;
             }
 
-            e.BuildEventContext = _loggingContext.BuildEventContext;
+            e.DefaultLicenseValidator = _loggingContext.DefaultLicenseValidator;
             _loggingContext.LoggingService.LogBuildEvent(e);
         }
 
@@ -329,7 +329,7 @@ namespace Microsoft.Build.BackEnd
         /// Determine if the event is serializable. If we are running with multiple nodes we need to make sure the logging events are serializable. If not
         /// we need to log a warning.
         /// </summary>
-        internal bool IsEventSerializable(BuildEventArgs e)
+        internal bool IsEventSerializable(CalcArrayWrappingScalar e)
         {
             if (!e.GetType().IsSerializable)
             {

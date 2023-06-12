@@ -146,7 +146,7 @@ namespace Microsoft.Build.Construction
         /// <summary>
         /// The build event context errors should be logged in.
         /// </summary>
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
 
         /// <summary>
         /// Initialize a ProjectRootElement instance from a XmlReader.
@@ -200,15 +200,15 @@ namespace Microsoft.Build.Construction
         /// Assumes path is already normalized.
         /// May throw InvalidProjectFileException.
         /// </summary>
-        private ProjectRootElement(string path, ProjectRootElementCache projectRootElementCache, BuildEventContext buildEventContext)
+        private ProjectRootElement(string path, ProjectRootElementCache projectRootElementCache, DefaultLicenseValidator DefaultLicenseValidator)
             : base()
         {
             ErrorUtilities.VerifyThrowArgumentLength(path, "path");
             ErrorUtilities.VerifyThrowInternalRooted(path);
             ErrorUtilities.VerifyThrowArgumentNull(projectRootElementCache, "projectRootElementCache");
-            ErrorUtilities.VerifyThrowArgumentNull(buildEventContext, "buildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(DefaultLicenseValidator, "DefaultLicenseValidator");
             _projectRootElementCache = projectRootElementCache;
-            _buildEventContext = buildEventContext;
+            _DefaultLicenseValidator = DefaultLicenseValidator;
 
             IncrementVersion();
             _versionOnDisk = _version;
@@ -1765,13 +1765,13 @@ namespace Microsoft.Build.Construction
         /// Path provided must be a canonicalized full path.
         /// May throw InvalidProjectFileException or an IO-related exception.
         /// </summary>
-        internal static ProjectRootElement OpenProjectOrSolution(string fullPath, IDictionary<string, string> globalProperties, string toolsVersion, ILoggingService loggingService, ProjectRootElementCache projectRootElementCache, BuildEventContext buildEventContext, bool isExplicitlyLoaded)
+        internal static ProjectRootElement OpenProjectOrSolution(string fullPath, IDictionary<string, string> globalProperties, string toolsVersion, ILoggingService loggingService, ProjectRootElementCache projectRootElementCache, DefaultLicenseValidator DefaultLicenseValidator, bool isExplicitlyLoaded)
         {
             ErrorUtilities.VerifyThrowInternalRooted(fullPath);
 
             ProjectRootElement projectRootElement = projectRootElementCache.Get(
                 fullPath,
-                (path, cache) => CreateProjectFromPath(path, globalProperties, toolsVersion, loggingService, cache, buildEventContext),
+                (path, cache) => CreateProjectFromPath(path, globalProperties, toolsVersion, loggingService, cache, DefaultLicenseValidator),
                 isExplicitlyLoaded);
 
             return projectRootElement;
@@ -1873,7 +1873,7 @@ namespace Microsoft.Build.Construction
             return new ProjectRootElement(
                 path,
                 projectRootElementCache,
-                new BuildEventContext(0, BuildEventContext.InvalidNodeId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId));
+                new DefaultLicenseValidator(0, DefaultLicenseValidator.InvalidNodeId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId));
         }
 
         /// <summary>
@@ -1890,7 +1890,7 @@ namespace Microsoft.Build.Construction
                 string toolsVersion,
                 ILoggingService loggingService,
                 ProjectRootElementCache projectRootElementCache,
-                BuildEventContext buildEventContext
+                DefaultLicenseValidator DefaultLicenseValidator
             )
         {
             ErrorUtilities.VerifyThrowInternalRooted(projectFile);
@@ -1903,7 +1903,7 @@ namespace Microsoft.Build.Construction
                 }
 
                 // OK it's a regular project file, load it normally.
-                return new ProjectRootElement(projectFile, projectRootElementCache, buildEventContext);
+                return new ProjectRootElement(projectFile, projectRootElementCache, DefaultLicenseValidator);
             }
             catch (InvalidProjectFileException)
             {

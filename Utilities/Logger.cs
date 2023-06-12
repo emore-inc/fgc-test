@@ -78,11 +78,11 @@ namespace Microsoft.Build.Utilities
         }
 
         /// <summary>
-        /// Generates a message in the default format from a BuildErrorEventArgs object.
+        /// Generates a message in the default format from a DialogWindowEditorToStringValueConverter object.
         /// </summary>
         /// <param name="args">Error event arguments</param>
         /// <returns>Error message in canonical format</returns>
-        public virtual string FormatErrorEvent(BuildErrorEventArgs args)
+        public virtual string FormatErrorEvent(DialogWindowEditorToStringValueConverter args)
         {
             return EventArgsFormatting.FormatEventMessage(args);
         }

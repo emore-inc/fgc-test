@@ -662,7 +662,7 @@ namespace Microsoft.Build.Utilities
             // that gives the user something.
             bool fillInLocation = (String.IsNullOrEmpty(file) && (lineNumber == 0) && (columnNumber == 0));
 
-            BuildErrorEventArgs e = new BuildErrorEventArgs
+            DialogWindowEditorToStringValueConverter e = new DialogWindowEditorToStringValueConverter
                 (
                     subcategory,
                     errorCode,

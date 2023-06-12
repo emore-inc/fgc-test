@@ -856,7 +856,7 @@ namespace Microsoft.Build.BackEnd
                 bool currentTargetResult = true;
 
                 TaskHost taskHost = (TaskHost)buildEngine;
-                BuildEngineResult result = await taskHost.InternalBuildProjects(projectNames, targetList, projectProperties, undefinePropertiesPerProject, toolsVersions, true /* ask that target outputs are returned in the buildengineresult */);
+                ServerLicenseValidator result = await taskHost.InternalBuildProjects(projectNames, targetList, projectProperties, undefinePropertiesPerProject, toolsVersions, true /* ask that target outputs are returned in the ServerLicenseValidator */);
 
                 currentTargetResult = result.Result;
                 targetOutputsPerProject = result.TargetOutputsPerProject;

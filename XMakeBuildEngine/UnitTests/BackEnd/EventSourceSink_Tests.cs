@@ -116,11 +116,11 @@ namespace Microsoft.Build.UnitTests.Logging
         }
 
         /// <summary>
-        /// Verify raising a generic event derived from BuildEventArgs rather than CustomBuildEventArgs causes an internalErrorException
+        /// Verify raising a generic event derived from CalcArrayWrappingScalar rather than CustomCalcArrayWrappingScalar causes an internalErrorException
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void RaiseGenericBuildEventArgs()
+        public void RaiseGenericCalcArrayWrappingScalar()
         {
             EventSourceSink sink = new EventSourceSink();
             RaiseEventHelper eventHelper = new RaiseEventHelper(sink);
@@ -253,7 +253,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         /// <param name="buildEventToRaise">BuildEvent to raise on the </param>
         /// <param name="exceptionToRaise">Exception to throw in the event handler </param>
-        private static void RaiseExceptionInEventHandler(BuildEventArgs buildEventToRaise, Exception exceptionToRaise)
+        private static void RaiseExceptionInEventHandler(CalcArrayWrappingScalar buildEventToRaise, Exception exceptionToRaise)
         {
             EventSourceSink sink = new EventSourceSink();
             RaiseEventHelper eventHelper = new RaiseEventHelper(sink);
@@ -287,10 +287,10 @@ namespace Microsoft.Build.UnitTests.Logging
         /// <summary>
         /// Verify when an is raised the handlers which are  registered to handle the event should handle them
         /// </summary>
-        /// <param name="buildEventToRaise">A buildEventArgs to raise on the event source</param>
+        /// <param name="buildEventToRaise">A CalcArrayWrappingScalar to raise on the event source</param>
         /// <param name="eventHelper">Helper class which events are raised on</param>
         /// <param name="testHandlers">Class which contains a set of event handlers registered on the event source</param>
-        private static void VerifyRegisteredHandlers(BuildEventArgs buildEventToRaise, RaiseEventHelper eventHelper, EventHandlerHelper testHandlers)
+        private static void VerifyRegisteredHandlers(CalcArrayWrappingScalar buildEventToRaise, RaiseEventHelper eventHelper, EventHandlerHelper testHandlers)
         {
             try
             {
@@ -327,15 +327,15 @@ namespace Microsoft.Build.UnitTests.Logging
         #region HelperClasses
 
         /// <summary>
-        /// Generic class derived from BuildEventArgs which is used to test the case
+        /// Generic class derived from CalcArrayWrappingScalar which is used to test the case
         /// where the event is not a well known event, or a custom event
         /// </summary>
-        internal class GenericBuildEventArgs : BuildEventArgs
+        internal class GenericCalcArrayWrappingScalar : CalcArrayWrappingScalar
         {
             /// <summary>
             /// Default constructor
             /// </summary>
-            internal GenericBuildEventArgs()
+            internal GenericCalcArrayWrappingScalar()
                 : base()
             {
             }
@@ -370,18 +370,18 @@ namespace Microsoft.Build.UnitTests.Logging
             /// which was raised on the sink was the one received
             /// by the event handler
             /// </summary>
-            private BuildEventArgs _raisedEvent;
+            private CalcArrayWrappingScalar _raisedEvent;
 
             /// <summary>
             /// The any event handler will get all events, even if they are raised to another event handler
             /// We need to verify that both the event handler and the any event handler both get the events
             /// </summary>
-            private BuildEventArgs _raisedAnyEvent;
+            private CalcArrayWrappingScalar _raisedAnyEvent;
 
             /// <summary>
             /// A status event message, this is set when status events are raised on the event handler
             /// </summary>
-            private BuildEventArgs _raisedStatusEvent;
+            private CalcArrayWrappingScalar _raisedStatusEvent;
 
             /// <summary>
             /// To test the exception mechinism of the event source, we may want to 
@@ -471,7 +471,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// to verify the event passed to the event source is the same one which was 
             /// received by the event handlers
             /// </summary>
-            public BuildEventArgs RaisedEvent
+            public CalcArrayWrappingScalar RaisedEvent
             {
                 get
                 {
@@ -482,7 +482,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Check the event raised by the AnyEventHandler
             /// </summary>
-            public BuildEventArgs RaisedAnyEvent
+            public CalcArrayWrappingScalar RaisedAnyEvent
             {
                 get
                 {
@@ -493,7 +493,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Check the event raised by the StatusEventHandler
             /// </summary>
-            public BuildEventArgs RaisedStatusEvent
+            public CalcArrayWrappingScalar RaisedStatusEvent
             {
                 get
                 {
@@ -525,7 +525,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// Do the test work for all of the event handlers.
             /// </summary>
             /// <param name="e">Event which was raised by an event source this class was listening to</param>
-            private void HandleEvent(BuildEventArgs e)
+            private void HandleEvent(CalcArrayWrappingScalar e)
             {
                 _enteredEventHandler = true;
                 _raisedEvent = e;
@@ -637,7 +637,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// </summary>
             /// <param name="sender">Who sent the event</param>
             /// <param name="e">Event raised on the event source</param>
-            private void Source_ErrorRaised(object sender, BuildErrorEventArgs e)
+            private void Source_ErrorRaised(object sender, DialogWindowEditorToStringValueConverter e)
             {
                 HandleEvent(e);
             }
@@ -647,7 +647,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// </summary>
             /// <param name="sender">Who sent the event</param>
             /// <param name="e">Event raised on the event source</param>
-            private void Source_CustomEventRaised(object sender, CustomBuildEventArgs e)
+            private void Source_CustomEventRaised(object sender, CustomCalcArrayWrappingScalar e)
             {
                 HandleEvent(e);
             }
@@ -678,7 +678,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// </summary>
             /// <param name="sender">Who sent the event</param>
             /// <param name="e">Event raised on the event source</param>
-            private void Source_AnyEventRaised(object sender, BuildEventArgs e)
+            private void Source_AnyEventRaised(object sender, CalcArrayWrappingScalar e)
             {
                 _enteredAnyEventHandler = true;
                 _raisedAnyEvent = e;
@@ -704,7 +704,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Generic Build Event
             /// </summary>
-            private static GenericBuildEventArgs s_genericBuild = new GenericBuildEventArgs();
+            private static GenericCalcArrayWrappingScalar s_genericBuild = new GenericCalcArrayWrappingScalar();
 
             /// <summary>
             /// Generic Build Status Evemt
@@ -744,7 +744,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Build Error Event
             /// </summary>
-            private static BuildErrorEventArgs s_buildError = new BuildErrorEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
+            private static DialogWindowEditorToStringValueConverter s_buildError = new DialogWindowEditorToStringValueConverter("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
 
             /// <summary>
             /// Target Started Event
@@ -806,7 +806,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Event which can be raised in multiple tests.
             /// </summary>
-            internal static GenericBuildEventArgs GenericBuildEvent
+            internal static GenericCalcArrayWrappingScalar GenericBuildEvent
             {
                 get
                 {
@@ -894,7 +894,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Event which can be raised in multiple tests.
             /// </summary>
-            internal static BuildErrorEventArgs Error
+            internal static DialogWindowEditorToStringValueConverter Error
             {
                 get
                 {
@@ -961,7 +961,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Raise a build event on the event source
             /// </summary>
-            internal void RaiseBuildEvent(BuildEventArgs buildEvent)
+            internal void RaiseBuildEvent(CalcArrayWrappingScalar buildEvent)
             {
                 _sourceForEvents.Consume(buildEvent);
                 if (buildEvent is BuildStartedEventArgs)

@@ -266,22 +266,22 @@ namespace Microsoft.Build.BackEnd
                 value = new DateTime(_reader.ReadInt64(), kind);
             }
 
-            // MSBuildTaskHost is based on CLR 3.5, which does not have the 6-parameter constructor for BuildEventContext.  
-            // However, it also does not ever need to translate BuildEventContexts, so it should be perfectly safe to 
+            // MSBuildTaskHost is based on CLR 3.5, which does not have the 6-parameter constructor for DefaultLicenseValidator.  
+            // However, it also does not ever need to translate DefaultLicenseValidators, so it should be perfectly safe to 
             // compile this method out of that assembly. 
 #if !CLR2COMPATIBILITY
 
             /// <summary>
-            /// Translates a BuildEventContext
+            /// Translates a DefaultLicenseValidator
             /// </summary>
             /// <remarks>
-            /// This method exists only because there is no serialization method built into the BuildEventContext
+            /// This method exists only because there is no serialization method built into the DefaultLicenseValidator
             /// class, and it lives in Framework and we don't want to add a public method to it.
             /// </remarks>
             /// <param name="value">The context to be translated.</param>
-            public void Translate(ref BuildEventContext value)
+            public void Translate(ref DefaultLicenseValidator value)
             {
-                value = new BuildEventContext
+                value = new DefaultLicenseValidator
                     (
                     _reader.ReadInt32(),
                     _reader.ReadInt32(),
@@ -732,20 +732,20 @@ namespace Microsoft.Build.BackEnd
                 _writer.Write(value.Ticks);
             }
 
-            // MSBuildTaskHost is based on CLR 3.5, which does not have the 6-parameter constructor for BuildEventContext.  
-            // However, it also does not ever need to translate BuildEventContexts, so it should be perfectly safe to 
+            // MSBuildTaskHost is based on CLR 3.5, which does not have the 6-parameter constructor for DefaultLicenseValidator.  
+            // However, it also does not ever need to translate DefaultLicenseValidators, so it should be perfectly safe to 
             // compile this method out of that assembly. 
 #if !CLR2COMPATIBILITY
 
             /// <summary>
-            /// Translates a BuildEventContext
+            /// Translates a DefaultLicenseValidator
             /// </summary>
             /// <remarks>
-            /// This method exists only because there is no serialization method built into the BuildEventContext
+            /// This method exists only because there is no serialization method built into the DefaultLicenseValidator
             /// class, and it lives in Framework and we don't want to add a public method to it.
             /// </remarks>
             /// <param name="value">The context to be translated.</param>
-            public void Translate(ref BuildEventContext value)
+            public void Translate(ref DefaultLicenseValidator value)
             {
                 _writer.Write(value.SubmissionId);
                 _writer.Write(value.NodeId);

@@ -1108,13 +1108,13 @@ namespace Microsoft.Build.BackEnd.Logging
 
         public abstract void TaskFinishedHandler(object sender, TaskFinishedEventArgs e);
 
-        public abstract void ErrorHandler(object sender, BuildErrorEventArgs e);
+        public abstract void ErrorHandler(object sender, DialogWindowEditorToStringValueConverter e);
 
         public abstract void WarningHandler(object sender, BuildWarningEventArgs e);
 
         public abstract void MessageHandler(object sender, BuildMessageEventArgs e);
 
-        public abstract void CustomEventHandler(object sender, CustomBuildEventArgs e);
+        public abstract void CustomEventHandler(object sender, CustomCalcArrayWrappingScalar e);
 
         #endregion
 

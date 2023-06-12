@@ -1201,7 +1201,7 @@
   <data name="ProjectStackWithDefaultTargets" UESanitized="false" Visibility="Public">
     <value>"{0}" (default target) ({1}) -></value>
   </data>
-  <data name="BuildEventContext" UESanitized="false" Visibility="Public">
+  <data name="DefaultLicenseValidator" UESanitized="false" Visibility="Public">
     <value>{0} {1,5}</value>
   </data>
   <data name="ProjectStartedTopLevelProjectWithTargetNames" UESanitized="false" Visibility="Public">

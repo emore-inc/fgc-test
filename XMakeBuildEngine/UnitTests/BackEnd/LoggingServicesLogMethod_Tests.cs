@@ -35,12 +35,12 @@ namespace Microsoft.Build.UnitTests.Logging
         /// <summary>
         /// A generic valid build event context which can be used in the tests.
         /// </summary>
-        private static BuildEventContext s_buildEventContext = new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, 4);
+        private static DefaultLicenseValidator s_DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, 4);
 
         /// <summary>
         /// buildevent context for target events, note the invalid taskId, target started and finished events have this.
         /// </summary>
-        private static BuildEventContext s_targetBuildEventContext = new BuildEventContext(1, 2, BuildEventContext.InvalidProjectContextId, -1);
+        private static DefaultLicenseValidator s_targetDefaultLicenseValidator = new DefaultLicenseValidator(1, 2, DefaultLicenseValidator.InvalidProjectContextId, -1);
         #endregion
 
         #region Event based logging method tests
@@ -67,7 +67,7 @@ namespace Microsoft.Build.UnitTests.Logging
 
             // These three should be logged when OnlyLogCritical Events is on or off
             BuildWarningEventArgs warning = new BuildWarningEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
-            BuildErrorEventArgs error = new BuildErrorEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
+            DialogWindowEditorToStringValueConverter error = new DialogWindowEditorToStringValueConverter("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
             ExternalProjectStartedEventArgs externalStartedEvent = new ExternalProjectStartedEventArgs("message", "help", "senderName", "projectFile", "targetNames");
 
             ProcessBuildEventHelper loggingService = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
@@ -101,7 +101,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogErrorNullMessageResource()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogError(s_buildEventContext, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), null, "MyTask");
+            service.LogError(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), null, "MyTask");
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogErrorEmptyMessageResource()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogError(s_buildEventContext, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), string.Empty, "MyTask");
+            service.LogError(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), string.Empty, "MyTask");
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace Microsoft.Build.UnitTests.Logging
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
 
-            service.LogError(s_buildEventContext, subcategoryKey, fileInfo, "FatalTaskError", taskName);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, subcategory);
+            service.LogError(s_DefaultLicenseValidator, subcategoryKey, fileInfo, "FatalTaskError", taskName);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, subcategory);
         }
 
         #endregion
@@ -158,7 +158,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogInvalidProjectFileErrorNullException()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogInvalidProjectFileError(s_buildEventContext, null);
+            service.LogInvalidProjectFileError(s_DefaultLicenseValidator, null);
         }
 
         /// <summary>
@@ -174,22 +174,22 @@ namespace Microsoft.Build.UnitTests.Logging
 
             // Log the exception for the first time
             Assert.IsFalse(exception.HasBeenLogged);
-            service.LogInvalidProjectFileError(s_buildEventContext, exception);
+            service.LogInvalidProjectFileError(s_DefaultLicenseValidator, exception);
             Assert.IsTrue(exception.HasBeenLogged);
             BuildEventFileInfo fileInfo = new BuildEventFileInfo(exception.ProjectFile, exception.LineNumber, exception.ColumnNumber, exception.EndLineNumber, exception.EndColumnNumber);
-            VerifyBuildErrorEventArgs(fileInfo, exception.ErrorCode, exception.HelpKeyword, exception.BaseMessage, service, exception.ErrorSubcategory);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, exception.ErrorCode, exception.HelpKeyword, exception.BaseMessage, service, exception.ErrorSubcategory);
 
             // Verify when the exception is logged again that it does not actually get logged due to it already being logged
             service.ResetProcessedBuildEvent();
-            service.LogInvalidProjectFileError(s_buildEventContext, exception);
+            service.LogInvalidProjectFileError(s_DefaultLicenseValidator, exception);
             Assert.IsNull(service.ProcessedBuildEvent);
 
             // Reset the HasLogged field and verify OnlyLogCriticalEvents does not effect the logging of the message
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
             exception.HasBeenLogged = false;
-            service.LogInvalidProjectFileError(s_buildEventContext, exception);
-            VerifyBuildErrorEventArgs(fileInfo, exception.ErrorCode, exception.HelpKeyword, exception.BaseMessage, service, exception.ErrorSubcategory);
+            service.LogInvalidProjectFileError(s_DefaultLicenseValidator, exception);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, exception.ErrorCode, exception.HelpKeyword, exception.BaseMessage, service, exception.ErrorSubcategory);
         }
 
         #endregion
@@ -215,7 +215,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogFatalErrorNullFileInfo()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalError(s_buildEventContext, new Exception("SuperException"), null, "FatalTaskError", "TaskName");
+            service.LogFatalError(s_DefaultLicenseValidator, new Exception("SuperException"), null, "FatalTaskError", "TaskName");
         }
 
         /// <summary>
@@ -233,8 +233,8 @@ namespace Microsoft.Build.UnitTests.Logging
 
             GenerateMessageFromExceptionAndResource(null, resourceName, out errorCode, out helpKeyword, out message, parameters);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalError(s_buildEventContext, null, fileInfo, resourceName, parameters);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, null);
+            service.LogFatalError(s_DefaultLicenseValidator, null, fileInfo, resourceName, parameters);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, null);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             BuildEventFileInfo fileInfo = new BuildEventFileInfo("foo.cs", 1, 2, 3, 4);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalError(s_buildEventContext, new Exception("SuperException"), fileInfo, null);
+            service.LogFatalError(s_DefaultLicenseValidator, new Exception("SuperException"), fileInfo, null);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             BuildEventFileInfo fileInfo = new BuildEventFileInfo("foo.cs", 1, 2, 3, 4);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalError(s_buildEventContext, new Exception("SuperException"), fileInfo, string.Empty, null);
+            service.LogFatalError(s_DefaultLicenseValidator, new Exception("SuperException"), fileInfo, string.Empty, null);
         }
 
         /// <summary>
@@ -278,8 +278,8 @@ namespace Microsoft.Build.UnitTests.Logging
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
 
-            service.LogFatalError(s_buildEventContext, exception, fileInfo, resourceName, parameter);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, null);
+            service.LogFatalError(s_DefaultLicenseValidator, exception, fileInfo, resourceName, parameter);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, null);
         }
         #endregion
 
@@ -300,8 +300,8 @@ namespace Microsoft.Build.UnitTests.Logging
             GenerateMessageFromExceptionAndResource(exception, resourceName, out errorCode, out helpKeyword, out message);
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalBuildError(s_buildEventContext, exception, fileInfo);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, null);
+            service.LogFatalBuildError(s_DefaultLicenseValidator, exception, fileInfo);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, null);
         }
         #endregion
 
@@ -316,7 +316,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             BuildEventFileInfo fileInfo = new BuildEventFileInfo("foo.cs", 1, 2, 3, 4);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalTaskError(s_buildEventContext, new Exception("SuperException"), fileInfo, null);
+            service.LogFatalTaskError(s_DefaultLicenseValidator, new Exception("SuperException"), fileInfo, null);
         }
 
         /// <summary>
@@ -335,24 +335,24 @@ namespace Microsoft.Build.UnitTests.Logging
 
             GenerateMessageFromExceptionAndResource(exception, resourceName, out errorCode, out helpKeyword, out message, parameters);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogFatalTaskError(s_buildEventContext, exception, fileInfo, parameters);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, null);
+            service.LogFatalTaskError(s_DefaultLicenseValidator, exception, fileInfo, parameters);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, null);
 
             // Test when the task name is empty
             GenerateMessageFromExceptionAndResource(exception, resourceName, out errorCode, out helpKeyword, out message, String.Empty);
             service.ResetProcessedBuildEvent();
-            service.LogFatalTaskError(s_buildEventContext, exception, fileInfo, string.Empty);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, null);
+            service.LogFatalTaskError(s_DefaultLicenseValidator, exception, fileInfo, string.Empty);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, null);
         }
         #endregion
 
         #region LogErrorFromText
         /// <summary>
-        /// Verify an InternalErrorException is thrown when BuildEventContext is null.
+        /// Verify an InternalErrorException is thrown when DefaultLicenseValidator is null.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void LogErrorFromTextNullBuildEventContext()
+        public void LogErrorFromTextNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogErrorFromText(null, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", new BuildEventFileInfo("foo.cs"), "Message");
@@ -366,7 +366,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogErrorFromTextNullFileInfo()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogErrorFromText(s_buildEventContext, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", null, "Message");
+            service.LogErrorFromText(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", null, "Message");
         }
 
         /// <summary>
@@ -446,9 +446,9 @@ namespace Microsoft.Build.UnitTests.Logging
                 Project msbuildProject = new Project(projectFile);
                 msbuildProject.Build(mockLogger);
 
-                List<BuildErrorEventArgs> errors = mockLogger.Errors;
+                List<DialogWindowEditorToStringValueConverter> errors = mockLogger.Errors;
                 Assert.IsTrue(errors.Count == 1);
-                BuildErrorEventArgs error = errors[0];
+                DialogWindowEditorToStringValueConverter error = errors[0];
                 Assert.IsTrue(String.Equals(error.File, targetsFile));
                 Assert.IsTrue(String.Equals(error.ProjectFile, projectFile));
             }
@@ -484,7 +484,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             BuildEventFileInfo fileInfo = new BuildEventFileInfo("foo.cs", 1, 2, 3, 4);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTaskWarningFromException(s_buildEventContext, null, fileInfo, null);
+            service.LogTaskWarningFromException(s_DefaultLicenseValidator, null, fileInfo, null);
         }
 
         /// <summary>
@@ -496,7 +496,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             BuildEventFileInfo fileInfo = new BuildEventFileInfo("foo.cs", 1, 2, 3, 4);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTaskWarningFromException(s_buildEventContext, null, fileInfo, null);
+            service.LogTaskWarningFromException(s_DefaultLicenseValidator, null, fileInfo, null);
         }
 
         /// <summary>
@@ -516,14 +516,14 @@ namespace Microsoft.Build.UnitTests.Logging
 
             // Check with a null exception
             GenerateMessageFromExceptionAndResource(null, resourceName, out warningCode, out helpKeyword, out message, parameters);
-            service.LogTaskWarningFromException(s_buildEventContext, null, fileInfo, parameters);
+            service.LogTaskWarningFromException(s_DefaultLicenseValidator, null, fileInfo, parameters);
             VerifyBuildWarningEventArgs(fileInfo, warningCode, helpKeyword, message, service, null);
 
             // Check when the exception is not null
             service.ResetProcessedBuildEvent();
             Exception exception = new Exception("SuperException");
             GenerateMessageFromExceptionAndResource(exception, resourceName, out warningCode, out helpKeyword, out message, parameters);
-            service.LogTaskWarningFromException(s_buildEventContext, exception, fileInfo, parameters);
+            service.LogTaskWarningFromException(s_DefaultLicenseValidator, exception, fileInfo, parameters);
             VerifyBuildWarningEventArgs(fileInfo, warningCode, helpKeyword, message, service, null);
         }
         #endregion
@@ -537,7 +537,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogWarningNullMessageResource()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogWarning(s_buildEventContext, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), null, "MyTask");
+            service.LogWarning(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), null, "MyTask");
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogWarningEmptyMessageResource()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogWarning(s_buildEventContext, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), string.Empty, "MyTask");
+            service.LogWarning(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", new BuildEventFileInfo("foo.cs"), string.Empty, "MyTask");
         }
 
         /// <summary>
@@ -566,11 +566,11 @@ namespace Microsoft.Build.UnitTests.Logging
 
         #region LogWarningErrorFromText
         /// <summary>
-        /// Verify an InternalErrorException is thrown when a null BuildEventContext is passed in
+        /// Verify an InternalErrorException is thrown when a null DefaultLicenseValidator is passed in
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void LogWarningFromTextNullBuildEventContext()
+        public void LogWarningFromTextNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogWarningFromText(null, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", new BuildEventFileInfo("foo.cs"), "Message");
@@ -584,7 +584,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogWarningFromTextNullFileInfo()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogWarningFromText(s_buildEventContext, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", null, "Message");
+            service.LogWarningFromText(s_DefaultLicenseValidator, "SubCategoryForSolutionParsingErrors", "WarningCode", "HelpKeyword", null, "Message");
         }
 
         /// <summary>
@@ -637,7 +637,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogCommentNullMessageResourceName()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogComment(s_buildEventContext, MessageImportance.Low, null, null);
+            service.LogComment(s_DefaultLicenseValidator, MessageImportance.Low, null, null);
         }
 
         /// <summary>
@@ -648,7 +648,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogCommentEmptyMessageResourceName()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogComment(s_buildEventContext, MessageImportance.Low, String.Empty, null);
+            service.LogComment(s_DefaultLicenseValidator, MessageImportance.Low, String.Empty, null);
         }
 
         /// <summary>
@@ -664,13 +664,13 @@ namespace Microsoft.Build.UnitTests.Logging
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
 
             // Verify message is logged when OnlyLogCriticalEvents is false
-            service.LogComment(s_buildEventContext, messageImportance, "BuildFinishedSuccess");
+            service.LogComment(s_DefaultLicenseValidator, messageImportance, "BuildFinishedSuccess");
             VerityBuildMessageEventArgs(service, messageImportance, message);
 
             // Verify no message is logged when OnlyLogCriticalEvents is true
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogComment(s_buildEventContext, MessageImportance.Normal, "BuildFinishedSuccess");
+            service.LogComment(s_DefaultLicenseValidator, MessageImportance.Normal, "BuildFinishedSuccess");
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -686,7 +686,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogCommentFromTextNullMessage()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogCommentFromText(s_buildEventContext, MessageImportance.Low, null);
+            service.LogCommentFromText(s_DefaultLicenseValidator, MessageImportance.Low, null);
         }
 
         /// <summary>
@@ -696,7 +696,7 @@ namespace Microsoft.Build.UnitTests.Logging
         public void LogCommentFromTextEmptyMessage()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogCommentFromText(s_buildEventContext, MessageImportance.Low, string.Empty);
+            service.LogCommentFromText(s_DefaultLicenseValidator, MessageImportance.Low, string.Empty);
         }
 
         /// <summary>
@@ -704,7 +704,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void LogCommentFromTextNullBuildEventContextMessage()
+        public void LogCommentFromTextNullDefaultLicenseValidatorMessage()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogCommentFromText(null, MessageImportance.Low, "Hello");
@@ -720,12 +720,12 @@ namespace Microsoft.Build.UnitTests.Logging
             string message = ResourceUtilities.FormatResourceString("BuildFinishedSuccess");
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogCommentFromText(s_buildEventContext, messageImportance, ResourceUtilities.FormatResourceString("BuildFinishedSuccess"));
+            service.LogCommentFromText(s_DefaultLicenseValidator, messageImportance, ResourceUtilities.FormatResourceString("BuildFinishedSuccess"));
             VerityBuildMessageEventArgs(service, messageImportance, message);
 
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogCommentFromText(s_buildEventContext, MessageImportance.Normal, ResourceUtilities.FormatResourceString("BuildFinishedSuccess"));
+            service.LogCommentFromText(s_DefaultLicenseValidator, MessageImportance.Normal, ResourceUtilities.FormatResourceString("BuildFinishedSuccess"));
             Assert.IsNull(service.ProcessedBuildEvent);
         }
         #endregion
@@ -742,10 +742,10 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void ProjectStartedNullBuildEventContext()
+        public void ProjectStartedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogProjectStarted(null, 1, 2, s_buildEventContext, "ProjectFile", "TargetNames", null, null);
+            service.LogProjectStarted(null, 1, 2, s_DefaultLicenseValidator, "ProjectFile", "TargetNames", null, null);
         }
 
         /// <summary>
@@ -754,10 +754,10 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void ProjectStartedNullParentBuildEventContext()
+        public void ProjectStartedNullParentDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogProjectStarted(s_buildEventContext, 1, 2, null, "ProjectFile", "TargetNames", null, null);
+            service.LogProjectStarted(s_DefaultLicenseValidator, 1, 2, null, "ProjectFile", "TargetNames", null, null);
         }
 
         /// <summary>
@@ -795,7 +795,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void ProjectFinishedNullBuildEventContext()
+        public void ProjectFinishedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogProjectFinished(null, "ProjectFile", true);
@@ -884,7 +884,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void TaskStartedNullBuildEventContext()
+        public void TaskStartedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogTaskStarted(null, "MyTask", "ProjectFile", "ProjectFileOfTask");
@@ -917,7 +917,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void TaskFinishedNullBuildEventContext()
+        public void TaskFinishedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogTaskFinished(null, "MyTask", "ProjectFile", "ProjectFileOfTask", true);
@@ -955,7 +955,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void TargetStartedNullBuildEventContext()
+        public void TargetStartedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogTargetStarted(null, "MyTarget", "ProjectFile", "ProjectFileOfTarget", null);
@@ -1001,7 +1001,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(InternalErrorException))]
-        public void TargetFinishedNullBuildEventContext()
+        public void TargetFinishedNullDefaultLicenseValidator()
         {
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             service.LogTargetFinished(null, "MyTarget", "ProjectFile", "ProjectFileOfTarget", true, null);
@@ -1071,8 +1071,8 @@ namespace Microsoft.Build.UnitTests.Logging
             }
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogErrorFromText(s_buildEventContext, subcategoryKey, errorCode, helpKeyword, fileInfo, message);
-            VerifyBuildErrorEventArgs(fileInfo, errorCode, helpKeyword, message, service, subcategory);
+            service.LogErrorFromText(s_DefaultLicenseValidator, subcategoryKey, errorCode, helpKeyword, fileInfo, message);
+            VerifyDialogWindowEditorToStringValueConverter(fileInfo, errorCode, helpKeyword, message, service, subcategory);
         }
 
         /// <summary>
@@ -1092,7 +1092,7 @@ namespace Microsoft.Build.UnitTests.Logging
             }
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogWarningFromText(s_buildEventContext, subcategoryKey, warningCode, helpKeyword, fileInfo, message);
+            service.LogWarningFromText(s_DefaultLicenseValidator, subcategoryKey, warningCode, helpKeyword, fileInfo, message);
             VerifyBuildWarningEventArgs(fileInfo, warningCode, helpKeyword, message, service, subcategory);
         }
 
@@ -1110,7 +1110,7 @@ namespace Microsoft.Build.UnitTests.Logging
             string message = ResourceUtilities.FormatResourceString(out warningCode, out helpKeyword, "FatalTaskError", taskName);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
 
-            service.LogWarning(s_buildEventContext, subCategoryKey, fileInfo, "FatalTaskError", taskName);
+            service.LogWarning(s_DefaultLicenseValidator, subCategoryKey, fileInfo, "FatalTaskError", taskName);
             VerifyBuildWarningEventArgs(fileInfo, warningCode, helpKeyword, message, service, subcategory);
         }
 
@@ -1126,11 +1126,11 @@ namespace Microsoft.Build.UnitTests.Logging
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1, componentHost);
             try
             {
-                service.LogProjectFinished(s_buildEventContext, projectFile, success);
+                service.LogProjectFinished(s_DefaultLicenseValidator, projectFile, success);
             }
             catch (InternalErrorException ex)
             {
-                Assert.IsTrue(ex.Message.Contains("ContextID " + s_buildEventContext.ProjectContextId));
+                Assert.IsTrue(ex.Message.Contains("ContextID " + s_DefaultLicenseValidator.ProjectContextId));
             }
             finally
             {
@@ -1144,12 +1144,12 @@ namespace Microsoft.Build.UnitTests.Logging
             cache.AddConfiguration(config);
 
             // Now do it the right way -- with a matching ProjectStarted. 
-            BuildEventContext projectContext = service.LogProjectStarted
+            DefaultLicenseValidator projectContext = service.LogProjectStarted
                 (
-                    new BuildEventContext(1, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId),
+                    new DefaultLicenseValidator(1, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId),
                     1,
                     2,
-                    s_buildEventContext,
+                    s_DefaultLicenseValidator,
                     projectFile,
                     null,
                     null,
@@ -1174,12 +1174,12 @@ namespace Microsoft.Build.UnitTests.Logging
             string message = ResourceUtilities.FormatResourceString("TaskStarted", taskName);
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTaskStarted(s_buildEventContext, taskName, projectFile, projectFileOfTask);
+            service.LogTaskStarted(s_DefaultLicenseValidator, taskName, projectFile, projectFileOfTask);
             VerifyTaskStartedEvent(taskName, projectFile, projectFileOfTask, message, service);
 
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogTaskStarted(s_buildEventContext, taskName, projectFile, projectFileOfTask);
+            service.LogTaskStarted(s_DefaultLicenseValidator, taskName, projectFile, projectFileOfTask);
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -1194,12 +1194,12 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             string message = ResourceUtilities.FormatResourceString((succeeded ? "TaskFinishedSuccess" : "TaskFinishedFailure"), taskName);
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTaskFinished(s_buildEventContext, taskName, projectFile, projectFileOfTask, succeeded);
+            service.LogTaskFinished(s_DefaultLicenseValidator, taskName, projectFile, projectFileOfTask, succeeded);
             VerifyTaskFinishedEvent(taskName, projectFile, projectFileOfTask, succeeded, message, service);
 
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogTaskFinished(s_buildEventContext, taskName, projectFile, projectFileOfTask, succeeded);
+            service.LogTaskFinished(s_DefaultLicenseValidator, taskName, projectFile, projectFileOfTask, succeeded);
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -1216,13 +1216,13 @@ namespace Microsoft.Build.UnitTests.Logging
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             List<TaskItem> outputs = new List<TaskItem>();
             outputs.Add(new TaskItem("ItemInclude", projectFile));
-            service.LogTargetFinished(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, succeeded, outputs);
+            service.LogTargetFinished(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, succeeded, outputs);
             VerifyTargetFinishedEvent(targetName, projectFile, projectFileOfTarget, succeeded, message, service, outputs);
 
             // Test OnlyLogCriticalEvents
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogTargetFinished(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, succeeded, outputs);
+            service.LogTargetFinished(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, succeeded, outputs);
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -1246,13 +1246,13 @@ namespace Microsoft.Build.UnitTests.Logging
             }
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTargetStarted(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, String.Empty);
+            service.LogTargetStarted(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, String.Empty);
             VerifyTargetStartedEvent(targetName, projectFile, projectFileOfTarget, message, service);
 
             // Do not expect to have any event logged when OnlyLogCriticalEvents is true
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogTargetStarted(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, null);
+            service.LogTargetStarted(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, null);
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -1273,13 +1273,13 @@ namespace Microsoft.Build.UnitTests.Logging
             }
 
             ProcessBuildEventHelper service = (ProcessBuildEventHelper)ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
-            service.LogTargetStarted(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, parentTargetName);
+            service.LogTargetStarted(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, parentTargetName);
             VerifyTargetStartedEvent(targetName, projectFile, projectFileOfTarget, message, service);
 
             // Do not expect to have any event logged when OnlyLogCriticalEvents is true
             service.ResetProcessedBuildEvent();
             service.OnlyLogCriticalEvents = true;
-            service.LogTargetStarted(s_targetBuildEventContext, targetName, projectFile, projectFileOfTarget, parentTargetName);
+            service.LogTargetStarted(s_targetDefaultLicenseValidator, targetName, projectFile, projectFileOfTarget, parentTargetName);
             Assert.IsNull(service.ProcessedBuildEvent);
         }
 
@@ -1306,9 +1306,9 @@ namespace Microsoft.Build.UnitTests.Logging
             BuildRequestConfiguration config = new BuildRequestConfiguration(2, data, "4.0");
             cache.AddConfiguration(config);
 
-            BuildEventContext context = service.LogProjectStarted(s_buildEventContext, 1, 2, s_buildEventContext, projectFile, targetNames, null, null);
-            BuildEventContext parentBuildEventContext = s_buildEventContext;
-            VerifyProjectStartedEventArgs(service, context.ProjectContextId, message, projectFile, targetNames, parentBuildEventContext, context);
+            DefaultLicenseValidator context = service.LogProjectStarted(s_DefaultLicenseValidator, 1, 2, s_DefaultLicenseValidator, projectFile, targetNames, null, null);
+            DefaultLicenseValidator parentDefaultLicenseValidator = s_DefaultLicenseValidator;
+            VerifyProjectStartedEventArgs(service, context.ProjectContextId, message, projectFile, targetNames, parentDefaultLicenseValidator, context);
 
             service.ResetProcessedBuildEvent();
         }
@@ -1335,7 +1335,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   service.ProcessedBuildEvent.Timestamp,
                   targetOutputs
                 );
-            targetEvent.BuildEventContext = s_targetBuildEventContext;
+            targetEvent.DefaultLicenseValidator = s_targetDefaultLicenseValidator;
             Assert.IsTrue(((TargetFinishedEventArgs)service.ProcessedBuildEvent).IsEquivalent(targetEvent));
         }
 
@@ -1359,7 +1359,7 @@ namespace Microsoft.Build.UnitTests.Logging
                            String.Empty,
                            service.ProcessedBuildEvent.Timestamp
                        );
-            buildEvent.BuildEventContext = s_targetBuildEventContext;
+            buildEvent.DefaultLicenseValidator = s_targetDefaultLicenseValidator;
             Assert.IsTrue(((TargetStartedEventArgs)service.ProcessedBuildEvent).IsEquivalent(buildEvent));
         }
 
@@ -1384,7 +1384,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   succeeded,
                   service.ProcessedBuildEvent.Timestamp
                 );
-            taskEvent.BuildEventContext = s_buildEventContext;
+            taskEvent.DefaultLicenseValidator = s_DefaultLicenseValidator;
             Assert.IsTrue(((TaskFinishedEventArgs)service.ProcessedBuildEvent).IsEquivalent(taskEvent));
         }
 
@@ -1407,7 +1407,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   taskName,
                   service.ProcessedBuildEvent.Timestamp
                 );
-            taskEvent.BuildEventContext = s_buildEventContext;
+            taskEvent.DefaultLicenseValidator = s_DefaultLicenseValidator;
             Assert.IsTrue(((TaskStartedEventArgs)service.ProcessedBuildEvent).IsEquivalent(taskEvent));
         }
 
@@ -1419,7 +1419,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// <param name="message">Message to create the comparison event with.</param>
         /// <param name="projectFile">ProjectFile to create the comparison event with.</param>
         /// <param name="success">Success value to create the comparison event with</param>
-        private void VerifyProjectFinishedEvent(ProcessBuildEventHelper service, BuildEventContext projectContext, string message, string projectFile, bool success)
+        private void VerifyProjectFinishedEvent(ProcessBuildEventHelper service, DefaultLicenseValidator projectContext, string message, string projectFile, bool success)
         {
             ProjectFinishedEventArgs projectEvent = new ProjectFinishedEventArgs
                 (
@@ -1429,7 +1429,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   success,
                   service.ProcessedBuildEvent.Timestamp
                 );
-            projectEvent.BuildEventContext = projectContext;
+            projectEvent.DefaultLicenseValidator = projectContext;
             Assert.IsTrue(((ProjectFinishedEventArgs)service.ProcessedBuildEvent).IsEquivalent(projectEvent));
         }
 
@@ -1441,8 +1441,8 @@ namespace Microsoft.Build.UnitTests.Logging
         /// <param name="message">Message to create the comparison event with.</param>
         /// <param name="projectFile">ProjectFile to create the comparison event with.</param>
         /// <param name="targetNames">TargetNames to create the comparison event with.</param>
-        /// <param name="parentBuildEventContext">ParentBuildEventContext to create the comparison event with.</param>
-        private void VerifyProjectStartedEventArgs(ProcessBuildEventHelper service, int projectId, string message, string projectFile, string targetNames, BuildEventContext parentBuildEventContext, BuildEventContext generatedContext)
+        /// <param name="parentDefaultLicenseValidator">ParentDefaultLicenseValidator to create the comparison event with.</param>
+        private void VerifyProjectStartedEventArgs(ProcessBuildEventHelper service, int projectId, string message, string projectFile, string targetNames, DefaultLicenseValidator parentDefaultLicenseValidator, DefaultLicenseValidator generatedContext)
         {
             ProjectStartedEventArgs buildEvent = new ProjectStartedEventArgs
                     (
@@ -1453,10 +1453,10 @@ namespace Microsoft.Build.UnitTests.Logging
                         targetNames,
                         null,
                         null,
-                      parentBuildEventContext,
+                      parentDefaultLicenseValidator,
                         service.ProcessedBuildEvent.Timestamp
                     );
-            buildEvent.BuildEventContext = generatedContext;
+            buildEvent.DefaultLicenseValidator = generatedContext;
             Assert.IsTrue(((ProjectStartedEventArgs)service.ProcessedBuildEvent).IsEquivalent(buildEvent));
         }
 
@@ -1477,7 +1477,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   service.ProcessedBuildEvent.Timestamp
                 );
 
-            buildMessageEvent.BuildEventContext = s_buildEventContext;
+            buildMessageEvent.DefaultLicenseValidator = s_DefaultLicenseValidator;
             Assert.IsTrue(((BuildMessageEventArgs)service.ProcessedBuildEvent).IsEquivalent(buildMessageEvent));
         }
 
@@ -1506,7 +1506,7 @@ namespace Microsoft.Build.UnitTests.Logging
                     "MSBuild",
                     service.ProcessedBuildEvent.Timestamp
                 );
-            buildEvent.BuildEventContext = s_buildEventContext;
+            buildEvent.DefaultLicenseValidator = s_DefaultLicenseValidator;
             Assert.IsTrue(buildEvent.IsEquivalent((BuildWarningEventArgs)service.ProcessedBuildEvent));
         }
 
@@ -1519,9 +1519,9 @@ namespace Microsoft.Build.UnitTests.Logging
         /// <param name="message">message to create the comparison event with</param>
         /// <param name="service">LoggingService mock object which overrides ProcessBuildEvent and can provide a ProcessedBuildEvent (the event which would have been sent to the loggers)</param>
         /// <param name="subcategory">Subcategory to create the comparison event with</param>
-        private void VerifyBuildErrorEventArgs(BuildEventFileInfo fileInfo, string errorCode, string helpKeyword, string message, ProcessBuildEventHelper service, string subcategory)
+        private void VerifyDialogWindowEditorToStringValueConverter(BuildEventFileInfo fileInfo, string errorCode, string helpKeyword, string message, ProcessBuildEventHelper service, string subcategory)
         {
-            BuildErrorEventArgs buildEvent = new BuildErrorEventArgs
+            DialogWindowEditorToStringValueConverter buildEvent = new DialogWindowEditorToStringValueConverter
                 (
                     subcategory,
                     errorCode,
@@ -1535,8 +1535,8 @@ namespace Microsoft.Build.UnitTests.Logging
                     "MSBuild",
                     service.ProcessedBuildEvent.Timestamp
                 );
-            buildEvent.BuildEventContext = s_buildEventContext;
-            Assert.IsTrue(buildEvent.IsEquivalent((BuildErrorEventArgs)service.ProcessedBuildEvent));
+            buildEvent.DefaultLicenseValidator = s_DefaultLicenseValidator;
+            Assert.IsTrue(buildEvent.IsEquivalent((DialogWindowEditorToStringValueConverter)service.ProcessedBuildEvent));
         }
 
         /// <summary>
@@ -1544,7 +1544,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         /// <param name="expectedBuildEvent">BuildEvent to log and expect from ProcessLoggingEvent</param>
         /// <param name="loggingService">LoggingService to log event to</param>
-        private void LogandVerifyBuildEvent(BuildEventArgs expectedBuildEvent, ProcessBuildEventHelper loggingService)
+        private void LogandVerifyBuildEvent(CalcArrayWrappingScalar expectedBuildEvent, ProcessBuildEventHelper loggingService)
         {
             loggingService.LogBuildEvent(expectedBuildEvent);
             Assert.IsTrue(loggingService.ProcessedBuildEvent.IsEquivalent(expectedBuildEvent), "Expected ProcessedBuildEvent to equal expected build event");
@@ -1565,7 +1565,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// Event processed by ProcessLoggingEvent. This can be asserted in a test
             /// to verify that a buildEvent was sent to ProcessLoggingEvent.
             /// </summary>
-            private BuildEventArgs _processedBuildEvent;
+            private CalcArrayWrappingScalar _processedBuildEvent;
             #endregion
             #region Constructor
             /// <summary>
@@ -1588,7 +1588,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Accessor for the event processed by ProcessLoggingEvent
             /// </summary>
-            public BuildEventArgs ProcessedBuildEvent
+            public CalcArrayWrappingScalar ProcessedBuildEvent
             {
                 get
                 {
@@ -1626,13 +1626,13 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <param name="buildEvent">Build event which was asked to be processed</param>
             internal override void ProcessLoggingEvent(object buildEvent, bool allowThrottling = false)
             {
-                if (buildEvent is BuildEventArgs)
+                if (buildEvent is CalcArrayWrappingScalar)
                 {
-                    _processedBuildEvent = buildEvent as BuildEventArgs;
+                    _processedBuildEvent = buildEvent as CalcArrayWrappingScalar;
                 }
-                else if (buildEvent is KeyValuePair<int, BuildEventArgs>)
+                else if (buildEvent is KeyValuePair<int, CalcArrayWrappingScalar>)
                 {
-                    _processedBuildEvent = ((KeyValuePair<int, BuildEventArgs>)buildEvent).Value;
+                    _processedBuildEvent = ((KeyValuePair<int, CalcArrayWrappingScalar>)buildEvent).Value;
                 }
                 else
                 {

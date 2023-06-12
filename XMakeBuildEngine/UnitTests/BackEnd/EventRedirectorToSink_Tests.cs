@@ -68,7 +68,7 @@ namespace Microsoft.Build.UnitTests.Logging
                   delegate
                   (
                     object sender,
-                    BuildEventArgs buildEvent
+                    CalcArrayWrappingScalar buildEvent
                   )
                   {
                       wentInHandler = true;

@@ -17,8 +17,8 @@ namespace Microsoft.Build.UnitTests
     [TestClass]
     public class CustomEventArgSerialization_Tests
     {
-        // Generic build class to test custom serialization of abstract class BuildEventArgs
-        internal class GenericBuildEventArg : BuildEventArgs
+        // Generic build class to test custom serialization of abstract class CalcArrayWrappingScalar
+        internal class GenericBuildEventArg : CalcArrayWrappingScalar
         {
             internal GenericBuildEventArg
         (
@@ -59,11 +59,11 @@ namespace Microsoft.Build.UnitTests
         }
 
         [TestMethod]
-        public void TestGenericBuildEventArgs()
+        public void TestGenericCalcArrayWrappingScalar()
         {
             // Test using reasonable messages
             GenericBuildEventArg genericEvent = new GenericBuildEventArg("Message", "HelpKeyword", "SenderName");
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -81,7 +81,7 @@ namespace Microsoft.Build.UnitTests
             // Test using empty strings
             _stream.Position = 0;
             genericEvent = new GenericBuildEventArg(string.Empty, string.Empty, string.Empty);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -98,7 +98,7 @@ namespace Microsoft.Build.UnitTests
             // Test using null strings
             _stream.Position = 0;
             genericEvent = new GenericBuildEventArg(null, null, null);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -107,7 +107,7 @@ namespace Microsoft.Build.UnitTests
             // Deserialize and Verify
             _stream.Position = 0;
             newGenericEvent = new GenericBuildEventArg(null, null, null);
-            newGenericEvent.BuildEventContext = new BuildEventContext(1, 3, 4, 5);
+            newGenericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(1, 3, 4, 5);
             newGenericEvent.CreateFromStream(_reader, _eventArgVersion);
             streamReadEndPosition = _stream.Position;
             Assert.IsTrue(streamWriteEndPosition == streamReadEndPosition, "Stream End Positions Should Match");
@@ -115,11 +115,11 @@ namespace Microsoft.Build.UnitTests
         }
 
         /// <summary>
-        /// Compares two BuildEventArgs
+        /// Compares two CalcArrayWrappingScalar
         /// </summary>
-        private static void VerifyGenericEventArg(BuildEventArgs genericEvent, BuildEventArgs newGenericEvent)
+        private static void VerifyGenericEventArg(CalcArrayWrappingScalar genericEvent, CalcArrayWrappingScalar newGenericEvent)
         {
-            Assert.AreEqual(genericEvent.BuildEventContext, newGenericEvent.BuildEventContext, "Expected Event Context to Match");
+            Assert.AreEqual(genericEvent.DefaultLicenseValidator, newGenericEvent.DefaultLicenseValidator, "Expected Event Context to Match");
             Assert.IsTrue(string.Compare(genericEvent.HelpKeyword, newGenericEvent.HelpKeyword, StringComparison.OrdinalIgnoreCase) == 0, "Expected Help Keywords to Match");
             Assert.IsTrue(string.Compare(genericEvent.Message, newGenericEvent.Message, StringComparison.OrdinalIgnoreCase) == 0, "Expected Message to Match");
             Assert.IsTrue(string.Compare(genericEvent.SenderName, newGenericEvent.SenderName, StringComparison.OrdinalIgnoreCase) == 0, "Expected Sender Name to Match");
@@ -128,11 +128,11 @@ namespace Microsoft.Build.UnitTests
         }
 
         [TestMethod]
-        public void TestBuildErrorEventArgs()
+        public void TestDialogWindowEditorToStringValueConverter()
         {
             // Test using reasonable messages
-            BuildErrorEventArgs genericEvent = new BuildErrorEventArgs("Subcategory", "Code", "File", 1, 2, 3, 4, "Message", "HelpKeyword", "SenderName");
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            DialogWindowEditorToStringValueConverter genericEvent = new DialogWindowEditorToStringValueConverter("Subcategory", "Code", "File", 1, 2, 3, 4, "Message", "HelpKeyword", "SenderName");
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -140,17 +140,17 @@ namespace Microsoft.Build.UnitTests
 
             // Deserialize and Verify
             _stream.Position = 0;
-            BuildErrorEventArgs newGenericEvent = new BuildErrorEventArgs(null, null, null, -1, -1, -1, -1, null, null, null);
+            DialogWindowEditorToStringValueConverter newGenericEvent = new DialogWindowEditorToStringValueConverter(null, null, null, -1, -1, -1, -1, null, null, null);
             newGenericEvent.CreateFromStream(_reader, _eventArgVersion);
             long streamReadEndPosition = _stream.Position;
             Assert.IsTrue(streamWriteEndPosition == streamReadEndPosition, "Stream End Positions Should Match");
             VerifyGenericEventArg(genericEvent, newGenericEvent);
-            VerifyBuildErrorEventArgs(genericEvent, newGenericEvent);
+            VerifyDialogWindowEditorToStringValueConverter(genericEvent, newGenericEvent);
 
             // Test using empty strings
             _stream.Position = 0;
-            genericEvent = new BuildErrorEventArgs(string.Empty, string.Empty, string.Empty, 1, 2, 3, 4, string.Empty, string.Empty, string.Empty);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent = new DialogWindowEditorToStringValueConverter(string.Empty, string.Empty, string.Empty, 1, 2, 3, 4, string.Empty, string.Empty, string.Empty);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -158,17 +158,17 @@ namespace Microsoft.Build.UnitTests
 
             // Deserialize and Verify
             _stream.Position = 0;
-            newGenericEvent = new BuildErrorEventArgs(null, null, null, -1, -1, -1, -1, null, null, null);
+            newGenericEvent = new DialogWindowEditorToStringValueConverter(null, null, null, -1, -1, -1, -1, null, null, null);
             newGenericEvent.CreateFromStream(_reader, _eventArgVersion);
             streamReadEndPosition = _stream.Position;
             Assert.IsTrue(streamWriteEndPosition == streamReadEndPosition, "Stream End Positions Should Match");
             VerifyGenericEventArg(genericEvent, newGenericEvent);
-            VerifyBuildErrorEventArgs(genericEvent, newGenericEvent);
+            VerifyDialogWindowEditorToStringValueConverter(genericEvent, newGenericEvent);
 
             // Test using null strings
             _stream.Position = 0;
-            genericEvent = new BuildErrorEventArgs(null, null, null, 1, 2, 3, 4, null, null, null);
-            genericEvent.BuildEventContext = null;
+            genericEvent = new DialogWindowEditorToStringValueConverter(null, null, null, 1, 2, 3, 4, null, null, null);
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -176,18 +176,18 @@ namespace Microsoft.Build.UnitTests
 
             // Deserialize and Verify
             _stream.Position = 0;
-            newGenericEvent = new BuildErrorEventArgs("Something", "SomeThing", "SomeThing", -1, -1, -1, -1, "Something", "SomeThing", "Something");
+            newGenericEvent = new DialogWindowEditorToStringValueConverter("Something", "SomeThing", "SomeThing", -1, -1, -1, -1, "Something", "SomeThing", "Something");
             newGenericEvent.CreateFromStream(_reader, _eventArgVersion);
             streamReadEndPosition = _stream.Position;
             Assert.IsTrue(streamWriteEndPosition == streamReadEndPosition, "Stream End Positions Should Match");
             VerifyGenericEventArg(genericEvent, newGenericEvent);
-            VerifyBuildErrorEventArgs(genericEvent, newGenericEvent);
+            VerifyDialogWindowEditorToStringValueConverter(genericEvent, newGenericEvent);
         }
 
         /// <summary>
-        /// Compare two BuildEventArgs 
+        /// Compare two CalcArrayWrappingScalar 
         /// </summary>
-        private static void VerifyBuildErrorEventArgs(BuildErrorEventArgs genericEvent, BuildErrorEventArgs newGenericEvent)
+        private static void VerifyDialogWindowEditorToStringValueConverter(DialogWindowEditorToStringValueConverter genericEvent, DialogWindowEditorToStringValueConverter newGenericEvent)
         {
             Assert.IsTrue(string.Compare(genericEvent.Code, newGenericEvent.Code, StringComparison.OrdinalIgnoreCase) == 0, "Expected Code to Match");
             Assert.IsTrue(string.Compare(genericEvent.File, newGenericEvent.File, StringComparison.OrdinalIgnoreCase) == 0, "Expected File to Match");
@@ -202,7 +202,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable messages
             BuildFinishedEventArgs genericEvent = new BuildFinishedEventArgs("Message", "HelpKeyword", true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -217,7 +217,7 @@ namespace Microsoft.Build.UnitTests
             // Test using empty strings
             _stream.Position = 0;
             genericEvent = new BuildFinishedEventArgs(string.Empty, string.Empty, true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -232,7 +232,7 @@ namespace Microsoft.Build.UnitTests
             // Test using null strings
             _stream.Position = 0;
             genericEvent = new BuildFinishedEventArgs(null, null, true);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -250,7 +250,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable messages
             BuildMessageEventArgs genericEvent = new BuildMessageEventArgs("Message", "HelpKeyword", "SenderName", MessageImportance.High);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -269,7 +269,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             genericEvent = new BuildMessageEventArgs(string.Empty, string.Empty, string.Empty, MessageImportance.Low);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -288,7 +288,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new BuildMessageEventArgs(null, null, null, MessageImportance.Low);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -323,7 +323,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable messages
             BuildMessageEventArgs messageEvent = new BuildMessageEventArgs("SubCategory", "Code", "File", 1, 2, 3, 4, "Message", "HelpKeyword", "SenderName", MessageImportance.High);
-            messageEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            messageEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             messageEvent.WriteToStream(_writer);
@@ -341,7 +341,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             messageEvent = new BuildMessageEventArgs(string.Empty, string.Empty, string.Empty, 1, 2, 3, 4, string.Empty, string.Empty, string.Empty, MessageImportance.Low);
-            messageEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            messageEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             messageEvent.WriteToStream(_writer);
@@ -359,7 +359,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             messageEvent = new BuildMessageEventArgs(null, null, null, 1, 2, 3, 4, null, null, null, MessageImportance.Low);
-            messageEvent.BuildEventContext = null;
+            messageEvent.DefaultLicenseValidator = null;
 
             // Serialize
             messageEvent.WriteToStream(_writer);
@@ -379,7 +379,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable messages
             CriticalBuildMessageEventArgs criticalMessageEvent = new CriticalBuildMessageEventArgs("SubCategory", "Code", "File", 1, 2, 3, 4, "Message", "HelpKeyword", "SenderName");
-            criticalMessageEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            criticalMessageEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             criticalMessageEvent.WriteToStream(_writer);
@@ -397,7 +397,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             criticalMessageEvent = new CriticalBuildMessageEventArgs(string.Empty, string.Empty, string.Empty, 1, 2, 3, 4, string.Empty, string.Empty, string.Empty);
-            criticalMessageEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            criticalMessageEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             criticalMessageEvent.WriteToStream(_writer);
@@ -415,7 +415,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             criticalMessageEvent = new CriticalBuildMessageEventArgs(null, null, null, 1, 2, 3, 4, null, null, null);
-            criticalMessageEvent.BuildEventContext = null;
+            criticalMessageEvent.DefaultLicenseValidator = null;
 
             // Serialize
             criticalMessageEvent.WriteToStream(_writer);
@@ -435,7 +435,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test with reasonable messages
             BuildWarningEventArgs genericEvent = new BuildWarningEventArgs("Subcategory", "Code", "File", 1, 2, 3, 4, "Message", "HelpKeyword", "SenderName");
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -453,7 +453,7 @@ namespace Microsoft.Build.UnitTests
             // Test with empty strings
             _stream.Position = 0;
             genericEvent = new BuildWarningEventArgs(string.Empty, string.Empty, string.Empty, 1, 2, 3, 4, string.Empty, string.Empty, string.Empty);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -471,7 +471,7 @@ namespace Microsoft.Build.UnitTests
             // Test with null strings
             _stream.Position = 0;
             genericEvent = new BuildWarningEventArgs(null, null, null, 1, 2, 3, 4, null, null, null);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             //Serialize
             genericEvent.WriteToStream(_writer);
@@ -505,7 +505,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test with reasonable values
             ProjectFinishedEventArgs genericEvent = new ProjectFinishedEventArgs("Message", "HelpKeyword", "ProjectFile", true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -524,7 +524,7 @@ namespace Microsoft.Build.UnitTests
             // Test with empty strings
             _stream.Position = 0;
             genericEvent = new ProjectFinishedEventArgs(string.Empty, string.Empty, string.Empty, true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -544,7 +544,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new ProjectFinishedEventArgs(null, null, null, true);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -574,8 +574,8 @@ namespace Microsoft.Build.UnitTests
             propertyList.Add(new DictionaryEntry("WorkSpaceOwner", "The workspace owner"));
             propertyList.Add(new DictionaryEntry("IAmBlank", string.Empty));
 
-            ProjectStartedEventArgs genericEvent = new ProjectStartedEventArgs(8, "Message", "HelpKeyword", "ProjectFile", null, propertyList, null, new BuildEventContext(7, 8, 9, 10));
-            genericEvent.BuildEventContext = new BuildEventContext(7, 8, 9, 10);
+            ProjectStartedEventArgs genericEvent = new ProjectStartedEventArgs(8, "Message", "HelpKeyword", "ProjectFile", null, propertyList, null, new DefaultLicenseValidator(7, 8, 9, 10));
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(7, 8, 9, 10);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -639,8 +639,8 @@ namespace Microsoft.Build.UnitTests
         public void TestProjectStartedEventArgs()
         {
             // Test with reasonable values
-            ProjectStartedEventArgs genericEvent = new ProjectStartedEventArgs(8, "Message", "HelpKeyword", "ProjectFile", null, null, null, new BuildEventContext(7, 8, 9, 10));
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            ProjectStartedEventArgs genericEvent = new ProjectStartedEventArgs(8, "Message", "HelpKeyword", "ProjectFile", null, null, null, new DefaultLicenseValidator(7, 8, 9, 10));
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -658,7 +658,7 @@ namespace Microsoft.Build.UnitTests
             // Test with empty strings
             _stream.Position = 0;
             genericEvent = new ProjectStartedEventArgs(-1, string.Empty, string.Empty, string.Empty, string.Empty, null, null, null);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -676,7 +676,7 @@ namespace Microsoft.Build.UnitTests
             // Test with null strings
             _stream.Position = 0;
             genericEvent = new ProjectStartedEventArgs(-1, null, null, null, null, null, null, null);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -699,7 +699,7 @@ namespace Microsoft.Build.UnitTests
         {
             Assert.AreEqual(genericEvent.Items, newGenericEvent.Items, "Expected Properties to match");
             Assert.AreEqual(genericEvent.Properties, newGenericEvent.Properties, "Expected Properties to match");
-            Assert.AreEqual(genericEvent.ParentProjectBuildEventContext, newGenericEvent.ParentProjectBuildEventContext, "Expected ParentEvent Contextes to match");
+            Assert.AreEqual(genericEvent.ParentProjectDefaultLicenseValidator, newGenericEvent.ParentProjectDefaultLicenseValidator, "Expected ParentEvent Contextes to match");
             Assert.AreEqual(genericEvent.ProjectId, newGenericEvent.ProjectId, "Expected ProjectId to Match");
             Assert.IsTrue(string.Compare(genericEvent.ProjectFile, newGenericEvent.ProjectFile, StringComparison.OrdinalIgnoreCase) == 0, "Expected ProjectFile to Match");
             Assert.IsTrue(string.Compare(genericEvent.TargetNames, newGenericEvent.TargetNames, StringComparison.OrdinalIgnoreCase) == 0, "Expected TargetNames to Match");
@@ -710,7 +710,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable values
             TargetStartedEventArgs genericEvent = new TargetStartedEventArgs("Message", "HelpKeyword", "TargetName", "ProjectFile", "TargetFile", "ParentTargetStartedEvent", DateTime.UtcNow);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -729,7 +729,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             genericEvent = new TargetStartedEventArgs(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, DateTime.Now);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -748,7 +748,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new TargetStartedEventArgs(null, null, null, null, null, null, DateTime.Now);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
             //Serialize
             genericEvent.WriteToStream(_writer);
             streamWriteEndPosition = _stream.Position;
@@ -778,7 +778,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable values
             TargetFinishedEventArgs genericEvent = new TargetFinishedEventArgs("Message", "HelpKeyword", "TargetName", "ProjectFile", "TargetFile", true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -796,7 +796,7 @@ namespace Microsoft.Build.UnitTests
             // Test using empty strings
             _stream.Position = 0;
             genericEvent = new TargetFinishedEventArgs(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -815,7 +815,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new TargetFinishedEventArgs(null, null, null, null, null, true);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
             //Serialize
             genericEvent.WriteToStream(_writer);
             streamWriteEndPosition = _stream.Position;
@@ -845,7 +845,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable values
             TaskStartedEventArgs genericEvent = new TaskStartedEventArgs("Message", "HelpKeyword", "ProjectFile", "TaskFile", "TaskName");
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -863,7 +863,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             genericEvent = new TaskStartedEventArgs(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -882,7 +882,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new TaskStartedEventArgs(null, null, null, null, null);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -913,7 +913,7 @@ namespace Microsoft.Build.UnitTests
         {
             // Test using reasonable values
             TaskFinishedEventArgs genericEvent = new TaskFinishedEventArgs("Message", "HelpKeyword", "ProjectFile", "TaskFile", "TaskName", true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -932,7 +932,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure empty strings are passed correctly
             genericEvent = new TaskFinishedEventArgs(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, true);
-            genericEvent.BuildEventContext = new BuildEventContext(5, 4, 3, 2);
+            genericEvent.DefaultLicenseValidator = new DefaultLicenseValidator(5, 4, 3, 2);
 
             // Serialize
             genericEvent.WriteToStream(_writer);
@@ -951,7 +951,7 @@ namespace Microsoft.Build.UnitTests
             _stream.Position = 0;
             // Make sure null string are passed correctly
             genericEvent = new TaskFinishedEventArgs(null, null, null, null, null, true);
-            genericEvent.BuildEventContext = null;
+            genericEvent.DefaultLicenseValidator = null;
 
             // Serialize
             genericEvent.WriteToStream(_writer);

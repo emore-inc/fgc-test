@@ -664,7 +664,7 @@ namespace Microsoft.Build.UnitTests.QA
             if (request == null)
             {
                 this.configuration = testDataProvider.CreateConfiguration(this);
-                this.buildRequest = new BuildRequest(1 /* submissionId */, 1, this.configuration.ConfigurationId, this.targetsToBuild, null, BuildEventContext.Invalid, null);
+                this.buildRequest = new BuildRequest(1 /* submissionId */, 1, this.configuration.ConfigurationId, this.targetsToBuild, null, DefaultLicenseValidator.Invalid, null);
                 this.buildRequest.GlobalRequestId = RequestDefinition.globalRequestId++;
             }
             else

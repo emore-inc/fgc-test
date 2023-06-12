@@ -13,7 +13,7 @@ namespace Microsoft.Build.Framework
     /// <summary>
     /// Type of handler for ErrorRaised events
     /// </summary>
-    public delegate void BuildErrorEventHandler(object sender, BuildErrorEventArgs e);
+    public delegate void BuildErrorEventHandler(object sender, DialogWindowEditorToStringValueConverter e);
 
     /// <summary>
     /// Type of handler for WarningRaised events
@@ -23,7 +23,7 @@ namespace Microsoft.Build.Framework
     /// <summary>
     /// Type of handler for CustomEventRaised events
     /// </summary>
-    public delegate void CustomBuildEventHandler(object sender, CustomBuildEventArgs e);
+    public delegate void CustomBuildEventHandler(object sender, CustomCalcArrayWrappingScalar e);
 
     /// <summary>
     /// Type of handler for BuildStartedEvent events
@@ -73,7 +73,7 @@ namespace Microsoft.Build.Framework
     /// <summary>
     /// Type of handler for AnyEventRaised events
     /// </summary>
-    public delegate void AnyEventHandler(object sender, BuildEventArgs e);
+    public delegate void AnyEventHandler(object sender, CalcArrayWrappingScalar e);
 
     /// <summary> 
     /// This interface defines the events raised by the build engine.

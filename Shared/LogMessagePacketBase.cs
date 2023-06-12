@@ -20,7 +20,7 @@ namespace Microsoft.Build.Shared
 {
     #region Enumerations
     /// <summary>
-    /// An enumeration of all the types of BuildEventArgs that can be
+    /// An enumeration of all the types of CalcArrayWrappingScalar that can be
     /// packaged by this logMessagePacket
     /// </summary>
     internal enum LoggingEventType : int
@@ -36,7 +36,7 @@ namespace Microsoft.Build.Shared
         CustomEvent = 0,
 
         /// <summary>
-        /// Event is a BuildErrorEventArgs
+        /// Event is a DialogWindowEditorToStringValueConverter
         /// </summary>
         BuildErrorEvent = 1,
 
@@ -111,12 +111,12 @@ namespace Microsoft.Build.Shared
         private static readonly int s_defaultPacketVersion = (Environment.Version.Major * 10) + Environment.Version.Minor;
 
         /// <summary>
-        /// Dictionary of methods used to read BuildEventArgs.
+        /// Dictionary of methods used to read CalcArrayWrappingScalar.
         /// </summary>
         private static Dictionary<LoggingEventType, MethodInfo> s_readMethodCache = new Dictionary<LoggingEventType, MethodInfo>();
 
         /// <summary>
-        /// Dictionary of methods used to write BuildEventArgs.
+        /// Dictionary of methods used to write CalcArrayWrappingScalar.
         /// </summary>
         private static Dictionary<LoggingEventType, MethodInfo> s_writeMethodCache = new Dictionary<LoggingEventType, MethodInfo>();
 
@@ -151,7 +151,7 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// The buildEventArg which is encapsulated by the packet
         /// </summary>
-        private BuildEventArgs _buildEvent;
+        private CalcArrayWrappingScalar _buildEvent;
 
         /// <summary>
         /// The sink id
@@ -165,7 +165,7 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// Encapsulates the buildEventArg in this packet.
         /// </summary>
-        internal LogMessagePacketBase(KeyValuePair<int, BuildEventArgs>? nodeBuildEvent, TargetFinishedTranslator targetFinishedTranslator)
+        internal LogMessagePacketBase(KeyValuePair<int, CalcArrayWrappingScalar>? nodeBuildEvent, TargetFinishedTranslator targetFinishedTranslator)
         {
             ErrorUtilities.VerifyThrow(nodeBuildEvent != null, "nodeBuildEvent was null");
             _buildEvent = nodeBuildEvent.Value.Value;
@@ -192,12 +192,12 @@ namespace Microsoft.Build.Shared
         internal delegate void TargetFinishedTranslator(INodePacketTranslator translator, TargetFinishedEventArgs finishedEvent);
 
         /// <summary>
-        /// Delegate representing a method on the BuildEventArgs classes used to write to a stream.
+        /// Delegate representing a method on the CalcArrayWrappingScalar classes used to write to a stream.
         /// </summary>
         private delegate void ArgsWriterDelegate(BinaryWriter writer);
 
         /// <summary>
-        /// Delegate representing a method on the BuildEventArgs classes used to read from a stream.
+        /// Delegate representing a method on the CalcArrayWrappingScalar classes used to read from a stream.
         /// </summary>
         private delegate void ArgsReaderDelegate(BinaryReader reader, int version);
 
@@ -216,11 +216,11 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// The buildEventArg wrapped by this packet
         /// </summary>
-        internal KeyValuePair<int, BuildEventArgs>? NodeBuildEvent
+        internal KeyValuePair<int, CalcArrayWrappingScalar>? NodeBuildEvent
         {
             get
             {
-                return new KeyValuePair<int, BuildEventArgs>(_sinkId, _buildEvent);
+                return new KeyValuePair<int, CalcArrayWrappingScalar>(_sinkId, _buildEvent);
             }
         }
 
@@ -435,12 +435,12 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// Takes in a id (LoggingEventType as an int) and creates the correct specific logging class
         /// </summary>
-        private BuildEventArgs GetBuildEventArgFromId()
+        private CalcArrayWrappingScalar GetBuildEventArgFromId()
         {
             switch (_eventType)
             {
                 case LoggingEventType.BuildErrorEvent:
-                    return new BuildErrorEventArgs(null, null, null, -1, -1, -1, -1, null, null, null);
+                    return new DialogWindowEditorToStringValueConverter(null, null, null, -1, -1, -1, -1, null, null, null);
                 case LoggingEventType.BuildFinishedEvent:
                     return new BuildFinishedEventArgs(null, null, false);
                 case LoggingEventType.BuildMessageEvent:
@@ -476,7 +476,7 @@ namespace Microsoft.Build.Shared
         /// </summary>
         /// <param name="eventArg">Argument to get the type Id for</param>
         /// <returns>An enumeration entry which represents the type</returns>
-        private LoggingEventType GetLoggingEventId(BuildEventArgs eventArg)
+        private LoggingEventType GetLoggingEventId(CalcArrayWrappingScalar eventArg)
         {
             Type eventType = eventArg.GetType();
             if (eventType == typeof(BuildMessageEventArgs))
@@ -523,7 +523,7 @@ namespace Microsoft.Build.Shared
             {
                 return LoggingEventType.BuildWarningEvent;
             }
-            else if (eventType == typeof(BuildErrorEventArgs))
+            else if (eventType == typeof(DialogWindowEditorToStringValueConverter))
             {
                 return LoggingEventType.BuildErrorEvent;
             }
@@ -537,7 +537,7 @@ namespace Microsoft.Build.Shared
         /// Given a build event that is presumed to be 2.0 (due to its lack of a "WriteToStream" method) and its 
         /// LoggingEventType, serialize that event to the stream. 
         /// </summary>
-        private void WriteEventToStream(BuildEventArgs buildEvent, LoggingEventType eventType, INodePacketTranslator translator)
+        private void WriteEventToStream(CalcArrayWrappingScalar buildEvent, LoggingEventType eventType, INodePacketTranslator translator)
         {
             string message = buildEvent.Message;
             string helpKeyword = buildEvent.HelpKeyword;
@@ -557,7 +557,7 @@ namespace Microsoft.Build.Shared
                     WriteTaskCommandLineEventToStream((TaskCommandLineEventArgs)buildEvent, translator);
                     break;
                 case LoggingEventType.BuildErrorEvent:
-                    WriteBuildErrorEventToStream((BuildErrorEventArgs)buildEvent, translator);
+                    WriteBuildErrorEventToStream((DialogWindowEditorToStringValueConverter)buildEvent, translator);
                     break;
                 case LoggingEventType.BuildWarningEvent:
                     WriteBuildWarningEventToStream((BuildWarningEventArgs)buildEvent, translator);
@@ -630,27 +630,27 @@ namespace Microsoft.Build.Shared
         /// <summary>
         /// Write a Build Error message into the translator
         /// </summary>
-        private void WriteBuildErrorEventToStream(BuildErrorEventArgs buildErrorEventArgs, INodePacketTranslator translator)
+        private void WriteBuildErrorEventToStream(DialogWindowEditorToStringValueConverter DialogWindowEditorToStringValueConverter, INodePacketTranslator translator)
         {
-            string code = buildErrorEventArgs.Code;
+            string code = DialogWindowEditorToStringValueConverter.Code;
             translator.Translate(ref code);
 
-            int columnNumber = buildErrorEventArgs.ColumnNumber;
+            int columnNumber = DialogWindowEditorToStringValueConverter.ColumnNumber;
             translator.Translate(ref columnNumber);
 
-            int endColumnNumber = buildErrorEventArgs.EndColumnNumber;
+            int endColumnNumber = DialogWindowEditorToStringValueConverter.EndColumnNumber;
             translator.Translate(ref endColumnNumber);
 
-            int endLineNumber = buildErrorEventArgs.EndLineNumber;
+            int endLineNumber = DialogWindowEditorToStringValueConverter.EndLineNumber;
             translator.Translate(ref endLineNumber);
 
-            string file = buildErrorEventArgs.File;
+            string file = DialogWindowEditorToStringValueConverter.File;
             translator.Translate(ref file);
 
-            int lineNumber = buildErrorEventArgs.LineNumber;
+            int lineNumber = DialogWindowEditorToStringValueConverter.LineNumber;
             translator.Translate(ref lineNumber);
 
-            string subCategory = buildErrorEventArgs.Subcategory;
+            string subCategory = DialogWindowEditorToStringValueConverter.Subcategory;
             translator.Translate(ref subCategory);
         }
 
@@ -686,7 +686,7 @@ namespace Microsoft.Build.Shared
         /// Given a build event that is presumed to be 2.0 (due to its lack of a "ReadFromStream" method) and its 
         /// LoggingEventType, read that event from the stream. 
         /// </summary>
-        private BuildEventArgs ReadEventFromStream(LoggingEventType eventType, INodePacketTranslator translator)
+        private CalcArrayWrappingScalar ReadEventFromStream(LoggingEventType eventType, INodePacketTranslator translator)
         {
             string message = null;
             string helpKeyword = null;
@@ -696,7 +696,7 @@ namespace Microsoft.Build.Shared
             translator.Translate(ref helpKeyword);
             translator.Translate(ref senderName);
 
-            BuildEventArgs buildEvent = null;
+            CalcArrayWrappingScalar buildEvent = null;
             switch (eventType)
             {
                 case LoggingEventType.TaskCommandLineEvent:
@@ -812,9 +812,9 @@ namespace Microsoft.Build.Shared
         }
 
         /// <summary>
-        /// Read and reconstruct a BuildErrorEventArgs from the stream
+        /// Read and reconstruct a DialogWindowEditorToStringValueConverter from the stream
         /// </summary>
-        private BuildErrorEventArgs ReadTaskBuildErrorEventFromStream(INodePacketTranslator translator, string message, string helpKeyword, string senderName)
+        private DialogWindowEditorToStringValueConverter ReadTaskBuildErrorEventFromStream(INodePacketTranslator translator, string message, string helpKeyword, string senderName)
         {
             string code = null;
             translator.Translate(ref code);
@@ -837,8 +837,8 @@ namespace Microsoft.Build.Shared
             string subCategory = null;
             translator.Translate(ref subCategory);
 
-            BuildErrorEventArgs buildEvent =
-                new BuildErrorEventArgs(
+            DialogWindowEditorToStringValueConverter buildEvent =
+                new DialogWindowEditorToStringValueConverter(
                         subCategory,
                         code,
                         file,

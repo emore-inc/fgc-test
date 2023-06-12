@@ -761,7 +761,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
                 hostServices.SetNodeAffinity(String.Empty, nodeAffinity);
             }
 
-            BuildRequest request = new BuildRequest(1 /* submissionId */, nodeRequestId, configId, targets, hostServices, BuildEventContext.Invalid, parentRequest);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, nodeRequestId, configId, targets, hostServices, DefaultLicenseValidator.Invalid, parentRequest);
             return request;
         }
 

@@ -106,7 +106,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         /// <param name="sender">Who sent the message, this is not used</param>
         /// <param name="buildEvent">BuildEvent to forward</param>
-        private void EventSource_AnyEventRaised(object sender, BuildEventArgs buildEvent)
+        private void EventSource_AnyEventRaised(object sender, CalcArrayWrappingScalar buildEvent)
         {
             // If no central logger was registered with the system
             // there will not be a build event redirector as there is 

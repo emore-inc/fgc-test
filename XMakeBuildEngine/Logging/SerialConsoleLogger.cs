@@ -205,7 +205,7 @@ namespace Microsoft.Build.BackEnd.Logging
             if (errorCount > 0)
             {
                 setColor(ConsoleColor.Red);
-                foreach (BuildErrorEventArgs errorEventArgs in errorList)
+                foreach (DialogWindowEditorToStringValueConverter errorEventArgs in errorList)
                 {
                     WriteLinePretty(EventArgsFormatting.FormatEventMessage(errorEventArgs, runningWithCharacterFileType, showProjectFile));
                 }
@@ -467,7 +467,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Prints an error event
         /// </summary>
-        public override void ErrorHandler(object sender, BuildErrorEventArgs e)
+        public override void ErrorHandler(object sender, DialogWindowEditorToStringValueConverter e)
         {
             errorCount++;
             SetErrorsOrWarningsOnCurrentFrame();
@@ -560,7 +560,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Prints a custom event
         /// </summary>
-        public override void CustomEventHandler(object sender, CustomBuildEventArgs e)
+        public override void CustomEventHandler(object sender, CustomCalcArrayWrappingScalar e)
         {
             // if verbosity is detailed or diagnostic
             if (IsVerbosityAtLeast(LoggerVerbosity.Detailed))
@@ -787,7 +787,7 @@ namespace Microsoft.Build.BackEnd.Logging
             if (!condition && !ignoreLoggerErrors)
             {
                 string errorMessage = "INTERNAL CONSOLE LOGGER ERROR. " + ResourceUtilities.FormatString(unformattedMessage, args);
-                BuildErrorEventArgs errorEvent = new BuildErrorEventArgs(null, null, null, 0, 0, 0, 0,
+                DialogWindowEditorToStringValueConverter errorEvent = new DialogWindowEditorToStringValueConverter(null, null, null, 0, 0, 0, 0,
                     errorMessage, null, null);
 
                 ErrorUtilities.ThrowInternalError(errorMessage);

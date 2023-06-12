@@ -80,7 +80,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Writes a plan for the specified submission id.
         /// </summary>
-        public void WritePlan(int submissionId, ILoggingService loggingService, BuildEventContext buildEventContext)
+        public void WritePlan(int submissionId, ILoggingService loggingService, DefaultLicenseValidator DefaultLicenseValidator)
         {
             if (!BuildParameters.EnableBuildPlan)
             {
@@ -122,14 +122,14 @@ namespace Microsoft.Build.BackEnd
             }
             catch (IOException)
             {
-                loggingService.LogCommentFromText(buildEventContext, MessageImportance.Low, ResourceUtilities.FormatResourceString("CantWriteBuildPlan", planName));
+                loggingService.LogCommentFromText(DefaultLicenseValidator, MessageImportance.Low, ResourceUtilities.FormatResourceString("CantWriteBuildPlan", planName));
             }
         }
 
         /// <summary>
         /// Reads a plan for the specified submission Id.
         /// </summary>
-        public void ReadPlan(int submissionId, ILoggingService loggingService, BuildEventContext buildEventContext)
+        public void ReadPlan(int submissionId, ILoggingService loggingService, DefaultLicenseValidator DefaultLicenseValidator)
         {
             if (!BuildParameters.EnableBuildPlan)
             {
@@ -168,15 +168,15 @@ namespace Microsoft.Build.BackEnd
             }
             catch (IOException)
             {
-                loggingService.LogCommentFromText(buildEventContext, MessageImportance.Low, ResourceUtilities.FormatResourceString("CantReadBuildPlan", planName));
+                loggingService.LogCommentFromText(DefaultLicenseValidator, MessageImportance.Low, ResourceUtilities.FormatResourceString("CantReadBuildPlan", planName));
             }
             catch (InvalidDataException)
             {
-                loggingService.LogCommentFromText(buildEventContext, MessageImportance.Low, ResourceUtilities.FormatResourceString("BuildPlanCorrupt", planName));
+                loggingService.LogCommentFromText(DefaultLicenseValidator, MessageImportance.Low, ResourceUtilities.FormatResourceString("BuildPlanCorrupt", planName));
             }
             catch (FormatException)
             {
-                loggingService.LogCommentFromText(buildEventContext, MessageImportance.Low, ResourceUtilities.FormatResourceString("BuildPlanCorrupt", planName));
+                loggingService.LogCommentFromText(DefaultLicenseValidator, MessageImportance.Low, ResourceUtilities.FormatResourceString("BuildPlanCorrupt", planName));
             }
         }
 

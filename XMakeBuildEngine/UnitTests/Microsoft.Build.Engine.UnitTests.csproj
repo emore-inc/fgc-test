@@ -18,7 +18,7 @@
     <Compile Include="..\..\Shared\FxCopExclusions\Microsoft.Build.Shared.Suppressions.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="..\..\Shared\UnitTests\BuildEventArgsExtension.cs">
+    <Compile Include="..\..\Shared\UnitTests\CalcArrayWrappingScalarExtension.cs">
       <!-- Extension methods -->
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>

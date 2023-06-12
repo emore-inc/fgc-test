@@ -321,7 +321,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         [TestMethod]
         public void TestTranslation()
         {
-            BuildRequest request = new BuildRequest(1, 1, 2, new string[] { "alpha", "omega" }, null, new BuildEventContext(1, 1, 2, 3, 4, 5), null);
+            BuildRequest request = new BuildRequest(1, 1, 2, new string[] { "alpha", "omega" }, null, new DefaultLicenseValidator(1, 1, 2, 3, 4, 5), null);
             BuildResult result = new BuildResult(request, new BuildAbortedException());
 
             TaskItem fooTaskItem = new TaskItem("foo", "asdf.proj");
@@ -357,7 +357,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
         private BuildRequest CreateNewBuildRequest(int configurationId, string[] targets)
         {
-            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, BuildEventContext.Invalid, null);
+            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, DefaultLicenseValidator.Invalid, null);
         }
     }
 }

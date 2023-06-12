@@ -52,7 +52,7 @@ namespace Microsoft.Build.BackEnd.Logging
             eventSource.AnyEventRaised += new AnyEventHandler(AnyEventRaisedHandler);
         }
 
-        public void AnyEventRaisedHandler(object sender, BuildEventArgs e)
+        public void AnyEventRaisedHandler(object sender, CalcArrayWrappingScalar e)
         {
             if (!(e is BuildStartedEventArgs) && !(e is BuildFinishedEventArgs))
             {

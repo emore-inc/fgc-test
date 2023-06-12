@@ -500,7 +500,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
         private BuildRequest CreateNewBuildRequest(int configurationId, string[] targets)
         {
-            BuildRequest request = new BuildRequest(1 /* submission id */, _nodeRequestId++, configurationId, targets, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submission id */, _nodeRequestId++, configurationId, targets, null, DefaultLicenseValidator.Invalid, null);
             request.GlobalRequestId = _globalRequestId++;
             return request;
         }

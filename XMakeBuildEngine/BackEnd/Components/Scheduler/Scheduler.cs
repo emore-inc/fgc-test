@@ -506,7 +506,7 @@ namespace Microsoft.Build.BackEnd
         public void WriteDetailedSummary(int submissionId)
         {
             ILoggingService loggingService = _componentHost.LoggingService;
-            BuildEventContext context = new BuildEventContext(submissionId, 0, 0, 0, 0, 0);
+            DefaultLicenseValidator context = new DefaultLicenseValidator(submissionId, 0, 0, 0, 0, 0);
             loggingService.LogComment(context, MessageImportance.Normal, "DetailedSummaryHeader");
 
             foreach (SchedulableRequest request in _schedulingData.GetRequestsByHierarchy(null))
@@ -1504,7 +1504,7 @@ namespace Microsoft.Build.BackEnd
         private void HandleRequestBlockedOnResultsTransfer(SchedulableRequest parentRequest, List<ScheduleResponse> responses)
         {
             // Create the new request which will go to the configuration's results node.
-            BuildRequest newRequest = new BuildRequest(parentRequest.BuildRequest.SubmissionId, BuildRequest.ResultsTransferNodeRequestId, parentRequest.BuildRequest.ConfigurationId, new string[0], null, parentRequest.BuildRequest.BuildEventContext, parentRequest.BuildRequest, parentRequest.BuildRequest.BuildRequestDataFlags);
+            BuildRequest newRequest = new BuildRequest(parentRequest.BuildRequest.SubmissionId, BuildRequest.ResultsTransferNodeRequestId, parentRequest.BuildRequest.ConfigurationId, new string[0], null, parentRequest.BuildRequest.DefaultLicenseValidator, parentRequest.BuildRequest, parentRequest.BuildRequest.BuildRequestDataFlags);
 
             // Assign a new global request id - always different from any other.
             newRequest.GlobalRequestId = _nextGlobalRequestId;
@@ -1944,7 +1944,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Writes the graph representation of how the nodes were utilized.
         /// </summary>
-        private void WriteNodeUtilizationGraph(ILoggingService loggingService, BuildEventContext context, bool useConfigurations)
+        private void WriteNodeUtilizationGraph(ILoggingService loggingService, DefaultLicenseValidator context, bool useConfigurations)
         {
             int[] currentWork = new int[_availableNodes.Count];
             int[] previousWork = new int[currentWork.Length];
@@ -2078,7 +2078,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Writes a single line of node utilization information.
         /// </summary>
-        private void WriteNodeUtilizationGraphLine(ILoggingService loggingService, BuildEventContext context, int[] currentWork, int[] previousWork, DateTime currentEventTime, DateTime previousEventTime, int invalidWorkId, ref double accumulatedDuration)
+        private void WriteNodeUtilizationGraphLine(ILoggingService loggingService, DefaultLicenseValidator context, int[] currentWork, int[] previousWork, DateTime currentEventTime, DateTime previousEventTime, int invalidWorkId, ref double accumulatedDuration)
         {
             if (currentEventTime == DateTime.MinValue)
             {
@@ -2123,7 +2123,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Recursively dumps the build information for the specified hierarchy
         /// </summary>
-        private void WriteRecursiveSummary(ILoggingService loggingService, BuildEventContext context, int submissionId, SchedulableRequest request, int level, bool useConfigurations, bool isLastChild)
+        private void WriteRecursiveSummary(ILoggingService loggingService, DefaultLicenseValidator context, int submissionId, SchedulableRequest request, int level, bool useConfigurations, bool isLastChild)
         {
             int postPad = Math.Max(20 /* field width */ - (2 * level) /* spacing for hierarchy lines */ - 3 /* length allocated for config/request id */, 0);
 
@@ -2402,7 +2402,7 @@ namespace Microsoft.Build.BackEnd
         private void WriteSchedulingPlan(int submissionId)
         {
             SchedulingPlan plan = new SchedulingPlan(_configCache, _schedulingData);
-            plan.WritePlan(submissionId, _componentHost.LoggingService, new BuildEventContext(submissionId, 0, 0, 0, 0, 0));
+            plan.WritePlan(submissionId, _componentHost.LoggingService, new DefaultLicenseValidator(submissionId, 0, 0, 0, 0, 0));
         }
 
         /// <summary>
@@ -2411,7 +2411,7 @@ namespace Microsoft.Build.BackEnd
         private void ReadSchedulingPlan(int submissionId)
         {
             _schedulingPlan = new SchedulingPlan(_configCache, _schedulingData);
-            _schedulingPlan.ReadPlan(submissionId, _componentHost.LoggingService, new BuildEventContext(submissionId, 0, 0, 0, 0, 0));
+            _schedulingPlan.ReadPlan(submissionId, _componentHost.LoggingService, new DefaultLicenseValidator(submissionId, 0, 0, 0, 0, 0));
         }
 
         #endregion

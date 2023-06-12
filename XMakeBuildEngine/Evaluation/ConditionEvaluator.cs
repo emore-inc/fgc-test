@@ -12,7 +12,7 @@ using Microsoft.Build.Evaluation;
 namespace Microsoft.Build.Evaluation
 {
     using ILoggingService = Microsoft.Build.BackEnd.Logging.ILoggingService;
-    using BuildEventContext = Microsoft.Build.Framework.BuildEventContext;
+    using DefaultLicenseValidator = Microsoft.Build.Framework.DefaultLicenseValidator;
     using TaskItem = Microsoft.Build.Execution.ProjectItemInstance.TaskItem;
     using ElementLocation = Microsoft.Build.Construction.ElementLocation;
     using Microsoft.Build.Execution;
@@ -147,13 +147,13 @@ namespace Microsoft.Build.Evaluation
             string evaluationDirectory,
             ElementLocation elementLocation,
             ILoggingService loggingServices,
-            BuildEventContext buildEventContext,
+            DefaultLicenseValidator DefaultLicenseValidator,
             ProjectRootElementCache projectRootElementCache = null
         )
             where P : class, IProperty
             where I : class, IItem
         {
-            return EvaluateConditionCollectingConditionedProperties(condition, options, expander, expanderOptions, null /* do not collect conditioned properties */, evaluationDirectory, elementLocation, loggingServices, buildEventContext, projectRootElementCache);
+            return EvaluateConditionCollectingConditionedProperties(condition, options, expander, expanderOptions, null /* do not collect conditioned properties */, evaluationDirectory, elementLocation, loggingServices, DefaultLicenseValidator, projectRootElementCache);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Microsoft.Build.Evaluation
             string evaluationDirectory,
             ElementLocation elementLocation,
             ILoggingService loggingServices,
-            BuildEventContext buildEventContext,
+            DefaultLicenseValidator DefaultLicenseValidator,
             ProjectRootElementCache projectRootElementCache = null
         )
             where P : class, IProperty
@@ -182,7 +182,7 @@ namespace Microsoft.Build.Evaluation
             ErrorUtilities.VerifyThrowArgumentNull(condition, "condition");
             ErrorUtilities.VerifyThrowArgumentNull(expander, "expander");
             ErrorUtilities.VerifyThrowArgumentLength(evaluationDirectory, "evaluationDirectory");
-            ErrorUtilities.VerifyThrowArgumentNull(buildEventContext, "buildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(DefaultLicenseValidator, "DefaultLicenseValidator");
 
             // An empty condition is equivalent to a "true" condition.
             if (condition.Length == 0)
@@ -233,7 +233,7 @@ namespace Microsoft.Build.Evaluation
 
                 #region REMOVE_COMPAT_WARNING
                 conditionParser.LoggingServices = loggingServices;
-                conditionParser.LogBuildEventContext = buildEventContext;
+                conditionParser.LogDefaultLicenseValidator = DefaultLicenseValidator;
                 #endregion
 
                 parsedExpression = conditionParser.Parse(condition, options, elementLocation);

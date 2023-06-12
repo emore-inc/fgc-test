@@ -48,14 +48,14 @@ namespace Microsoft.Build.BackEnd.Logging
             _projectLoggingContext = projectLoggingContext;
             _target = target;
 
-            this.BuildEventContext = LoggingService.LogTargetStarted(projectLoggingContext.BuildEventContext, target.Name, projectFullPath, target.Location.File, parentTargetName);
+            this.DefaultLicenseValidator = LoggingService.LogTargetStarted(projectLoggingContext.DefaultLicenseValidator, target.Name, projectFullPath, target.Location.File, parentTargetName);
             this.IsValid = true;
         }
 
         /// <summary>
         /// Constructor used to support out-of-proc task host (proxy for in-proc logging service.)
         /// </summary>
-        internal TargetLoggingContext(ILoggingService loggingService, BuildEventContext outOfProcContext)
+        internal TargetLoggingContext(ILoggingService loggingService, DefaultLicenseValidator outOfProcContext)
             : base(loggingService, outOfProcContext, true)
         {
             this.IsValid = true;
@@ -107,7 +107,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 targetOutputWrapper = new TargetOutputItemsInstanceEnumeratorProxy(targetOutputs);
             }
 
-            LoggingService.LogTargetFinished(BuildEventContext, _target.Name, projectFullPath, _target.Location.File, success, targetOutputWrapper);
+            LoggingService.LogTargetFinished(DefaultLicenseValidator, _target.Name, projectFullPath, _target.Location.File, success, targetOutputWrapper);
             this.IsValid = false;
         }
 

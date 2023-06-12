@@ -32,13 +32,13 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Logs a comment (BuildMessageEventArgs) with a certain MessageImportance level
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="importance">How important is the message, this will determine which verbosities the message will show up on. 
         /// The higher the importance the lower the verbosity needs to be for the message to be seen</param>
         /// <param name="messageResourceName">String which identifies the message in the string resx</param>
         /// <param name="messageArgs">Arguments for the format string indexed by messageResourceName</param>
         /// <exception cref="InternalErrorException">MessageResourceName is null</exception>
-        public void LogComment(BuildEventContext buildEventContext, MessageImportance importance, string messageResourceName, params object[] messageArgs)
+        public void LogComment(DefaultLicenseValidator DefaultLicenseValidator, MessageImportance importance, string messageResourceName, params object[] messageArgs)
         {
             lock (_lockObject)
             {
@@ -46,7 +46,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 {
                     ErrorUtilities.VerifyThrow(!string.IsNullOrEmpty(messageResourceName), "Need resource string for comment message.");
 
-                    LogCommentFromText(buildEventContext, importance, ResourceUtilities.GetResourceString(messageResourceName), messageArgs);
+                    LogCommentFromText(DefaultLicenseValidator, importance, ResourceUtilities.GetResourceString(messageResourceName), messageArgs);
                 }
             }
         }
@@ -54,37 +54,37 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Log a comment
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="importance">How important is the message, this will determine which verbosities the message will show up on. 
         /// The higher the importance the lower the verbosity needs to be for the message to be seen</param>
         /// <param name="message">Message to log</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
         /// <exception cref="InternalErrorException">Message is null</exception>
-        public void LogCommentFromText(BuildEventContext buildEventContext, MessageImportance importance, string message)
+        public void LogCommentFromText(DefaultLicenseValidator DefaultLicenseValidator, MessageImportance importance, string message)
         {
             lock (_lockObject)
             {
-                this.LogCommentFromText(buildEventContext, importance, message, null);
+                this.LogCommentFromText(DefaultLicenseValidator, importance, message, null);
             }
         }
 
         /// <summary>
         /// Log a comment
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="importance">How important is the message, this will determine which verbosities the message will show up on. 
         /// The higher the importance the lower the verbosity needs to be for the message to be seen</param>
         /// <param name="message">Message to log</param>
         /// <param name="messageArgs">Message formatting arguments</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
         /// <exception cref="InternalErrorException">Message is null</exception>
-        public void LogCommentFromText(BuildEventContext buildEventContext, MessageImportance importance, string message, params object[] messageArgs)
+        public void LogCommentFromText(DefaultLicenseValidator DefaultLicenseValidator, MessageImportance importance, string message, params object[] messageArgs)
         {
             lock (_lockObject)
             {
                 if (!OnlyLogCriticalEvents)
                 {
-                    ErrorUtilities.VerifyThrow(buildEventContext != null, "buildEventContext was null");
+                    ErrorUtilities.VerifyThrow(DefaultLicenseValidator != null, "DefaultLicenseValidator was null");
                     ErrorUtilities.VerifyThrow(message != null, "message was null");
 
                     BuildMessageEventArgs buildEvent = new BuildMessageEventArgs
@@ -96,7 +96,7 @@ namespace Microsoft.Build.BackEnd.Logging
                             DateTime.UtcNow,
                             messageArgs
                         );
-                    buildEvent.BuildEventContext = buildEventContext;
+                    buildEvent.DefaultLicenseValidator = DefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
             }
@@ -118,7 +118,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="file">File information where the error happened</param>
         /// <param name="messageResourceName">String key to find the correct string resource</param>
         /// <param name="messageArgs">Arguments for the string resource</param>
-        public void LogError(BuildEventContext location, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogError(DefaultLicenseValidator location, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
             lock (_lockObject)
             {
@@ -129,13 +129,13 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Logs an error
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="subcategoryResourceName">Can be null.</param>
         /// <param name="file">File information about where the error happened</param>
         /// <param name="messageResourceName">String index into the string.resx file</param>
         /// <param name="messageArgs">Arguments for the format string in the resource file</param>
         /// <exception cref="InternalErrorException">MessageResourceName is null</exception>
-        public void LogError(BuildEventContext buildEventContext, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogError(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
             lock (_lockObject)
             {
@@ -145,14 +145,14 @@ namespace Microsoft.Build.BackEnd.Logging
                 string helpKeyword;
                 string message = ResourceUtilities.FormatResourceString(out errorCode, out helpKeyword, messageResourceName, messageArgs);
 
-                LogErrorFromText(buildEventContext, subcategoryResourceName, errorCode, helpKeyword, file, message);
+                LogErrorFromText(DefaultLicenseValidator, subcategoryResourceName, errorCode, helpKeyword, file, message);
             }
         }
 
         /// <summary>
         /// Logs an error with a given message
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="subcategoryResourceName">Can be null.</param>
         /// <param name="errorCode">Can be null.</param>
         /// <param name="helpKeyword">Can be null.</param>
@@ -160,11 +160,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="message">Error message which will be displayed</param>
         /// <exception cref="InternalErrorException">File is null</exception>
         /// <exception cref="InternalErrorException">Message is null</exception>
-        public void LogErrorFromText(BuildEventContext buildEventContext, string subcategoryResourceName, string errorCode, string helpKeyword, BuildEventFileInfo file, string message)
+        public void LogErrorFromText(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, string errorCode, string helpKeyword, BuildEventFileInfo file, string message)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(buildEventContext != null, "Must specify the buildEventContext");
+                ErrorUtilities.VerifyThrow(DefaultLicenseValidator != null, "Must specify the DefaultLicenseValidator");
                 ErrorUtilities.VerifyThrow(file != null, "Must specify the associated file.");
                 ErrorUtilities.VerifyThrow(message != null, "Need error message.");
 
@@ -175,8 +175,8 @@ namespace Microsoft.Build.BackEnd.Logging
                     subcategory = AssemblyResources.GetString(subcategoryResourceName);
                 }
 
-                BuildErrorEventArgs buildEvent =
-                new BuildErrorEventArgs
+                DialogWindowEditorToStringValueConverter buildEvent =
+                new DialogWindowEditorToStringValueConverter
                 (
                     subcategory,
                     errorCode,
@@ -190,12 +190,12 @@ namespace Microsoft.Build.BackEnd.Logging
                     "MSBuild"
                 );
 
-                buildEvent.BuildEventContext = buildEventContext;
-                if (buildEvent.ProjectFile == null && buildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                buildEvent.DefaultLicenseValidator = DefaultLicenseValidator;
+                if (buildEvent.ProjectFile == null && DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                 {
                     string projectFile;
-                    _projectFileMap.TryGetValue(buildEventContext.ProjectContextId, out projectFile);
-                    ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", buildEventContext.ProjectContextId);
+                    _projectFileMap.TryGetValue(DefaultLicenseValidator.ProjectContextId, out projectFile);
+                    ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", DefaultLicenseValidator.ProjectContextId);
                     buildEvent.ProjectFile = projectFile;
                 }
 
@@ -208,22 +208,22 @@ namespace Microsoft.Build.BackEnd.Logging
         /// we do not want to log the error multiple times. Once the exception has been logged we set a flag on the exception to note that
         /// it has already been logged.
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="invalidProjectFileException">Exception which is causing the error</param>
         /// <exception cref="InternalErrorException">InvalidProjectFileException is null</exception>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public void LogInvalidProjectFileError(BuildEventContext buildEventContext, InvalidProjectFileException invalidProjectFileException)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public void LogInvalidProjectFileError(DefaultLicenseValidator DefaultLicenseValidator, InvalidProjectFileException invalidProjectFileException)
         {
             lock (_lockObject)
             {
                 ErrorUtilities.VerifyThrow(invalidProjectFileException != null, "Need exception context.");
-                ErrorUtilities.VerifyThrow(buildEventContext != null, "buildEventContext is null");
+                ErrorUtilities.VerifyThrow(DefaultLicenseValidator != null, "DefaultLicenseValidator is null");
 
                 // Don't log the exception more than once.
                 if (!invalidProjectFileException.HasBeenLogged)
                 {
-                    BuildErrorEventArgs buildEvent =
-                        new BuildErrorEventArgs
+                    DialogWindowEditorToStringValueConverter buildEvent =
+                        new DialogWindowEditorToStringValueConverter
                         (
                             invalidProjectFileException.ErrorSubcategory,
                             invalidProjectFileException.ErrorCode,
@@ -236,12 +236,12 @@ namespace Microsoft.Build.BackEnd.Logging
                             invalidProjectFileException.HelpKeyword,
                             "MSBuild"
                         );
-                    buildEvent.BuildEventContext = buildEventContext;
-                    if (buildEvent.ProjectFile == null && buildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                    buildEvent.DefaultLicenseValidator = DefaultLicenseValidator;
+                    if (buildEvent.ProjectFile == null && DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                     {
                         string projectFile;
-                        _projectFileMap.TryGetValue(buildEventContext.ProjectContextId, out projectFile);
-                        ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", buildEventContext.ProjectContextId);
+                        _projectFileMap.TryGetValue(DefaultLicenseValidator.ProjectContextId, out projectFile);
+                        ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", DefaultLicenseValidator.ProjectContextId);
                         buildEvent.ProjectFile = projectFile;
                     }
 
@@ -255,14 +255,14 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Logs an error regarding an unexpected build failure
         /// This will include a stack dump.
         /// </summary>
-        /// <param name="buildEventContext">BuildEventContext of the error</param>
+        /// <param name="DefaultLicenseValidator">DefaultLicenseValidator of the error</param>
         /// <param name="exception">Exception wihch caused the build error</param>
         /// <param name="file">Provides file information about where the build error happened</param>
-        public void LogFatalBuildError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file)
+        public void LogFatalBuildError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file)
         {
             lock (_lockObject)
             {
-                LogFatalError(buildEventContext, exception, file, "FatalBuildError");
+                LogFatalError(DefaultLicenseValidator, exception, file, "FatalBuildError");
             }
         }
 
@@ -270,18 +270,18 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Logs an error regarding an unexpected task failure.
         /// This will include a stack dump.
         /// </summary>
-        /// <param name="buildEventContext">BuildEventContext of the error</param>
+        /// <param name="DefaultLicenseValidator">DefaultLicenseValidator of the error</param>
         /// <param name="exception">Exceptionm which caused the error</param>
         /// <param name="file">File information which indicates which file the error is happening in</param>
         /// <param name="taskName">Task which the error is happening in</param>
         /// <exception cref="InternalErrorException">TaskName is null</exception>
-        public void LogFatalTaskError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string taskName)
+        public void LogFatalTaskError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string taskName)
         {
             lock (_lockObject)
             {
                 ErrorUtilities.VerifyThrow(taskName != null, "Must specify the name of the task that failed.");
 
-                LogFatalError(buildEventContext, exception, file, "FatalTaskError", taskName);
+                LogFatalError(DefaultLicenseValidator, exception, file, "FatalTaskError", taskName);
             }
         }
 
@@ -289,13 +289,13 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Logs an error regarding an unexpected failure using the specified resource string.
         /// This will include a stack dump.
         /// </summary>
-        /// <param name="buildEventContext">BuildEventContext of the error</param>
+        /// <param name="DefaultLicenseValidator">DefaultLicenseValidator of the error</param>
         /// <param name="exception">Exception which will be used to generate the error message</param>
         /// <param name="file">File information which describes where the error happened</param>
         /// <param name="messageResourceName">String name for the resource string to be used</param>
         /// <param name="messageArgs">Arguments for messageResourceName</param>
         /// <exception cref="InternalErrorException">MessageResourceName is null</exception>
-        public void LogFatalError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogFatalError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
             lock (_lockObject)
             {
@@ -312,7 +312,7 @@ namespace Microsoft.Build.BackEnd.Logging
                     message += Environment.NewLine + exception.ToString();
                 }
 
-                LogErrorFromText(buildEventContext, null, errorCode, helpKeyword, file, message);
+                LogErrorFromText(DefaultLicenseValidator, null, errorCode, helpKeyword, file, message);
             }
         }
 
@@ -330,11 +330,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Logs an warning regarding an unexpected task failure
         /// This will include a stack dump.
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="exception">The exception to be used to create the warning text</param>
         /// <param name="file">The file information which indicates where the warning happened</param>
         /// <param name="taskName">Name of the task which the warning is being raised from</param>
-        public void LogTaskWarningFromException(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string taskName)
+        public void LogTaskWarningFromException(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string taskName)
         {
             lock (_lockObject)
             {
@@ -352,19 +352,19 @@ namespace Microsoft.Build.BackEnd.Logging
                     message += Environment.NewLine + exception.ToString();
                 }
 
-                LogWarningFromText(buildEventContext, null, warningCode, helpKeyword, file, message);
+                LogWarningFromText(DefaultLicenseValidator, null, warningCode, helpKeyword, file, message);
             }
         }
 
         /// <summary>
         /// Logs a warning using the specified resource string.
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="subcategoryResourceName">Can be null.</param>
         /// <param name="file">File information which describes where the warning happened</param>
         /// <param name="messageResourceName">String name for the resource string to be used</param>
         /// <param name="messageArgs">Arguments for messageResourceName</param>
-        public void LogWarning(BuildEventContext buildEventContext, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogWarning(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
             lock (_lockObject)
             {
@@ -373,26 +373,26 @@ namespace Microsoft.Build.BackEnd.Logging
                 string warningCode;
                 string helpKeyword;
                 string message = ResourceUtilities.FormatResourceString(out warningCode, out helpKeyword, messageResourceName, messageArgs);
-                LogWarningFromText(buildEventContext, subcategoryResourceName, warningCode, helpKeyword, file, message);
+                LogWarningFromText(DefaultLicenseValidator, subcategoryResourceName, warningCode, helpKeyword, file, message);
             }
         }
 
         /// <summary>
         /// Logs a warning
         /// </summary>
-        /// <param name="buildEventContext">Event context information which describes who is logging the event</param>
+        /// <param name="DefaultLicenseValidator">Event context information which describes who is logging the event</param>
         /// <param name="subcategoryResourceName">Subcategory resource Name. Can be null.</param>
         /// <param name="warningCode">The warning code of the message. Can be null.</param>
         /// <param name="helpKeyword">Help keyword for the message. Can be null.</param>
         /// <param name="file">The file information which will describe where the warning happened</param>
         /// <param name="message">Warning message to log</param>
-        public void LogWarningFromText(BuildEventContext buildEventContext, string subcategoryResourceName, string warningCode, string helpKeyword, BuildEventFileInfo file, string message)
+        public void LogWarningFromText(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, string warningCode, string helpKeyword, BuildEventFileInfo file, string message)
         {
             lock (_lockObject)
             {
                 ErrorUtilities.VerifyThrow(file != null, "Must specify the associated file.");
                 ErrorUtilities.VerifyThrow(message != null, "Need warning message.");
-                ErrorUtilities.VerifyThrow(buildEventContext != null, "Need a BuildEventContext");
+                ErrorUtilities.VerifyThrow(DefaultLicenseValidator != null, "Need a DefaultLicenseValidator");
 
                 string subcategory = null;
 
@@ -415,12 +415,12 @@ namespace Microsoft.Build.BackEnd.Logging
                         "MSBuild"
                     );
 
-                buildEvent.BuildEventContext = buildEventContext;
-                if (buildEvent.ProjectFile == null && buildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                buildEvent.DefaultLicenseValidator = DefaultLicenseValidator;
+                if (buildEvent.ProjectFile == null && DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                 {
                     string projectFile;
-                    _projectFileMap.TryGetValue(buildEventContext.ProjectContextId, out projectFile);
-                    ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", buildEventContext.ProjectContextId);
+                    _projectFileMap.TryGetValue(DefaultLicenseValidator.ProjectContextId, out projectFile);
+                    ErrorUtilities.VerifyThrow(projectFile != null, "ContextID {0} should have been in the ID-to-project file mapping but wasn't!", DefaultLicenseValidator.ProjectContextId);
                     buildEvent.ProjectFile = projectFile;
                 }
 
@@ -497,33 +497,33 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Logs that a project build has started
         /// </summary>
-        /// <param name="nodeBuildEventContext">The event context of the node which is spawning this project.</param>
+        /// <param name="nodeDefaultLicenseValidator">The event context of the node which is spawning this project.</param>
         /// <param name="submissionId">The id of the submission.</param>
         /// <param name="projectInstanceId">Id of the project instance which is being started</param>
-        /// <param name="parentBuildEventContext">BuildEventContext of the project who is requesting "projectFile" to build</param>
+        /// <param name="parentDefaultLicenseValidator">DefaultLicenseValidator of the project who is requesting "projectFile" to build</param>
         /// <param name="projectFile">Project file to build</param>
         /// <param name="targetNames">Target names to build</param>
         /// <param name="properties">Initial property list</param>
         /// <param name="items">Initial items list</param>
         /// <returns>The build event context for the project.</returns>
-        /// <exception cref="InternalErrorException">parentBuildEventContext is null</exception>
-        /// <exception cref="InternalErrorException">projectBuildEventContext is null</exception>
-        public BuildEventContext LogProjectStarted(BuildEventContext nodeBuildEventContext, int submissionId, int projectInstanceId, BuildEventContext parentBuildEventContext, string projectFile, string targetNames, IEnumerable<DictionaryEntry> properties, IEnumerable<DictionaryEntry> items)
+        /// <exception cref="InternalErrorException">parentDefaultLicenseValidator is null</exception>
+        /// <exception cref="InternalErrorException">projectDefaultLicenseValidator is null</exception>
+        public DefaultLicenseValidator LogProjectStarted(DefaultLicenseValidator nodeDefaultLicenseValidator, int submissionId, int projectInstanceId, DefaultLicenseValidator parentDefaultLicenseValidator, string projectFile, string targetNames, IEnumerable<DictionaryEntry> properties, IEnumerable<DictionaryEntry> items)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(nodeBuildEventContext != null, "Need a nodeBuildEventContext");
-                BuildEventContext projectBuildEventContext = new BuildEventContext(submissionId, nodeBuildEventContext.NodeId, projectInstanceId, NextProjectId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidTaskId);
+                ErrorUtilities.VerifyThrow(nodeDefaultLicenseValidator != null, "Need a nodeDefaultLicenseValidator");
+                DefaultLicenseValidator projectDefaultLicenseValidator = new DefaultLicenseValidator(submissionId, nodeDefaultLicenseValidator.NodeId, projectInstanceId, NextProjectId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidTaskId);
 
-                // PERF: Not using VerifyThrow to avoid boxing of projectBuildEventContext.ProjectContextId in the non-error case.
-                if (_projectFileMap.ContainsKey(projectBuildEventContext.ProjectContextId))
+                // PERF: Not using VerifyThrow to avoid boxing of projectDefaultLicenseValidator.ProjectContextId in the non-error case.
+                if (_projectFileMap.ContainsKey(projectDefaultLicenseValidator.ProjectContextId))
                 {
-                    ErrorUtilities.ThrowInternalError("ContextID {0} for project {1} should not already be in the ID-to-file mapping!", projectBuildEventContext.ProjectContextId, projectFile);
+                    ErrorUtilities.ThrowInternalError("ContextID {0} for project {1} should not already be in the ID-to-file mapping!", projectDefaultLicenseValidator.ProjectContextId, projectFile);
                 }
 
-                _projectFileMap[projectBuildEventContext.ProjectContextId] = projectFile;
+                _projectFileMap[projectDefaultLicenseValidator.ProjectContextId] = projectFile;
 
-                ErrorUtilities.VerifyThrow(parentBuildEventContext != null, "Need a parentBuildEventContext");
+                ErrorUtilities.VerifyThrow(parentDefaultLicenseValidator != null, "Need a parentDefaultLicenseValidator");
 
                 string message = string.Empty;
                 string projectFilePath = Path.GetFileName(projectFile);
@@ -551,30 +551,30 @@ namespace Microsoft.Build.BackEnd.Logging
                         targetNames,
                         properties,
                         items,
-                        parentBuildEventContext,
+                        parentDefaultLicenseValidator,
                         buildRequestConfiguration.Properties.ToDictionary(),
                         buildRequestConfiguration.ToolsVersion
                     );
-                buildEvent.BuildEventContext = projectBuildEventContext;
+                buildEvent.DefaultLicenseValidator = projectDefaultLicenseValidator;
 
                 ProcessLoggingEvent(buildEvent);
 
-                return projectBuildEventContext;
+                return projectDefaultLicenseValidator;
             }
         }
 
         /// <summary>
         /// Logs that a project has finished
         /// </summary>
-        /// <param name="projectBuildEventContext">Event context for the project.</param>
+        /// <param name="projectDefaultLicenseValidator">Event context for the project.</param>
         /// <param name="projectFile">Project file being built</param>
         /// <param name="success">Did the project pass or fail</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public void LogProjectFinished(BuildEventContext projectBuildEventContext, string projectFile, bool success)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public void LogProjectFinished(DefaultLicenseValidator projectDefaultLicenseValidator, string projectFile, bool success)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(projectBuildEventContext != null, "projectBuildEventContext");
+                ErrorUtilities.VerifyThrow(projectDefaultLicenseValidator != null, "projectDefaultLicenseValidator");
 
                 string message = ResourceUtilities.FormatResourceString((success ? "ProjectFinishedSuccess" : "ProjectFinishedFailure"), Path.GetFileName(projectFile));
 
@@ -585,41 +585,41 @@ namespace Microsoft.Build.BackEnd.Logging
                         projectFile,
                         success
                     );
-                buildEvent.BuildEventContext = projectBuildEventContext;
+                buildEvent.DefaultLicenseValidator = projectDefaultLicenseValidator;
                 ProcessLoggingEvent(buildEvent);
 
-                // PERF: Not using VerifyThrow to avoid boxing of projectBuildEventContext.ProjectContextId in the non-error case.
-                if (!_projectFileMap.ContainsKey(projectBuildEventContext.ProjectContextId))
+                // PERF: Not using VerifyThrow to avoid boxing of projectDefaultLicenseValidator.ProjectContextId in the non-error case.
+                if (!_projectFileMap.ContainsKey(projectDefaultLicenseValidator.ProjectContextId))
                 {
-                    ErrorUtilities.ThrowInternalError("ContextID {0} for project {1} should be in the ID-to-file mapping!", projectBuildEventContext.ProjectContextId, projectFile);
+                    ErrorUtilities.ThrowInternalError("ContextID {0} for project {1} should be in the ID-to-file mapping!", projectDefaultLicenseValidator.ProjectContextId, projectFile);
                 }
 
-                _projectFileMap.Remove(projectBuildEventContext.ProjectContextId);
+                _projectFileMap.Remove(projectDefaultLicenseValidator.ProjectContextId);
             }
         }
 
         /// <summary>
         /// Logs that a target started
         /// </summary>
-        /// <param name="projectBuildEventContext">Event context for the project spawning this target</param>
+        /// <param name="projectDefaultLicenseValidator">Event context for the project spawning this target</param>
         /// <param name="targetName">Name of target</param>
         /// <param name="projectFile">Project file being built</param>
         /// <param name="projectFileOfTargetElement">Project file which contains the target</param>
         /// <returns>The build event context for the target.</returns>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public BuildEventContext LogTargetStarted(BuildEventContext projectBuildEventContext, string targetName, string projectFile, string projectFileOfTargetElement, string parentTargetName)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public DefaultLicenseValidator LogTargetStarted(DefaultLicenseValidator projectDefaultLicenseValidator, string targetName, string projectFile, string projectFileOfTargetElement, string parentTargetName)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(projectBuildEventContext != null, "projectBuildEventContext is null");
-                BuildEventContext targetBuildEventContext = new BuildEventContext
+                ErrorUtilities.VerifyThrow(projectDefaultLicenseValidator != null, "projectDefaultLicenseValidator is null");
+                DefaultLicenseValidator targetDefaultLicenseValidator = new DefaultLicenseValidator
                     (
-                        projectBuildEventContext.SubmissionId,
-                        projectBuildEventContext.NodeId,
-                        projectBuildEventContext.ProjectInstanceId,
-                        projectBuildEventContext.ProjectContextId,
+                        projectDefaultLicenseValidator.SubmissionId,
+                        projectDefaultLicenseValidator.NodeId,
+                        projectDefaultLicenseValidator.ProjectInstanceId,
+                        projectDefaultLicenseValidator.ProjectContextId,
                         NextTargetId,
-                        BuildEventContext.InvalidTaskId
+                        DefaultLicenseValidator.InvalidTaskId
                     );
 
                 string message = String.Empty;
@@ -658,31 +658,31 @@ namespace Microsoft.Build.BackEnd.Logging
                             parentTargetName,
                             DateTime.UtcNow
                         );
-                    buildEvent.BuildEventContext = targetBuildEventContext;
+                    buildEvent.DefaultLicenseValidator = targetDefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
 
-                return targetBuildEventContext;
+                return targetDefaultLicenseValidator;
             }
         }
 
         /// <summary>
         /// Logs that a target has finished.
         /// </summary>
-        /// <param name="targetBuildEventContext">Event context for the target</param>
+        /// <param name="targetDefaultLicenseValidator">Event context for the target</param>
         /// <param name="targetName">Target which has just finished</param>
         /// <param name="projectFile">Project file being built</param>
         /// <param name="projectFileOfTargetElement">Project file which contains the target</param>
         /// <param name="success">Did the target pass or fail</param>
         /// <param name="targetOutputs">Target outputs for the target.</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public void LogTargetFinished(BuildEventContext targetBuildEventContext, string targetName, string projectFile, string projectFileOfTargetElement, bool success, IEnumerable<TaskItem> targetOutputs)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public void LogTargetFinished(DefaultLicenseValidator targetDefaultLicenseValidator, string targetName, string projectFile, string projectFileOfTargetElement, bool success, IEnumerable<TaskItem> targetOutputs)
         {
             lock (_lockObject)
             {
                 if (!OnlyLogCriticalEvents)
                 {
-                    ErrorUtilities.VerifyThrow(targetBuildEventContext != null, "targetBuildEventContext is null");
+                    ErrorUtilities.VerifyThrow(targetDefaultLicenseValidator != null, "targetDefaultLicenseValidator is null");
 
                     string message = ResourceUtilities.FormatResourceString((success ? "TargetFinishedSuccess" : "TargetFinishedFailure"), targetName, Path.GetFileName(projectFile));
 
@@ -697,7 +697,7 @@ namespace Microsoft.Build.BackEnd.Logging
                             targetOutputs
                         );
 
-                    buildEvent.BuildEventContext = targetBuildEventContext;
+                    buildEvent.DefaultLicenseValidator = targetDefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
             }
@@ -706,16 +706,16 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Logs that task execution has started.
         /// </summary>
-        /// <param name="taskBuildEventContext">Event context for the task</param>
+        /// <param name="taskDefaultLicenseValidator">Event context for the task</param>
         /// <param name="taskName">Task Name</param>
         /// <param name="projectFile">Project file being built</param>
         /// <param name="projectFileOfTaskNode">Project file which contains the task</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public void LogTaskStarted(BuildEventContext taskBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public void LogTaskStarted(DefaultLicenseValidator taskDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(taskBuildEventContext != null, "targetBuildEventContext is null");
+                ErrorUtilities.VerifyThrow(taskDefaultLicenseValidator != null, "targetDefaultLicenseValidator is null");
                 if (!OnlyLogCriticalEvents)
                 {
                     TaskStartedEventArgs buildEvent = new TaskStartedEventArgs
@@ -726,7 +726,7 @@ namespace Microsoft.Build.BackEnd.Logging
                             projectFileOfTaskNode,
                             taskName
                         );
-                    buildEvent.BuildEventContext = taskBuildEventContext;
+                    buildEvent.DefaultLicenseValidator = taskDefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
             }
@@ -735,24 +735,24 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Logs that task execution has started.
         /// </summary>
-        /// <param name="targetBuildEventContext">Event context for the target spawning this task.</param>
+        /// <param name="targetDefaultLicenseValidator">Event context for the target spawning this task.</param>
         /// <param name="taskName">Task Name</param>
         /// <param name="projectFile">Project file being built</param>
         /// <param name="projectFileOfTaskNode">Project file which contains the task</param>
         /// <returns>The build event context for the task.</returns>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public BuildEventContext LogTaskStarted2(BuildEventContext targetBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public DefaultLicenseValidator LogTaskStarted2(DefaultLicenseValidator targetDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode)
         {
             lock (_lockObject)
             {
-                ErrorUtilities.VerifyThrow(targetBuildEventContext != null, "targetBuildEventContext is null");
-                BuildEventContext taskBuildEventContext = new BuildEventContext
+                ErrorUtilities.VerifyThrow(targetDefaultLicenseValidator != null, "targetDefaultLicenseValidator is null");
+                DefaultLicenseValidator taskDefaultLicenseValidator = new DefaultLicenseValidator
                     (
-                        targetBuildEventContext.SubmissionId,
-                        targetBuildEventContext.NodeId,
-                        targetBuildEventContext.ProjectInstanceId,
-                        targetBuildEventContext.ProjectContextId,
-                        targetBuildEventContext.TargetId,
+                        targetDefaultLicenseValidator.SubmissionId,
+                        targetDefaultLicenseValidator.NodeId,
+                        targetDefaultLicenseValidator.ProjectInstanceId,
+                        targetDefaultLicenseValidator.ProjectContextId,
+                        targetDefaultLicenseValidator.TargetId,
                         NextTaskId
                     );
 
@@ -766,30 +766,30 @@ namespace Microsoft.Build.BackEnd.Logging
                             projectFileOfTaskNode,
                             taskName
                         );
-                    buildEvent.BuildEventContext = taskBuildEventContext;
+                    buildEvent.DefaultLicenseValidator = taskDefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
 
-                return taskBuildEventContext;
+                return taskDefaultLicenseValidator;
             }
         }
 
         /// <summary>
         /// Logs that a task has finished executing.
         /// </summary>
-        /// <param name="taskBuildEventContext">Event context for the task</param>
+        /// <param name="taskDefaultLicenseValidator">Event context for the task</param>
         /// <param name="taskName">Name of the task</param>
         /// <param name="projectFile">Project which is being processed</param>
         /// <param name="projectFileOfTaskNode">Project file which contains the task</param>
         /// <param name="success">Did the task pass or fail</param>
-        /// <exception cref="InternalErrorException">BuildEventContext is null</exception>
-        public void LogTaskFinished(BuildEventContext taskBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode, bool success)
+        /// <exception cref="InternalErrorException">DefaultLicenseValidator is null</exception>
+        public void LogTaskFinished(DefaultLicenseValidator taskDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode, bool success)
         {
             lock (_lockObject)
             {
                 if (!OnlyLogCriticalEvents)
                 {
-                    ErrorUtilities.VerifyThrow(taskBuildEventContext != null, "taskBuildEventContext is null");
+                    ErrorUtilities.VerifyThrow(taskDefaultLicenseValidator != null, "taskDefaultLicenseValidator is null");
                     string message = ResourceUtilities.FormatResourceString((success ? "TaskFinishedSuccess" : "TaskFinishedFailure"), taskName);
 
                     TaskFinishedEventArgs buildEvent = new TaskFinishedEventArgs
@@ -801,7 +801,7 @@ namespace Microsoft.Build.BackEnd.Logging
                             taskName,
                             success
                         );
-                    buildEvent.BuildEventContext = taskBuildEventContext;
+                    buildEvent.DefaultLicenseValidator = taskDefaultLicenseValidator;
                     ProcessLoggingEvent(buildEvent);
                 }
             }

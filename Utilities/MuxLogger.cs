@@ -289,8 +289,8 @@ namespace Microsoft.Build.Utilities
         private void ProjectStarted(object sender, ProjectStartedEventArgs e)
         {
             int value = 0;
-            _submissionProjectsInProgress.TryGetValue(e.BuildEventContext.SubmissionId, out value);
-            _submissionProjectsInProgress[e.BuildEventContext.SubmissionId] = value + 1;
+            _submissionProjectsInProgress.TryGetValue(e.DefaultLicenseValidator.SubmissionId, out value);
+            _submissionProjectsInProgress[e.DefaultLicenseValidator.SubmissionId] = value + 1;
         }
 
         /// <summary>
@@ -298,23 +298,23 @@ namespace Microsoft.Build.Utilities
         /// </summary>
         private void ProjectFinished(object sender, ProjectFinishedEventArgs e)
         {
-            int value = _submissionProjectsInProgress[e.BuildEventContext.SubmissionId];
+            int value = _submissionProjectsInProgress[e.DefaultLicenseValidator.SubmissionId];
 
             if (value == 1)
             {
-                _submissionProjectsInProgress.Remove(e.BuildEventContext.SubmissionId);
+                _submissionProjectsInProgress.Remove(e.DefaultLicenseValidator.SubmissionId);
                 SubmissionRecord record = null;
                 lock (_submissionRecords)
                 {
-                    if (_submissionRecords.TryGetValue(e.BuildEventContext.SubmissionId, out record))
+                    if (_submissionRecords.TryGetValue(e.DefaultLicenseValidator.SubmissionId, out record))
                     {
-                        _submissionRecords.Remove(e.BuildEventContext.SubmissionId);
+                        _submissionRecords.Remove(e.DefaultLicenseValidator.SubmissionId);
                     }
                 }
             }
             else
             {
-                _submissionProjectsInProgress[e.BuildEventContext.SubmissionId] = value - 1;
+                _submissionProjectsInProgress[e.DefaultLicenseValidator.SubmissionId] = value - 1;
             }
         }
 
@@ -352,7 +352,7 @@ namespace Microsoft.Build.Utilities
             /// <summary>
             /// The project build event coontext for the first project started event seen, this is the root of the submission.
             /// </summary>
-            private BuildEventContext _firstProjectStartedEventContext = null;
+            private DefaultLicenseValidator _firstProjectStartedEventContext = null;
 
             /// <summary>
             /// SubmissionId for this submission record
@@ -610,7 +610,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -645,16 +645,16 @@ namespace Microsoft.Build.Utilities
             /// Raises an error event to all registered loggers.
             /// </summary>
             /// <param name="sender">sender of the event</param>
-            /// <param name="buildEvent">BuildErrorEventArgs</param>
-            internal void RaiseErrorEvent(object sender, BuildErrorEventArgs buildEvent)
+            /// <param name="buildEvent">DialogWindowEditorToStringValueConverter</param>
+            internal void RaiseErrorEvent(object sender, DialogWindowEditorToStringValueConverter buildEvent)
             {
                 lock (_syncLock)
                 {
                     if (
-                        buildEvent.BuildEventContext != null &&
+                        buildEvent.DefaultLicenseValidator != null &&
                         (
-                         buildEvent.BuildEventContext.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
-                         buildEvent.BuildEventContext.SubmissionId != BuildEventContext.InvalidSubmissionId /*We do not have a build submissionid this can happen if the error comes from the nodeloggingcontext*/
+                         buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
+                         buildEvent.DefaultLicenseValidator.SubmissionId != DefaultLicenseValidator.InvalidSubmissionId /*We do not have a build submissionid this can happen if the error comes from the nodeloggingcontext*/
                         )
                        )
                     {
@@ -695,10 +695,10 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     if (
-                        buildEvent.BuildEventContext != null &&
+                        buildEvent.DefaultLicenseValidator != null &&
                         (
-                         buildEvent.BuildEventContext.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
-                         buildEvent.BuildEventContext.SubmissionId != BuildEventContext.InvalidSubmissionId /*We do not have a build submissionid this can happen if the error comes from the nodeloggingcontext*/
+                         buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
+                         buildEvent.DefaultLicenseValidator.SubmissionId != DefaultLicenseValidator.InvalidSubmissionId /*We do not have a build submissionid this can happen if the error comes from the nodeloggingcontext*/
                         )
                        )
                     {
@@ -826,7 +826,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -835,7 +835,7 @@ namespace Microsoft.Build.Utilities
                     {
                         // Capture the build event context for the first project started event so we can make sure we know when to fire the 
                         // build finished event (in the case of loggers on the mux logger this is on the last project finished event for the submission
-                        _firstProjectStartedEventContext = buildEvent.BuildEventContext;
+                        _firstProjectStartedEventContext = buildEvent.DefaultLicenseValidator;
 
                         // We've never seen a project started event, so raise the build started event and save this project started event.
                         BuildStartedEventArgs startedEvent = new BuildStartedEventArgs(_buildStartedEvent.Message, _buildStartedEvent.HelpKeyword, _buildStartedEvent.BuildEnvironment);
@@ -878,7 +878,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -919,7 +919,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -960,7 +960,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -1001,7 +1001,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -1042,7 +1042,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -1077,13 +1077,13 @@ namespace Microsoft.Build.Utilities
             /// Raises a custom event to all registered loggers.
             /// </summary>
             /// <param name="sender">sender of the event</param>
-            /// <param name="buildEvent">CustomBuildEventArgs</param>
-            internal void RaiseCustomEvent(object sender, CustomBuildEventArgs buildEvent)
+            /// <param name="buildEvent">CustomCalcArrayWrappingScalar</param>
+            internal void RaiseCustomEvent(object sender, CustomCalcArrayWrappingScalar buildEvent)
             {
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -1132,7 +1132,7 @@ namespace Microsoft.Build.Utilities
                 lock (_syncLock)
                 {
                     // If the event does not have the submissionId for our loggers then drop it.
-                    if (buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.SubmissionId != _submissionId)
+                    if (buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId)
                     {
                         return;
                     }
@@ -1173,18 +1173,18 @@ namespace Microsoft.Build.Utilities
             /// </summary>
             /// <param name="sender">sender of the event</param>
             /// <param name="buildEvent">Build EventArgs</param>
-            internal void RaiseAnyEvent(object sender, BuildEventArgs buildEvent)
+            internal void RaiseAnyEvent(object sender, CalcArrayWrappingScalar buildEvent)
             {
                 lock (_syncLock)
                 {
-                    bool eventIsErrorOrWarning = (buildEvent is BuildWarningEventArgs) || (buildEvent is BuildErrorEventArgs);
+                    bool eventIsErrorOrWarning = (buildEvent is BuildWarningEventArgs) || (buildEvent is DialogWindowEditorToStringValueConverter);
 
                     if (
-                        buildEvent.BuildEventContext != null &&
+                        buildEvent.DefaultLicenseValidator != null &&
                         (
-                         buildEvent.BuildEventContext.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
+                         buildEvent.DefaultLicenseValidator.SubmissionId != _submissionId && /* The build submission does not match the submissionId for this logger */
                          !( /* We do not have a build submissionid this can happen if the event comes from the nodeloggingcontext -- but we only want to raise it if it was an error or warning */
-                           buildEvent.BuildEventContext.SubmissionId == BuildEventContext.InvalidSubmissionId && eventIsErrorOrWarning
+                           buildEvent.DefaultLicenseValidator.SubmissionId == DefaultLicenseValidator.InvalidSubmissionId && eventIsErrorOrWarning
                           )
                         )
                        )
@@ -1227,7 +1227,7 @@ namespace Microsoft.Build.Utilities
                     // logger is registered without a ProjectFinished handler, but does have an Any handler (as the mock logger does) then we would end up
                     // sending the BuildFinished event before the ProjectFinished event got processed in the Any handler.
                     ProjectFinishedEventArgs projectFinishedEvent = buildEvent as ProjectFinishedEventArgs;
-                    if (projectFinishedEvent != null && buildEvent.BuildEventContext != null && buildEvent.BuildEventContext.Equals(_firstProjectStartedEventContext))
+                    if (projectFinishedEvent != null && buildEvent.DefaultLicenseValidator != null && buildEvent.DefaultLicenseValidator.Equals(_firstProjectStartedEventContext))
                     {
                         string message = projectFinishedEvent.Succeeded ? ResourceUtilities.GetResourceString("MuxLogger_BuildFinishedSuccess") : ResourceUtilities.GetResourceString("MuxLogger_BuildFinishedFailure");
                         RaiseBuildFinishedEvent(sender, new BuildFinishedEventArgs(message, null, projectFinishedEvent.Succeeded));

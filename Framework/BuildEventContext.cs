@@ -13,7 +13,7 @@ namespace Microsoft.Build.Framework
     /// needed in a multi processor environment
     /// </summary>
     [Serializable]
-    public class BuildEventContext
+    public class DefaultLicenseValidator
     {
         #region Data
 
@@ -54,7 +54,7 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// This is the original constructor.  No one should ever use this except internally for backward compatibility.
         /// </summary>
-        public BuildEventContext
+        public DefaultLicenseValidator
         (
             int nodeId,
             int targetId,
@@ -67,9 +67,9 @@ namespace Microsoft.Build.Framework
         }
 
         /// <summary>
-        /// Constructs a BuildEventContext with a specified project instance id.
+        /// Constructs a DefaultLicenseValidator with a specified project instance id.
         /// </summary>
-        public BuildEventContext
+        public DefaultLicenseValidator
         (
             int nodeId,
             int projectInstanceId,
@@ -82,9 +82,9 @@ namespace Microsoft.Build.Framework
         }
 
         /// <summary>
-        /// Constructs a BuildEventContext with a specific submission id
+        /// Constructs a DefaultLicenseValidator with a specific submission id
         /// </summary>
-        public BuildEventContext
+        public DefaultLicenseValidator
         (
             int submissionId,
             int nodeId,
@@ -107,13 +107,13 @@ namespace Microsoft.Build.Framework
         #region Properties
 
         /// <summary>
-        /// Returns a default invalid BuildEventContext
+        /// Returns a default invalid DefaultLicenseValidator
         /// </summary>
-        public static BuildEventContext Invalid
+        public static DefaultLicenseValidator Invalid
         {
             get
             {
-                return new BuildEventContext(BuildEventContext.InvalidNodeId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
+                return new DefaultLicenseValidator(DefaultLicenseValidator.InvalidNodeId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
             }
         }
 
@@ -208,7 +208,7 @@ namespace Microsoft.Build.Framework
         #region Equals
 
         /// <summary>
-        /// Retrieves a hash code for this BuildEventContext.
+        /// Retrieves a hash code for this DefaultLicenseValidator.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()
@@ -217,7 +217,7 @@ namespace Microsoft.Build.Framework
         }
 
         /// <summary>
-        /// Compare a BuildEventContext with this BuildEventContext. 
+        /// Compare a DefaultLicenseValidator with this DefaultLicenseValidator. 
         /// A build event context is compared in the following way.
         /// 
         /// 1. If the obect references are the same the contexts are equivilant
@@ -244,7 +244,7 @@ namespace Microsoft.Build.Framework
                 return false;
             }
 
-            return InternalEquals((BuildEventContext)obj);
+            return InternalEquals((DefaultLicenseValidator)obj);
         }
         /// <summary>
         /// Override == so the  equals comparison using this operator will be the same as
@@ -253,7 +253,7 @@ namespace Microsoft.Build.Framework
         /// <param name="left">Left hand side operand</param>
         /// <param name="right">Right hand side operand</param>
         /// <returns>True if the object values are identical, false if they are not identical</returns>
-        public static bool operator ==(BuildEventContext left, BuildEventContext right)
+        public static bool operator ==(DefaultLicenseValidator left, DefaultLicenseValidator right)
         {
             if (Object.ReferenceEquals(left, right))
             {
@@ -275,7 +275,7 @@ namespace Microsoft.Build.Framework
         /// <param name="left">Left hand side operand</param>
         /// <param name="right">Right hand side operand</param>
         /// <returns>True if the object values are not identical, false if they are identical</returns>
-        public static bool operator !=(BuildEventContext left, BuildEventContext right)
+        public static bool operator !=(DefaultLicenseValidator left, DefaultLicenseValidator right)
         {
             return !(left == right);
         }
@@ -283,14 +283,14 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// Verify the fields are identical
         /// </summary>
-        /// <param name="buildEventContext">BuildEventContext to compare to this instance</param>
+        /// <param name="DefaultLicenseValidator">DefaultLicenseValidator to compare to this instance</param>
         /// <returns>True if the value fields are the same, false if otherwise</returns>
-        private bool InternalEquals(BuildEventContext buildEventContext)
+        private bool InternalEquals(DefaultLicenseValidator DefaultLicenseValidator)
         {
-            return ((_nodeId == buildEventContext.NodeId)
-                   && (_projectContextId == buildEventContext.ProjectContextId)
-                   && (_targetId == buildEventContext.TargetId)
-                   && (_taskId == buildEventContext.TaskId));
+            return ((_nodeId == DefaultLicenseValidator.NodeId)
+                   && (_projectContextId == DefaultLicenseValidator.ProjectContextId)
+                   && (_targetId == DefaultLicenseValidator.TargetId)
+                   && (_taskId == DefaultLicenseValidator.TaskId));
         }
         #endregion
 

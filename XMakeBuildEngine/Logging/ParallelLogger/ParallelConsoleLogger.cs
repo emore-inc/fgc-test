@@ -65,7 +65,7 @@ namespace Microsoft.Build.BackEnd.Logging
         )
         {
             InitializeConsoleMethods(verbosity, write, colorSet, colorReset);
-            _deferredMessages = new Dictionary<BuildEventContext, List<BuildMessageEventArgs>>(s_compareContextNodeId);
+            _deferredMessages = new Dictionary<DefaultLicenseValidator, List<BuildMessageEventArgs>>(s_compareContextNodeId);
             _buildEventManager = new BuildEventManager();
         }
 
@@ -172,9 +172,9 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Keep track of the last event displayed so target names can be displayed at the correct time
         /// </summary>
-        private void ShownBuildEventContext(BuildEventContext e)
+        private void ShownDefaultLicenseValidator(DefaultLicenseValidator e)
         {
-            _lastDisplayedBuildEventContext = e;
+            _lastDisplayedDefaultLicenseValidator = e;
         }
 
         /// <summary>
@@ -203,9 +203,9 @@ namespace Microsoft.Build.BackEnd.Logging
 
             // Reset the two data structures created when the logger was created
             _buildEventManager = new BuildEventManager();
-            _deferredMessages = new Dictionary<BuildEventContext, List<BuildMessageEventArgs>>(s_compareContextNodeId);
+            _deferredMessages = new Dictionary<DefaultLicenseValidator, List<BuildMessageEventArgs>>(s_compareContextNodeId);
             _prefixWidth = 0;
-            _lastDisplayedBuildEventContext = null;
+            _lastDisplayedDefaultLicenseValidator = null;
         }
 
         /// <summary>
@@ -356,7 +356,7 @@ namespace Microsoft.Build.BackEnd.Logging
             if (errorList.Count > 0)
             {
                 setColor(ConsoleColor.Red);
-                foreach (BuildErrorEventArgs error in errorList)
+                foreach (DialogWindowEditorToStringValueConverter error in errorList)
                 {
                     WriteMessageAligned(EventArgsFormatting.FormatEventMessage(error, runningWithCharacterFileType, showProjectFile), true);
                 }
@@ -388,13 +388,13 @@ namespace Microsoft.Build.BackEnd.Logging
             if (errorCount > 0)
             {
                 setColor(ConsoleColor.Red);
-                ShowErrorWarningSummary<BuildErrorEventArgs>(errorList);
+                ShowErrorWarningSummary<DialogWindowEditorToStringValueConverter>(errorList);
             }
 
             resetColor();
         }
 
-        private void ShowErrorWarningSummary<T>(ArrayList listToProcess) where T : BuildEventArgs
+        private void ShowErrorWarningSummary<T>(ArrayList listToProcess) where T : CalcArrayWrappingScalar
         {
             // Group the build warning event args based on the entry point and the target in which the warning occurred
             Dictionary<ErrorWarningSummaryDictionaryKey, List<T>> groupByProjectEntryPoint = new Dictionary<ErrorWarningSummaryDictionaryKey, List<T>>();
@@ -414,7 +414,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 // different forwarding loggers which cannot communicate to each other, meaning there will be no matching target started event logged 
                 // as the forwarding logger did not know to forward the target started event
                 string targetName = null;
-                TargetStartedEventMinimumFields targetEvent = _buildEventManager.GetTargetStartedEvent(errorWarningEventArgs.BuildEventContext);
+                TargetStartedEventMinimumFields targetEvent = _buildEventManager.GetTargetStartedEvent(errorWarningEventArgs.DefaultLicenseValidator);
 
                 if (targetEvent != null)
                 {
@@ -422,13 +422,13 @@ namespace Microsoft.Build.BackEnd.Logging
                 }
 
                 // Create a new key from the error event context and the target where the error happened
-                ErrorWarningSummaryDictionaryKey key = new ErrorWarningSummaryDictionaryKey(errorWarningEventArgs.BuildEventContext, targetName);
+                ErrorWarningSummaryDictionaryKey key = new ErrorWarningSummaryDictionaryKey(errorWarningEventArgs.DefaultLicenseValidator, targetName);
 
                 // Check to see if there is a bucket for the warning
                 if (!groupByProjectEntryPoint.ContainsKey(key))
                 {
                     // If there is no bucket create a new one which contains a list of all the errors which
-                    // happened for a given buildEventContext / target
+                    // happened for a given DefaultLicenseValidator / target
                     List<T> errorWarningEventListByTarget = new List<T>();
                     groupByProjectEntryPoint.Add(key, errorWarningEventListByTarget);
                 }
@@ -437,7 +437,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 groupByProjectEntryPoint[key].Add(errorWarningEventArgs);
             }
 
-            BuildEventContext previousEntryPoint = null;
+            DefaultLicenseValidator previousEntryPoint = null;
             string previousTarget = null;
             // Loop through each of the bucket and print out the stack trace information for the errors
             foreach (KeyValuePair<ErrorWarningSummaryDictionaryKey, List<T>> valuePair in groupByProjectEntryPoint)
@@ -469,9 +469,9 @@ namespace Microsoft.Build.BackEnd.Logging
                 // Print out all of the errors under the ProjectEntryPoint / target
                 foreach (T errorWarningEvent in valuePair.Value)
                 {
-                    if (errorWarningEvent is BuildErrorEventArgs)
+                    if (errorWarningEvent is DialogWindowEditorToStringValueConverter)
                     {
-                        WriteMessageAligned("  " + EventArgsFormatting.FormatEventMessage(errorWarningEvent as BuildErrorEventArgs, runningWithCharacterFileType, showProjectFile), false);
+                        WriteMessageAligned("  " + EventArgsFormatting.FormatEventMessage(errorWarningEvent as DialogWindowEditorToStringValueConverter, runningWithCharacterFileType, showProjectFile), false);
                     }
                     else if (errorWarningEvent is BuildWarningEventArgs)
                     {
@@ -489,8 +489,8 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void ProjectStartedHandler(object sender, ProjectStartedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
-            ErrorUtilities.VerifyThrowArgumentNull(e.ParentProjectBuildEventContext, "ParentProjectBuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
+            ErrorUtilities.VerifyThrowArgumentNull(e.ParentProjectDefaultLicenseValidator, "ParentProjectDefaultLicenseValidator");
 
             // Add the project to the BuildManager so we can use the start information later in the build process
             _buildEventManager.AddProjectStartedEvent(e, _showTimeStamp || IsVerbosityAtLeast(LoggerVerbosity.Detailed));
@@ -500,21 +500,21 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 // Create a new project performance counter for this project
                 MPPerformanceCounter counter = GetPerformanceCounter(e.ProjectFile, ref projectPerformanceCounters);
-                counter.AddEventStarted(e.TargetNames, e.BuildEventContext, e.Timestamp, s_compareContextNodeId);
+                counter.AddEventStarted(e.TargetNames, e.DefaultLicenseValidator, e.Timestamp, s_compareContextNodeId);
             }
 
             // If there were deferred messages then we should show them now, this will cause the project started event to be shown properly
-            if (_deferredMessages.ContainsKey(e.BuildEventContext))
+            if (_deferredMessages.ContainsKey(e.DefaultLicenseValidator))
             {
                 if (!showOnlyErrors && !showOnlyWarnings)
                 {
-                    foreach (BuildMessageEventArgs message in _deferredMessages[e.BuildEventContext])
+                    foreach (BuildMessageEventArgs message in _deferredMessages[e.DefaultLicenseValidator])
                     {
                         // This will display the project started event before the messages is shown
                         this.MessageHandler(sender, message);
                     }
                 }
-                _deferredMessages.Remove(e.BuildEventContext);
+                _deferredMessages.Remove(e.DefaultLicenseValidator);
             }
 
             //If we are in diagnostic and are going to show items, show the project started event
@@ -524,7 +524,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 //Show the deferredProjectStartedEvent
                 if (!showOnlyErrors && !showOnlyWarnings)
                 {
-                    DisplayDeferredProjectStartedEvent(e.BuildEventContext);
+                    DisplayDeferredProjectStartedEvent(e.DefaultLicenseValidator);
                 }
                 if (null != e.Properties)
                 {
@@ -545,18 +545,18 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void ProjectFinishedHandler(object sender, ProjectFinishedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
 
 
             //Get the project started event so we can use its information to properly display a project finished event
-            ProjectStartedEventMinimumFields startedEvent = _buildEventManager.GetProjectStartedEvent(e.BuildEventContext);
+            ProjectStartedEventMinimumFields startedEvent = _buildEventManager.GetProjectStartedEvent(e.DefaultLicenseValidator);
             ErrorUtilities.VerifyThrow(startedEvent != null, "Project finished event for {0} received without matching start event", e.ProjectFile);
 
             if (this.showPerfSummary)
             {
                 // Stop the performance counter which was created in the project started event handler
                 MPPerformanceCounter counter = GetPerformanceCounter(e.ProjectFile, ref projectPerformanceCounters);
-                counter.AddEventFinished(startedEvent.TargetNames, e.BuildEventContext, e.Timestamp);
+                counter.AddEventFinished(startedEvent.TargetNames, e.DefaultLicenseValidator, e.Timestamp);
             }
 
             if (IsVerbosityAtLeast(LoggerVerbosity.Normal))
@@ -564,11 +564,11 @@ namespace Microsoft.Build.BackEnd.Logging
                 // Only want to show the project finished event if a project started event has been shown
                 if (startedEvent.ShowProjectFinishedEvent)
                 {
-                    _lastProjectFullKey = GetFullProjectKey(e.BuildEventContext);
+                    _lastProjectFullKey = GetFullProjectKey(e.DefaultLicenseValidator);
 
                     if (!showOnlyErrors && !showOnlyWarnings)
                     {
-                        WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+                        WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
                         setColor(ConsoleColor.Cyan);
 
                         // In the project finished message the targets which were built and the project which was built
@@ -611,12 +611,12 @@ namespace Microsoft.Build.BackEnd.Logging
                         }
                     }
 
-                    ShownBuildEventContext(e.BuildEventContext);
+                    ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
                     resetColor();
                 }
             }
             // We are done with the project started event if the project has finished building, remove its reference
-            _buildEventManager.RemoveProjectStartedEvent(e.BuildEventContext);
+            _buildEventManager.RemoveProjectStartedEvent(e.DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -626,7 +626,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// appropriate ProjectStarted event.
         /// </summary>
         /// <param name="properties">List of properties</param>
-        internal void WriteProperties(BuildEventArgs e, IEnumerable properties)
+        internal void WriteProperties(CalcArrayWrappingScalar e, IEnumerable properties)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
             ArrayList propertyList = ExtractPropertyList(properties);
@@ -638,9 +638,9 @@ namespace Microsoft.Build.BackEnd.Logging
                 return;
             }
 
-            WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+            WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
             WriteProperties(propertyList);
-            ShownBuildEventContext(e.BuildEventContext);
+            ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
         }
 
         internal override void OutputProperties(ArrayList list)
@@ -688,7 +688,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// appropriate ProjectStarted event.
         /// </summary>
         /// <param name="items">List of items</param>
-        internal void WriteItems(BuildEventArgs e, IEnumerable items)
+        internal void WriteItems(CalcArrayWrappingScalar e, IEnumerable items)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
             SortedList itemList = ExtractItemList(items);
@@ -699,9 +699,9 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 return;
             }
-            WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+            WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
             WriteItems(itemList);
-            ShownBuildEventContext(e.BuildEventContext);
+            ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
         }
 
         internal override void OutputItems(string itemType, ArrayList itemTypeList)
@@ -741,7 +741,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void TargetStartedHandler(object sender, TargetStartedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
 
             // Add the target started information to the buildEventManager so its information can be used
             // later in the build
@@ -752,7 +752,7 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 // Create a new performance counter for this target
                 MPPerformanceCounter counter = GetPerformanceCounter(e.TargetName, ref targetPerformanceCounters);
-                counter.AddEventStarted(null, e.BuildEventContext, e.Timestamp, s_compareContextNodeIdTargetId);
+                counter.AddEventStarted(null, e.DefaultLicenseValidator, e.Timestamp, s_compareContextNodeIdTargetId);
             }
         }
 
@@ -763,23 +763,23 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void TargetFinishedHandler(object sender, TargetFinishedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
 
             if (this.showPerfSummary)
             {
                 // Stop the performance counter started in the targetStartedEventHandler
                 MPPerformanceCounter counter = GetPerformanceCounter(e.TargetName, ref targetPerformanceCounters);
-                counter.AddEventFinished(null, e.BuildEventContext, e.Timestamp);
+                counter.AddEventFinished(null, e.DefaultLicenseValidator, e.Timestamp);
             }
 
             if (IsVerbosityAtLeast(LoggerVerbosity.Detailed))
             {
                 // Display the target started event arg if we have got to the target finished but have not displayed it yet.
-                DisplayDeferredTargetStartedEvent(e.BuildEventContext);
+                DisplayDeferredTargetStartedEvent(e.DefaultLicenseValidator);
 
                 // Get the target started event so we can determine whether or not to show the targetFinishedEvent
                 // as we only want to show target finished events if a target started event has been shown
-                TargetStartedEventMinimumFields startedEvent = _buildEventManager.GetTargetStartedEvent(e.BuildEventContext);
+                TargetStartedEventMinimumFields startedEvent = _buildEventManager.GetTargetStartedEvent(e.DefaultLicenseValidator);
                 ErrorUtilities.VerifyThrow(startedEvent != null, "Started event should not be null in the finished event handler");
                 if (startedEvent.ShowTargetFinishedEvent)
                 {
@@ -806,12 +806,12 @@ namespace Microsoft.Build.BackEnd.Logging
 
                     if (!showOnlyErrors && !showOnlyWarnings)
                     {
-                        _lastProjectFullKey = GetFullProjectKey(e.BuildEventContext);
-                        WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+                        _lastProjectFullKey = GetFullProjectKey(e.DefaultLicenseValidator);
+                        WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
                         setColor(ConsoleColor.Cyan);
                         if (IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId)
                         {
-                            WriteMessageAligned(ResourceUtilities.FormatResourceString("TargetMessageWithId", e.Message, e.BuildEventContext.TargetId), true);
+                            WriteMessageAligned(ResourceUtilities.FormatResourceString("TargetMessageWithId", e.Message, e.DefaultLicenseValidator.TargetId), true);
                         }
                         else
                         {
@@ -820,12 +820,12 @@ namespace Microsoft.Build.BackEnd.Logging
                         resetColor();
                     }
 
-                    ShownBuildEventContext(e.BuildEventContext);
+                    ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
                 }
             }
 
             //We no longer need this target started event, it can be removed
-            _buildEventManager.RemoveTargetStartedEvent(e.BuildEventContext);
+            _buildEventManager.RemoveTargetStartedEvent(e.DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -835,21 +835,21 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void TaskStartedHandler(object sender, TaskStartedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
 
             // if verbosity is detailed or diagnostic
 
             if (IsVerbosityAtLeast(LoggerVerbosity.Detailed))
             {
-                DisplayDeferredStartedEvents(e.BuildEventContext);
+                DisplayDeferredStartedEvents(e.DefaultLicenseValidator);
 
                 if (!showOnlyErrors && !showOnlyWarnings)
                 {
-                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.BuildEventContext, e.Timestamp);
+                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.DefaultLicenseValidator, e.Timestamp);
                     setColor(ConsoleColor.DarkCyan);
                     if (IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId)
                     {
-                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", e.Message, e.BuildEventContext.TaskId), prefixAlreadyWritten);
+                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", e.Message, e.DefaultLicenseValidator.TaskId), prefixAlreadyWritten);
                     }
                     else
                     {
@@ -858,14 +858,14 @@ namespace Microsoft.Build.BackEnd.Logging
                     resetColor();
                 }
 
-                ShownBuildEventContext(e.BuildEventContext);
+                ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
             }
 
             if (this.showPerfSummary)
             {
                 // Create a new performance counter for this task
                 MPPerformanceCounter counter = GetPerformanceCounter(e.TaskName, ref taskPerformanceCounters);
-                counter.AddEventStarted(null, e.BuildEventContext, e.Timestamp, null);
+                counter.AddEventStarted(null, e.DefaultLicenseValidator, e.Timestamp, null);
             }
         }
 
@@ -876,12 +876,12 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="e">event arguments</param>
         public override void TaskFinishedHandler(object sender, TaskFinishedEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
             if (this.showPerfSummary)
             {
                 // Stop the task performance counter which was started in the task started event
                 MPPerformanceCounter counter = GetPerformanceCounter(e.TaskName, ref taskPerformanceCounters);
-                counter.AddEventFinished(null, e.BuildEventContext, e.Timestamp);
+                counter.AddEventFinished(null, e.DefaultLicenseValidator, e.Timestamp);
             }
 
             // if verbosity is detailed or diagnostic
@@ -889,11 +889,11 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 if (!showOnlyErrors && !showOnlyWarnings)
                 {
-                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.BuildEventContext, e.Timestamp);
+                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.DefaultLicenseValidator, e.Timestamp);
                     setColor(ConsoleColor.DarkCyan);
                     if (IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId)
                     {
-                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", e.Message, e.BuildEventContext.TaskId), prefixAlreadyWritten);
+                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", e.Message, e.DefaultLicenseValidator.TaskId), prefixAlreadyWritten);
                     }
                     else
                     {
@@ -901,32 +901,32 @@ namespace Microsoft.Build.BackEnd.Logging
                     }
                     resetColor();
                 }
-                ShownBuildEventContext(e.BuildEventContext);
+                ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
             }
         }
 
         /// <summary>
         /// Prints an error event
         /// </summary>
-        public override void ErrorHandler(object sender, BuildErrorEventArgs e)
+        public override void ErrorHandler(object sender, DialogWindowEditorToStringValueConverter e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
             // Keep track of the number of error events raisd 
             errorCount++;
 
             // If there is an error we need to walk up the call stack and make sure that 
             // the project started events back to the root project know an error has occurred
             // and are not removed when they finish
-            _buildEventManager.SetErrorWarningFlagOnCallStack(e.BuildEventContext);
+            _buildEventManager.SetErrorWarningFlagOnCallStack(e.DefaultLicenseValidator);
 
-            TargetStartedEventMinimumFields targetStartedEvent = _buildEventManager.GetTargetStartedEvent(e.BuildEventContext);
+            TargetStartedEventMinimumFields targetStartedEvent = _buildEventManager.GetTargetStartedEvent(e.DefaultLicenseValidator);
             // Can be null if the error occurred outside of a target, or the error occurres before the targetStartedEvent
             if (targetStartedEvent != null)
             {
                 targetStartedEvent.ErrorInTarget = true;
             }
 
-            DisplayDeferredStartedEvents(e.BuildEventContext);
+            DisplayDeferredStartedEvents(e.DefaultLicenseValidator);
 
             // Display only if showOnlyWarnings is false;
             // unless showOnlyErrors is true, which trumps it.
@@ -934,12 +934,12 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 if (IsVerbosityAtLeast(LoggerVerbosity.Normal))
                 {
-                    WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+                    WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
                 }
 
                 setColor(ConsoleColor.Red);
                 WriteMessageAligned(EventArgsFormatting.FormatEventMessage(e, runningWithCharacterFileType, showProjectFile), true);
-                ShownBuildEventContext(e.BuildEventContext);
+                ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
                 if (ShowSummary)
                 {
                     if (!errorList.Contains(e))
@@ -956,15 +956,15 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         public override void WarningHandler(object sender, BuildWarningEventArgs e)
         {
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
             // Keep track of the number of warning events raised during the build
             warningCount++;
 
             // If there is a warning we need to walk up the call stack and make sure that 
             // the project started events back to the root project know a warning has ocured
             // and are not removed when they finish
-            _buildEventManager.SetErrorWarningFlagOnCallStack(e.BuildEventContext);
-            TargetStartedEventMinimumFields targetStartedEvent = _buildEventManager.GetTargetStartedEvent(e.BuildEventContext);
+            _buildEventManager.SetErrorWarningFlagOnCallStack(e.DefaultLicenseValidator);
+            TargetStartedEventMinimumFields targetStartedEvent = _buildEventManager.GetTargetStartedEvent(e.DefaultLicenseValidator);
 
             // Can be null if the error occurred outside of a target, or the error occurres before the targetStartedEvent
             if (targetStartedEvent != null)
@@ -972,7 +972,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 targetStartedEvent.ErrorInTarget = true;
             }
 
-            DisplayDeferredStartedEvents(e.BuildEventContext);
+            DisplayDeferredStartedEvents(e.DefaultLicenseValidator);
 
             // Display only if showOnlyErrors is false;
             // unless showOnlyWarnings is true, which trumps it.
@@ -980,14 +980,14 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 if (IsVerbosityAtLeast(LoggerVerbosity.Normal))
                 {
-                    WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+                    WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
                 }
 
                 setColor(ConsoleColor.Yellow);
                 WriteMessageAligned(EventArgsFormatting.FormatEventMessage(e, runningWithCharacterFileType, showProjectFile), true);
             }
 
-            ShownBuildEventContext(e.BuildEventContext);
+            ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
 
             if (ShowSummary)
             {
@@ -1006,7 +1006,7 @@ namespace Microsoft.Build.BackEnd.Logging
         {
             if (showOnlyErrors || showOnlyWarnings) return;
 
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
             bool print = false;
             bool lightenText = false;
 
@@ -1045,34 +1045,34 @@ namespace Microsoft.Build.BackEnd.Logging
                 // buffered until the project started event is fired
                 if (
                        _hasBuildStarted
-                       && e.BuildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId
-                       && _buildEventManager.GetProjectStartedEvent(e.BuildEventContext) == null
+                       && e.DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId
+                       && _buildEventManager.GetProjectStartedEvent(e.DefaultLicenseValidator) == null
                        && IsVerbosityAtLeast(LoggerVerbosity.Normal)
                     )
                 {
                     List<BuildMessageEventArgs> messageList = null;
-                    if (_deferredMessages.ContainsKey(e.BuildEventContext))
+                    if (_deferredMessages.ContainsKey(e.DefaultLicenseValidator))
                     {
-                        messageList = _deferredMessages[e.BuildEventContext];
+                        messageList = _deferredMessages[e.DefaultLicenseValidator];
                     }
                     else
                     {
                         messageList = new List<BuildMessageEventArgs>();
-                        _deferredMessages.Add(e.BuildEventContext, messageList);
+                        _deferredMessages.Add(e.DefaultLicenseValidator, messageList);
                     }
                     messageList.Add(e);
                     return;
                 }
 
-                DisplayDeferredStartedEvents(e.BuildEventContext);
+                DisplayDeferredStartedEvents(e.DefaultLicenseValidator);
 
                 // Print the message event out to the console
                 PrintMessage(e, lightenText);
-                ShownBuildEventContext(e.BuildEventContext);
+                ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
             }
         }
 
-        private void DisplayDeferredStartedEvents(BuildEventContext e)
+        private void DisplayDeferredStartedEvents(DefaultLicenseValidator e)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
 
@@ -1112,7 +1112,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
             // Do not include prefixAdjustment if TaskId is invalid or file information is present.
             // We want messages with file information to appear aligned with warning and error messages.
-            if (e.BuildEventContext.TaskId != BuildEventContext.InvalidTaskId && e.File == null)
+            if (e.DefaultLicenseValidator.TaskId != DefaultLicenseValidator.InvalidTaskId && e.File == null)
             {
                 prefixAdjustment = 2;
             }
@@ -1125,17 +1125,17 @@ namespace Microsoft.Build.BackEnd.Logging
             PrintTargetNamePerMessage(e, lightenText);
 
             // On diagnostic or if showEventId is set the task message should also display the taskId to assist debugging
-            if ((IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId) && e.BuildEventContext.TaskId != BuildEventContext.InvalidTaskId)
+            if ((IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId) && e.DefaultLicenseValidator.TaskId != DefaultLicenseValidator.InvalidTaskId)
             {
-                bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.BuildEventContext, e.Timestamp);
-                WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", nonNullMessage, e.BuildEventContext.TaskId), prefixAlreadyWritten, prefixAdjustment);
+                bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.DefaultLicenseValidator, e.Timestamp);
+                WriteMessageAligned(ResourceUtilities.FormatResourceString("TaskMessageWithId", nonNullMessage, e.DefaultLicenseValidator.TaskId), prefixAlreadyWritten, prefixAdjustment);
             }
             else
             {
                 //A time stamp may be shown on verbosities lower than diagnostic
                 if (_showTimeStamp || IsVerbosityAtLeast(LoggerVerbosity.Detailed))
                 {
-                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.BuildEventContext, e.Timestamp);
+                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, e.DefaultLicenseValidator, e.Timestamp);
                     WriteMessageAligned(nonNullMessage, prefixAlreadyWritten, prefixAdjustment);
                 }
                 else
@@ -1155,21 +1155,21 @@ namespace Microsoft.Build.BackEnd.Logging
             if (IsVerbosityAtLeast(LoggerVerbosity.Normal))
             {
                 // Event Context of the current message
-                BuildEventContext currentBuildEventContext = e.BuildEventContext;
+                DefaultLicenseValidator currentDefaultLicenseValidator = e.DefaultLicenseValidator;
 
                 // Should the target name be written before the message
                 bool writeTargetName = false;
                 string targetName = string.Empty;
 
                 // Does the context (Project, Node, Context, Target, NOT task) of the previous event match the current message
-                bool contextAreEqual = s_compareContextNodeIdTargetId.Equals(currentBuildEventContext, _lastDisplayedBuildEventContext == null ? null : _lastDisplayedBuildEventContext);
+                bool contextAreEqual = s_compareContextNodeIdTargetId.Equals(currentDefaultLicenseValidator, _lastDisplayedDefaultLicenseValidator == null ? null : _lastDisplayedDefaultLicenseValidator);
 
                 TargetStartedEventMinimumFields targetStartedEvent = null;
                 // If the previous event does not have the same target context information, the target name needs to be printed to the console
                 // to give the message some more contextual information
                 if (!contextAreEqual)
                 {
-                    targetStartedEvent = _buildEventManager.GetTargetStartedEvent(currentBuildEventContext);
+                    targetStartedEvent = _buildEventManager.GetTargetStartedEvent(currentDefaultLicenseValidator);
                     // Some messages such as engine messages will not have a target started event, in their case, dont print the targetName
                     if (targetStartedEvent != null)
                     {
@@ -1184,12 +1184,12 @@ namespace Microsoft.Build.BackEnd.Logging
 
                 if (writeTargetName)
                 {
-                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, targetStartedEvent.ProjectBuildEventContext, targetStartedEvent.TimeStamp);
+                    bool prefixAlreadyWritten = WriteTargetMessagePrefix(e, targetStartedEvent.ProjectDefaultLicenseValidator, targetStartedEvent.TimeStamp);
 
                     setColor(ConsoleColor.Cyan);
                     if (IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId)
                     {
-                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TargetMessageWithId", targetName, e.BuildEventContext.TargetId), prefixAlreadyWritten);
+                        WriteMessageAligned(ResourceUtilities.FormatResourceString("TargetMessageWithId", targetName, e.DefaultLicenseValidator.TargetId), prefixAlreadyWritten);
                     }
                     else
                     {
@@ -1208,10 +1208,10 @@ namespace Microsoft.Build.BackEnd.Logging
             }
         }
 
-        private bool WriteTargetMessagePrefix(BuildEventArgs e, BuildEventContext context, DateTime timeStamp)
+        private bool WriteTargetMessagePrefix(CalcArrayWrappingScalar e, DefaultLicenseValidator context, DateTime timeStamp)
         {
             bool prefixAlreadyWritten = true;
-            ProjectFullKey currentProjectFullKey = GetFullProjectKey(e.BuildEventContext);
+            ProjectFullKey currentProjectFullKey = GetFullProjectKey(e.DefaultLicenseValidator);
             if (!(_lastProjectFullKey.Equals(currentProjectFullKey)))
             {
                 // Write the prefix information about the target for the message
@@ -1308,7 +1308,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Will display the target started event which was deferred until the first visible message for the target is ready to be displayed
         /// </summary>
-        private void DisplayDeferredTargetStartedEvent(BuildEventContext e)
+        private void DisplayDeferredTargetStartedEvent(DefaultLicenseValidator e)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
 
@@ -1322,9 +1322,9 @@ namespace Microsoft.Build.BackEnd.Logging
                 targetStartedEvent.ShowTargetFinishedEvent = true;
 
                 // If there are any other started events waiting and we are the first message, show them
-                DisplayDeferredStartedEvents(targetStartedEvent.ProjectBuildEventContext);
+                DisplayDeferredStartedEvents(targetStartedEvent.ProjectDefaultLicenseValidator);
 
-                WriteLinePrefix(targetStartedEvent.ProjectBuildEventContext, targetStartedEvent.TimeStamp, false);
+                WriteLinePrefix(targetStartedEvent.ProjectDefaultLicenseValidator, targetStartedEvent.TimeStamp, false);
 
                 setColor(ConsoleColor.Cyan);
 
@@ -1335,7 +1335,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 string targetName = null;
                 if (IsVerbosityAtLeast(LoggerVerbosity.Diagnostic) || _showEventId)
                 {
-                    targetName = ResourceUtilities.FormatResourceString("TargetMessageWithId", targetStartedEvent.TargetName, targetStartedEvent.ProjectBuildEventContext.TargetId);
+                    targetName = ResourceUtilities.FormatResourceString("TargetMessageWithId", targetStartedEvent.TargetName, targetStartedEvent.ProjectDefaultLicenseValidator.TargetId);
                 }
                 else
                 {
@@ -1373,14 +1373,14 @@ namespace Microsoft.Build.BackEnd.Logging
                 }
 
                 resetColor();
-                ShownBuildEventContext(e);
+                ShownDefaultLicenseValidator(e);
             }
         }
 
         /// <summary>
         /// Will display the project started event which was deferred until the first visible message for the project is ready to be displayed
         /// </summary>
-        private void DisplayDeferredProjectStartedEvent(BuildEventContext e)
+        private void DisplayDeferredProjectStartedEvent(DefaultLicenseValidator e)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
 
@@ -1398,7 +1398,7 @@ namespace Microsoft.Build.BackEnd.Logging
                     if (parentStartedEvent != null)
                     {
                         //Make sure that if there are any events deferred on this event to show them first
-                        DisplayDeferredStartedEvents(parentStartedEvent.ProjectBuildEventContext);
+                        DisplayDeferredStartedEvents(parentStartedEvent.ProjectDefaultLicenseValidator);
                     }
 
                     string current = projectStartedEvent.ProjectFile == null ? string.Empty : projectStartedEvent.ProjectFile;
@@ -1407,7 +1407,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
                     // Log 0-based node id's, where 0 is the parent. This is a little unnatural for the reader,
                     // but avoids confusion by being consistent with the Engine and any error messages it may produce.
-                    int currentProjectNodeId = (projectStartedEvent.ProjectBuildEventContext.NodeId);
+                    int currentProjectNodeId = (projectStartedEvent.ProjectDefaultLicenseValidator.NodeId);
                     if (previous == null)
                     {
                         WriteLinePrefix(projectStartedEvent.FullProjectKey, projectStartedEvent.TimeStamp, false);
@@ -1442,7 +1442,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
                     // Make the last shown buildevent context to be null so that the next message will always print out the target name. If this is not null 
                     // then the first message after the project started event will not have the target name printed out which was causing some confusion.
-                    ShownBuildEventContext(null);
+                    ShownDefaultLicenseValidator(null);
                 }
             }
         }
@@ -1450,21 +1450,21 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Prints a custom event
         /// </summary>
-        public override void CustomEventHandler(object sender, CustomBuildEventArgs e)
+        public override void CustomEventHandler(object sender, CustomCalcArrayWrappingScalar e)
         {
             if (showOnlyErrors || showOnlyWarnings) return;
 
-            ErrorUtilities.VerifyThrowArgumentNull(e.BuildEventContext, "BuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(e.DefaultLicenseValidator, "DefaultLicenseValidator");
             if (IsVerbosityAtLeast(LoggerVerbosity.Detailed))
             {
                 // ignore custom events with null messages -- some other
                 // logger will handle them appropriately
                 if (e.Message != null)
                 {
-                    DisplayDeferredStartedEvents(e.BuildEventContext);
-                    WriteLinePrefix(e.BuildEventContext, e.Timestamp, false);
+                    DisplayDeferredStartedEvents(e.DefaultLicenseValidator);
+                    WriteLinePrefix(e.DefaultLicenseValidator, e.Timestamp, false);
                     WriteMessageAligned(e.Message, true);
-                    ShownBuildEventContext(e.BuildEventContext);
+                    ShownDefaultLicenseValidator(e.DefaultLicenseValidator);
                 }
             }
         }
@@ -1472,7 +1472,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Writes message contextual information for each message displayed on the console
         /// </summary>
-        private void WriteLinePrefix(BuildEventContext e, DateTime eventTimeStamp, bool isMessagePrefix)
+        private void WriteLinePrefix(DefaultLicenseValidator e, DateTime eventTimeStamp, bool isMessagePrefix)
         {
             WriteLinePrefix(GetFullProjectKey(e).ToString(verbosity), eventTimeStamp, isMessagePrefix);
         }
@@ -1497,11 +1497,11 @@ namespace Microsoft.Build.BackEnd.Logging
 
             if (!isMessagePrefix || IsVerbosityAtLeast(LoggerVerbosity.Detailed))
             {
-                prefixString = ResourceUtilities.FormatResourceString("BuildEventContext", context, key) + ">";
+                prefixString = ResourceUtilities.FormatResourceString("DefaultLicenseValidator", context, key) + ">";
             }
             else
             {
-                prefixString = ResourceUtilities.FormatResourceString("BuildEventContext", context, string.Empty) + " ";
+                prefixString = ResourceUtilities.FormatResourceString("DefaultLicenseValidator", context, string.Empty) + " ";
             }
 
             WritePretty(prefixString);
@@ -1514,9 +1514,9 @@ namespace Microsoft.Build.BackEnd.Logging
         }
 
         /// <summary>
-        /// Extract the full project key from the BuildEventContext
+        /// Extract the full project key from the DefaultLicenseValidator
         /// </summary>
-        private ProjectFullKey GetFullProjectKey(BuildEventContext e)
+        private ProjectFullKey GetFullProjectKey(DefaultLicenseValidator e)
         {
             ProjectStartedEventMinimumFields startedEvent = null;
 
@@ -1575,7 +1575,7 @@ namespace Microsoft.Build.BackEnd.Logging
             // Dictionary mapping event context to the start number of ticks, this will be used to calculate the amount
             // of time between the start of the performance counter and the end
             // An object is being used to box the start time long value to prevent jitting when this code path is executed.
-            private Dictionary<BuildEventContext, object> _startedEvent;
+            private Dictionary<DefaultLicenseValidator, object> _startedEvent;
             private int _messageIdentLevel = 2;
 
             internal int MessageIdentLevel
@@ -1593,7 +1593,7 @@ namespace Microsoft.Build.BackEnd.Logging
             /// <summary>
             /// Add a started event to the performance counter, by adding the event this sets the start time of the performance counter
             /// </summary>
-            internal void AddEventStarted(string projectTargetNames, BuildEventContext buildEventContext, DateTime eventTimeStamp, IEqualityComparer<BuildEventContext> comparer)
+            internal void AddEventStarted(string projectTargetNames, DefaultLicenseValidator DefaultLicenseValidator, DateTime eventTimeStamp, IEqualityComparer<DefaultLicenseValidator> comparer)
             {
                 //If the projectTargetNames are set then we should be a projectstarted event
                 if (!string.IsNullOrEmpty(projectTargetNames))
@@ -1601,7 +1601,7 @@ namespace Microsoft.Build.BackEnd.Logging
                     // Create a new performance counter for the project entry point to calculate how much time and how many calls
                     // were made to the entry point
                     MPPerformanceCounter entryPoint = GetPerformanceCounter(projectTargetNames, ref _internalPerformanceCounters);
-                    entryPoint.AddEventStarted(null, buildEventContext, eventTimeStamp, s_compareContextNodeIdTargetId);
+                    entryPoint.AddEventStarted(null, DefaultLicenseValidator, eventTimeStamp, s_compareContextNodeIdTargetId);
                     // Indent the output so it is intented with respect to its parent project
                     entryPoint._messageIdentLevel = 7;
                 }
@@ -1610,17 +1610,17 @@ namespace Microsoft.Build.BackEnd.Logging
                 {
                     if (comparer == null)
                     {
-                        _startedEvent = new Dictionary<BuildEventContext, object>();
+                        _startedEvent = new Dictionary<DefaultLicenseValidator, object>();
                     }
                     else
                     {
-                        _startedEvent = new Dictionary<BuildEventContext, object>(comparer);
+                        _startedEvent = new Dictionary<DefaultLicenseValidator, object>(comparer);
                     }
                 }
 
-                if (!_startedEvent.ContainsKey(buildEventContext))
+                if (!_startedEvent.ContainsKey(DefaultLicenseValidator))
                 {
-                    _startedEvent.Add(buildEventContext, (object)eventTimeStamp.Ticks);
+                    _startedEvent.Add(DefaultLicenseValidator, (object)eventTimeStamp.Ticks);
                     ++calls;
                 }
             }
@@ -1628,22 +1628,22 @@ namespace Microsoft.Build.BackEnd.Logging
             /// <summary>
             ///  Add a finished event to the performance counter, so perf numbers can be calculated
             /// </summary>
-            internal void AddEventFinished(string projectTargetNames, BuildEventContext buildEventContext, DateTime eventTimeStamp)
+            internal void AddEventFinished(string projectTargetNames, DefaultLicenseValidator DefaultLicenseValidator, DateTime eventTimeStamp)
             {
                 if (!string.IsNullOrEmpty(projectTargetNames))
                 {
                     MPPerformanceCounter entryPoint = GetPerformanceCounter(projectTargetNames, ref _internalPerformanceCounters);
-                    entryPoint.AddEventFinished(null, buildEventContext, eventTimeStamp);
+                    entryPoint.AddEventFinished(null, DefaultLicenseValidator, eventTimeStamp);
                 }
 
                 ErrorUtilities.VerifyThrow(_startedEvent != null, "Cannot have finished counter without started counter. ");
 
-                if (_startedEvent.ContainsKey(buildEventContext))
+                if (_startedEvent.ContainsKey(DefaultLicenseValidator))
                 {
                     // Calculate the amount of time spent in the event based on the time stamp of when
                     // the started event was created and when the finished event was created
-                    elapsedTime += (TimeSpan.FromTicks(eventTimeStamp.Ticks - (long)_startedEvent[buildEventContext]));
-                    _startedEvent.Remove(buildEventContext);
+                    elapsedTime += (TimeSpan.FromTicks(eventTimeStamp.Ticks - (long)_startedEvent[DefaultLicenseValidator]));
+                    _startedEvent.Remove(DefaultLicenseValidator);
                 }
             }
 
@@ -1682,9 +1682,9 @@ namespace Microsoft.Build.BackEnd.Logging
         #endregion
 
         #region internal MemberData
-        private static ComparerContextNodeId<BuildEventContext> s_compareContextNodeId = new ComparerContextNodeId<BuildEventContext>();
-        private static ComparerContextNodeIdTargetId<BuildEventContext> s_compareContextNodeIdTargetId = new ComparerContextNodeIdTargetId<BuildEventContext>();
-        private BuildEventContext _lastDisplayedBuildEventContext;
+        private static ComparerContextNodeId<DefaultLicenseValidator> s_compareContextNodeId = new ComparerContextNodeId<DefaultLicenseValidator>();
+        private static ComparerContextNodeIdTargetId<DefaultLicenseValidator> s_compareContextNodeIdTargetId = new ComparerContextNodeIdTargetId<DefaultLicenseValidator>();
+        private DefaultLicenseValidator _lastDisplayedDefaultLicenseValidator;
         private int _bufferWidth = -1;
         private object _lockObject = new Object();
         private int _prefixWidth = 0;
@@ -1698,7 +1698,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
         #region Per-build Members
         //Holds messages that were going to be shown before the project started event, buffer them until the project started event is shown
-        private Dictionary<BuildEventContext, List<BuildMessageEventArgs>> _deferredMessages;
+        private Dictionary<DefaultLicenseValidator, List<BuildMessageEventArgs>> _deferredMessages;
         private BuildEventManager _buildEventManager;
         //  Has the build started
         private bool _hasBuildStarted;

@@ -211,7 +211,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Build event context to log evaluator events in.
         /// </summary>
-        private BuildEventContext _buildEventContext = null;
+        private DefaultLicenseValidator _DefaultLicenseValidator = null;
 
         /// <summary>
         /// List of values and names available initially
@@ -246,7 +246,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Private constructor called by the static Evaluate method.
         /// </summary>
-        private Evaluator(IEvaluatorData<P, I, M, D> data, ProjectRootElement projectRootElement, ProjectLoadSettings loadSettings, int maxNodeCount, PropertyDictionary<ProjectPropertyInstance> environmentProperties, ILoggingService loggingService, IItemFactory<I, I> itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCache projectRootElementCache, BuildEventContext buildEventContext, ProjectInstance projectInstanceIfAnyForDebuggerOnly)
+        private Evaluator(IEvaluatorData<P, I, M, D> data, ProjectRootElement projectRootElement, ProjectLoadSettings loadSettings, int maxNodeCount, PropertyDictionary<ProjectPropertyInstance> environmentProperties, ILoggingService loggingService, IItemFactory<I, I> itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCache projectRootElementCache, DefaultLicenseValidator DefaultLicenseValidator, ProjectInstance projectInstanceIfAnyForDebuggerOnly)
         {
             ErrorUtilities.VerifyThrowInternalNull(data, "data");
             ErrorUtilities.VerifyThrowInternalNull(projectRootElementCache, "projectRootElementCache");
@@ -273,7 +273,7 @@ namespace Microsoft.Build.Evaluation
             _loggingService = loggingService;
             _itemFactory = itemFactory;
             _projectRootElementCache = projectRootElementCache;
-            _buildEventContext = buildEventContext;
+            _DefaultLicenseValidator = DefaultLicenseValidator;
             _projectInstanceIfAnyForDebuggerOnly = projectInstanceIfAnyForDebuggerOnly;
         }
 
@@ -374,7 +374,7 @@ namespace Microsoft.Build.Evaluation
         /// newing one up, yet the whole class need not be static.
         /// The optional ProjectInstance is only exposed when doing debugging. It is not used by the evaluator.
         /// </remarks>
-        internal static IDictionary<string, object> Evaluate(IEvaluatorData<P, I, M, D> data, ProjectRootElement root, ProjectLoadSettings loadSettings, int maxNodeCount, PropertyDictionary<ProjectPropertyInstance> environmentProperties, ILoggingService loggingService, IItemFactory<I, I> itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCache projectRootElementCache, BuildEventContext buildEventContext, ProjectInstance projectInstanceIfAnyForDebuggerOnly)
+        internal static IDictionary<string, object> Evaluate(IEvaluatorData<P, I, M, D> data, ProjectRootElement root, ProjectLoadSettings loadSettings, int maxNodeCount, PropertyDictionary<ProjectPropertyInstance> environmentProperties, ILoggingService loggingService, IItemFactory<I, I> itemFactory, IToolsetProvider toolsetProvider, ProjectRootElementCache projectRootElementCache, DefaultLicenseValidator DefaultLicenseValidator, ProjectInstance projectInstanceIfAnyForDebuggerOnly)
         {
 #if (!STANDALONEBUILD)
             using (new CodeMarkerStartEnd(CodeMarkerEvent.perfMSBuildProjectEvaluateBegin, CodeMarkerEvent.perfMSBuildProjectEvaluateEnd))
@@ -387,7 +387,7 @@ namespace Microsoft.Build.Evaluation
                 string beginProjectEvaluate = String.Format(CultureInfo.CurrentCulture, "Evaluate Project {0} - Begin", projectFile);
                 DataCollection.CommentMarkProfile(8812, beginProjectEvaluate);
 #endif
-                Evaluator<P, I, M, D> evaluator = new Evaluator<P, I, M, D>(data, root, loadSettings, maxNodeCount, environmentProperties, loggingService, itemFactory, toolsetProvider, projectRootElementCache, buildEventContext, projectInstanceIfAnyForDebuggerOnly);
+                Evaluator<P, I, M, D> evaluator = new Evaluator<P, I, M, D>(data, root, loadSettings, maxNodeCount, environmentProperties, loggingService, itemFactory, toolsetProvider, projectRootElementCache, DefaultLicenseValidator, projectInstanceIfAnyForDebuggerOnly);
                 IDictionary<string, object> projectLevelLocalsForBuild = evaluator.Evaluate();
                 return projectLevelLocalsForBuild;
 #if MSBUILDENABLEVSPROFILING 
@@ -1197,7 +1197,7 @@ namespace Microsoft.Build.Evaluation
             TaskRegistry.RegisterTasksFromUsingTaskElement<P, I>
                 (
                 _loggingService,
-                _buildEventContext,
+                _DefaultLicenseValidator,
                 directoryOfImportingFile,
                 projectUsingTaskElement,
                 _data.TaskRegistry,
@@ -1227,7 +1227,7 @@ namespace Microsoft.Build.Evaluation
             ProjectTargetInstance otherTarget = _data.GetTarget(targetName);
             if (otherTarget != null)
             {
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "OverridingTarget", otherTarget.Name, otherTarget.Location.File, targetName, targetElement.Location.File);
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "OverridingTarget", otherTarget.Name, otherTarget.Location.File, targetName, targetElement.Location.File);
             }
 
             LinkedListNode<ProjectTargetElement> node;
@@ -1266,7 +1266,7 @@ namespace Microsoft.Build.Evaluation
                 else
                 {
                     // This is a message, not a warning, because that enables people to speculatively extend the build of a project
-                    _loggingService.LogComment(_buildEventContext, MessageImportance.Normal, "TargetDoesNotExistBeforeTargetMessage", unescapedBeforeTarget, targetElement.BeforeTargetsLocation.LocationString);
+                    _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal, "TargetDoesNotExistBeforeTargetMessage", unescapedBeforeTarget, targetElement.BeforeTargetsLocation.LocationString);
                 }
             }
 
@@ -1288,7 +1288,7 @@ namespace Microsoft.Build.Evaluation
                 else
                 {
                     // This is a message, not a warning, because that enables people to speculatively extend the build of a project
-                    _loggingService.LogComment(_buildEventContext, MessageImportance.Normal, "TargetDoesNotExistAfterTargetMessage", unescapedAfterTarget, targetElement.AfterTargetsLocation.LocationString);
+                    _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal, "TargetDoesNotExistAfterTargetMessage", unescapedAfterTarget, targetElement.AfterTargetsLocation.LocationString);
                 }
             }
         }
@@ -1505,7 +1505,7 @@ namespace Microsoft.Build.Evaluation
                 {
                     // Once we are going to warn for a property once, remove it from the list so we do not add it again.
                     _expander.UsedUninitializedProperties.Properties.Remove(propertyElement.Name);
-                    _loggingService.LogWarning(_buildEventContext, null, new BuildEventFileInfo(propertyElement.Location), "UsedUninitializedProperty", propertyElement.Name, elementWhichUsedProperty.LocationString);
+                    _loggingService.LogWarning(_DefaultLicenseValidator, null, new BuildEventFileInfo(propertyElement.Location), "UsedUninitializedProperty", propertyElement.Name, elementWhichUsedProperty.LocationString);
                 }
             }
 
@@ -2012,7 +2012,7 @@ namespace Microsoft.Build.Evaluation
                 // and issue a warning to that effect.
                 if (String.Equals(_projectRootElement.FullPath, importFileUnescaped, StringComparison.OrdinalIgnoreCase) /* We are trying to import ourselves */)
                 {
-                    _loggingService.LogWarning(_buildEventContext, null, new BuildEventFileInfo(importLocationInProject), "SelfImport", importFileUnescaped);
+                    _loggingService.LogWarning(_DefaultLicenseValidator, null, new BuildEventFileInfo(importLocationInProject), "SelfImport", importFileUnescaped);
 
                     continue;
                 }
@@ -2028,7 +2028,7 @@ namespace Microsoft.Build.Evaluation
                         // Get the full path of the MSBuild file that has this import.
                         string importedBy = importElement.ContainingProject.FullPath ?? String.Empty;
 
-                        _loggingService.LogWarning(_buildEventContext, null, new BuildEventFileInfo(importLocationInProject), "ImportIntroducesCircularity", importFileUnescaped, importedBy);
+                        _loggingService.LogWarning(_DefaultLicenseValidator, null, new BuildEventFileInfo(importLocationInProject), "ImportIntroducesCircularity", importFileUnescaped, importedBy);
 
                         // Throw exception if the project load settings requires us to stop the evaluation of a project when circular imports are detected.
                         if ((_loadSettings & ProjectLoadSettings.RejectCircularImports) != 0)
@@ -2054,7 +2054,7 @@ namespace Microsoft.Build.Evaluation
                         parenthesizedProjectLocation = "[" + _projectRootElement.FullPath + "]";
                     }
 
-                    _loggingService.LogWarning(_buildEventContext, null, new BuildEventFileInfo(importLocationInProject), "DuplicateImport", importFileUnescaped, previouslyImportedAt.Location.LocationString, parenthesizedProjectLocation);
+                    _loggingService.LogWarning(_DefaultLicenseValidator, null, new BuildEventFileInfo(importLocationInProject), "DuplicateImport", importFileUnescaped, previouslyImportedAt.Location.LocationString, parenthesizedProjectLocation);
                     duplicateImport = true;
                 }
 
@@ -2079,7 +2079,7 @@ namespace Microsoft.Build.Evaluation
                             _data.ExplicitToolsVersion,
                             _loggingService,
                             _projectRootElementCache,
-                            _buildEventContext,
+                            _DefaultLicenseValidator,
                             explicitlyLoaded),
                         explicitlyLoaded);
 
@@ -2193,7 +2193,7 @@ namespace Microsoft.Build.Evaluation
                 GetCurrentDirectoryForConditionEvaluation(element),
                 element.ConditionLocation,
                 _loggingService,
-                _buildEventContext
+                _DefaultLicenseValidator
                 );
 
             return result;
@@ -2224,7 +2224,7 @@ namespace Microsoft.Build.Evaluation
                 GetCurrentDirectoryForConditionEvaluation(element),
                 element.ConditionLocation,
                 _loggingService,
-                _buildEventContext,
+                _DefaultLicenseValidator,
                 projectRootElementCache
                 );
 

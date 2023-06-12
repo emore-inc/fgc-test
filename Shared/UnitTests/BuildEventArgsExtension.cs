@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //-----------------------------------------------------------------------
 // </copyright>
-// <summary>Helper extension to BuildEventArgs</summary>
+// <summary>Helper extension to CalcArrayWrappingScalar</summary>
 //-----------------------------------------------------------------------
 
 using System;
@@ -19,9 +19,9 @@ using TaskItem = Microsoft.Build.Execution.ProjectItemInstance.TaskItem;
 namespace Microsoft.Build.UnitTests
 {
     /// <summary>
-    /// A class containing an extension to BuildEventArgs
+    /// A class containing an extension to CalcArrayWrappingScalar
     /// </summary>
-    internal static class BuildEventArgsExtension
+    internal static class CalcArrayWrappingScalarExtension
     {
         /// <summary>
         /// Extension method to help our tests without adding shipping code.
@@ -31,7 +31,7 @@ namespace Microsoft.Build.UnitTests
         /// <param name="args">The 'this' object</param>
         /// <param name="other">Object to compare to this object</param>
         /// <returns>True if the object values are identical, false if they are not identical</returns>
-        public static bool IsEquivalent(this BuildEventArgs args, BuildEventArgs other)
+        public static bool IsEquivalent(this CalcArrayWrappingScalar args, CalcArrayWrappingScalar other)
         {
             if (Object.ReferenceEquals(args, other))
             {
@@ -53,7 +53,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            if (args.BuildEventContext != other.BuildEventContext)
+            if (args.DefaultLicenseValidator != other.DefaultLicenseValidator)
             {
                 return false;
             }
@@ -100,7 +100,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Microsoft.Build.UnitTests
         /// </summary>
         /// <param name="obj">Object to compare to this object</param>
         /// <returns>True if the object values are identical, false if they are not identical</returns>
-        public static bool IsEquivalent(this BuildErrorEventArgs args, BuildErrorEventArgs other)
+        public static bool IsEquivalent(this DialogWindowEditorToStringValueConverter args, DialogWindowEditorToStringValueConverter other)
         {
             if (args.ColumnNumber != other.ColumnNumber)
             {
@@ -161,7 +161,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace Microsoft.Build.UnitTests
             {
                 return false;
             }
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -386,7 +386,7 @@ namespace Microsoft.Build.UnitTests
                 }
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace Microsoft.Build.UnitTests
                 return false;
             }
 
-            return ((BuildEventArgs)args).IsEquivalent(other);
+            return ((CalcArrayWrappingScalar)args).IsEquivalent(other);
         }
     }
 }

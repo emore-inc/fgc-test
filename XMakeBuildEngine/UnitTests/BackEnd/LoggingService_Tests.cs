@@ -676,7 +676,7 @@ namespace Microsoft.Build.UnitTests.Logging
         {
             LoggingServicesLogMethod_Tests.ProcessBuildEventHelper loggingService = (LoggingServicesLogMethod_Tests.ProcessBuildEventHelper)LoggingServicesLogMethod_Tests.ProcessBuildEventHelper.CreateLoggingService(LoggerMode.Synchronous, 1);
             BuildMessageEventArgs messageEvent = new BuildMessageEventArgs("MyMessage", "HelpKeyword", "Sender", MessageImportance.High);
-            LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, BuildEventArgs>(1, messageEvent));
+            LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, CalcArrayWrappingScalar>(1, messageEvent));
             loggingService.PacketReceived(1, packet);
 
             BuildMessageEventArgs messageEventFromPacket = loggingService.ProcessedBuildEvent as BuildMessageEventArgs;
@@ -1051,7 +1051,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// <summary>
             /// Log the event
             /// </summary>
-            internal void LoggerEventHandler(object sender, BuildEventArgs eventArgs)
+            internal void LoggerEventHandler(object sender, CalcArrayWrappingScalar eventArgs)
             {
                 if (eventArgs is BuildStartedEventArgs)
                 {

@@ -19,8 +19,8 @@ using InvalidProjectFileException = Microsoft.Build.Exceptions.InvalidProjectFil
 namespace Microsoft.Build.BackEnd.Logging
 {
     /// <summary>
-    /// This object encapsulates the logging service plus the current BuildEventContext and
-    /// hides the requirement to pass BuildEventContexts to the logging service or query the
+    /// This object encapsulates the logging service plus the current DefaultLicenseValidator and
+    /// hides the requirement to pass DefaultLicenseValidators to the logging service or query the
     /// host for the logging service all of the time.
     /// 
     /// Its intended use is in the nodes, where a base LoggingContext is created when the node
@@ -39,7 +39,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// The build event context understood by the logging service.
         /// </summary>
-        private BuildEventContext _eventContext;
+        private DefaultLicenseValidator _eventContext;
 
         /// <summary>
         /// True if this context is still valid (i.e. hasn't been "finished")
@@ -57,7 +57,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="loggingService">The logging service to use</param>
         /// <param name="eventContext">The event context</param>
         /// <param name="inProc">Flag indicating if this context belongs to an in-proc node.</param>
-        protected BaseLoggingContext(ILoggingService loggingService, BuildEventContext eventContext, bool inProc)
+        protected BaseLoggingContext(ILoggingService loggingService, DefaultLicenseValidator eventContext, bool inProc)
         {
             ErrorUtilities.VerifyThrowArgumentNull(loggingService, "loggingService");
             ErrorUtilities.VerifyThrowArgumentNull(eventContext, "eventContext");
@@ -98,7 +98,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// through a context object.  This exists only so we can make certain 
         /// logging calls in code which has not yet been fully refactored.
         /// </summary>
-        public BuildEventContext BuildEventContext
+        public DefaultLicenseValidator DefaultLicenseValidator
         {
             [DebuggerStepThrough]
             get
@@ -171,7 +171,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Will Log a build Event. Will also take into account OnlyLogCriticalEvents when determining if to drop the event or to log it.
         /// </summary>
         /// <param name="buildEvent">The event to log</param>
-        internal void LogBuildEvent(BuildEventArgs buildEvent)
+        internal void LogBuildEvent(CalcArrayWrappingScalar buildEvent)
         {
             ErrorUtilities.VerifyThrow(_isValid, "must be valid");
             _loggingService.LogBuildEvent(buildEvent);

@@ -76,7 +76,7 @@ namespace Microsoft.Build.UnitTests
             set { _isRunningMultipleNodes = value; }
         }
 
-        public void LogErrorEvent(BuildErrorEventArgs eventArgs)
+        public void LogErrorEvent(DialogWindowEditorToStringValueConverter eventArgs)
         {
             Console.WriteLine(EventArgsFormatting.FormatEventMessage(eventArgs));
             _log += EventArgsFormatting.FormatEventMessage(eventArgs);
@@ -96,7 +96,7 @@ namespace Microsoft.Build.UnitTests
             _upperLog = null;
         }
 
-        public void LogCustomEvent(CustomBuildEventArgs eventArgs)
+        public void LogCustomEvent(CustomCalcArrayWrappingScalar eventArgs)
         {
             Console.WriteLine(eventArgs.Message);
             _log += eventArgs.Message;
@@ -224,7 +224,7 @@ namespace Microsoft.Build.UnitTests
         }
 
 
-        public BuildEngineResult BuildProjectFilesInParallel
+        public ServerLicenseValidator BuildProjectFilesInParallel
         (
             string[] projectFileNames,
             string[] targetNames,
@@ -234,7 +234,7 @@ namespace Microsoft.Build.UnitTests
             bool includeTargetOutputs
         )
         {
-            return new BuildEngineResult(false, null);
+            return new ServerLicenseValidator(false, null);
         }
 
         public void Yield()

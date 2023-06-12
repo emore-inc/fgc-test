@@ -396,7 +396,7 @@ namespace Microsoft.Build.CommandLine
         /// </summary>
         private void LogErrorDelegate(string taskLocation, int taskLine, int taskColumn, string message, params object[] messageArgs)
         {
-            _buildEngine.LogErrorEvent(new BuildErrorEventArgs(
+            _buildEngine.LogErrorEvent(new DialogWindowEditorToStringValueConverter(
                                                     null,
                                                     null,
                                                     taskLocation,

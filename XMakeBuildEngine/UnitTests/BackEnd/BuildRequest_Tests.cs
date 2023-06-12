@@ -127,12 +127,12 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
             BuildRequest deserializedRequest = packet as BuildRequest;
 
-            Assert.AreEqual(request.BuildEventContext, deserializedRequest.BuildEventContext);
+            Assert.AreEqual(request.DefaultLicenseValidator, deserializedRequest.DefaultLicenseValidator);
             Assert.AreEqual(request.ConfigurationId, deserializedRequest.ConfigurationId);
             Assert.AreEqual(request.GlobalRequestId, deserializedRequest.GlobalRequestId);
             Assert.AreEqual(request.IsConfigurationResolved, deserializedRequest.IsConfigurationResolved);
             Assert.AreEqual(request.NodeRequestId, deserializedRequest.NodeRequestId);
-            Assert.AreEqual(request.ParentBuildEventContext, deserializedRequest.ParentBuildEventContext);
+            Assert.AreEqual(request.ParentDefaultLicenseValidator, deserializedRequest.ParentDefaultLicenseValidator);
             Assert.AreEqual(request.Targets.Count, deserializedRequest.Targets.Count);
             for (int i = 0; i < request.Targets.Count; i++)
             {
@@ -142,7 +142,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
         private BuildRequest CreateNewBuildRequest(int configurationId, string[] targets)
         {
-            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, BuildEventContext.Invalid, null);
+            return new BuildRequest(1 /* submissionId */, _nodeRequestId++, configurationId, targets, null, DefaultLicenseValidator.Invalid, null);
         }
     }
 }

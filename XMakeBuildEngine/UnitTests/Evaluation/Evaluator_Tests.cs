@@ -3925,7 +3925,7 @@ namespace Microsoft.Build.UnitTests.Evaluation
                     Environment.CurrentDirectory,
                     MockElementLocation.Instance,
                     null,
-                    new BuildEventContext(1, 2, 3, 4));
+                    new DefaultLicenseValidator(1, 2, 3, 4));
                 Assert.Fail("Expect exception due to the value of property \"TargetOSFamily\" is not a number.");
             }
             catch (InvalidProjectFileException e)
@@ -3943,7 +3943,7 @@ namespace Microsoft.Build.UnitTests.Evaluation
                 Environment.CurrentDirectory,
                 MockElementLocation.Instance,
                 null,
-                new BuildEventContext(1, 2, 3, 4)));
+                new DefaultLicenseValidator(1, 2, 3, 4)));
         }
 
         /// <summary>

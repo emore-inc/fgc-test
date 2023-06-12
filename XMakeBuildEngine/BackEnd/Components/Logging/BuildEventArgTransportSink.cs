@@ -23,7 +23,7 @@ namespace Microsoft.Build.BackEnd.Logging
     internal delegate void SendDataDelegate(INodePacket packetToSend);
 
     /// <summary>
-    /// This class will consume the BuildEventArgs forwarded by the EventRedirectorToSink class.
+    /// This class will consume the CalcArrayWrappingScalar forwarded by the EventRedirectorToSink class.
     /// The sink will then create a packet and then pass this along to the transport layer to be
     /// sent back to the build manager.
     /// </summary>
@@ -87,7 +87,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// This method should not be used since we need the sinkID
         /// </summary>
-        public void Consume(BuildEventArgs buildEvent)
+        public void Consume(CalcArrayWrappingScalar buildEvent)
         {
             ErrorUtilities.VerifyThrow(false, "Do not use this method for the transport sink");
         }
@@ -97,7 +97,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         /// <param name="buildEvent">Build event to package into a INodePacket</param>
         /// <exception cref="InternalErrorException">buildEvent is null</exception>
-        public void Consume(BuildEventArgs buildEvent, int sinkId)
+        public void Consume(CalcArrayWrappingScalar buildEvent, int sinkId)
         {
             ErrorUtilities.VerifyThrow(buildEvent != null, "buildEvent is null");
             if (buildEvent is BuildStartedEventArgs)
@@ -111,7 +111,7 @@ namespace Microsoft.Build.BackEnd.Logging
                 return;
             }
 
-            LogMessagePacket logPacket = new LogMessagePacket(new KeyValuePair<int, BuildEventArgs>(sinkId, buildEvent));
+            LogMessagePacket logPacket = new LogMessagePacket(new KeyValuePair<int, CalcArrayWrappingScalar>(sinkId, buildEvent));
             _sendDataDelegate(logPacket);
         }
 

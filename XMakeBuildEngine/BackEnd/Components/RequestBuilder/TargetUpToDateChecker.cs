@@ -55,7 +55,7 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Creates an instance of this class for the given target.
         /// </summary>
-        internal TargetUpToDateChecker(ProjectInstance project, ProjectTargetInstance targetToAnalyze, ILoggingService loggingServices, BuildEventContext buildEventContext)
+        internal TargetUpToDateChecker(ProjectInstance project, ProjectTargetInstance targetToAnalyze, ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator)
         {
             ErrorUtilities.VerifyThrow(project != null, "Need a project.");
             ErrorUtilities.VerifyThrow(targetToAnalyze != null, "Need a target to analyze.");
@@ -65,7 +65,7 @@ namespace Microsoft.Build.BackEnd
             _targetInputSpecification = targetToAnalyze.Inputs;
             _targetOutputSpecification = targetToAnalyze.Outputs;
             _loggingService = loggingServices;
-            _buildEventContext = buildEventContext;
+            _DefaultLicenseValidator = DefaultLicenseValidator;
         }
 
         #endregion
@@ -248,7 +248,7 @@ namespace Microsoft.Build.BackEnd
 
                 if (result == DependencyAnalysisResult.SkipUpToDate)
                 {
-                    _loggingService.LogComment(_buildEventContext, MessageImportance.Normal,
+                    _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal,
                         "SkipTargetBecauseOutputsUpToDate",
                         TargetToAnalyze.Name);
 
@@ -277,22 +277,22 @@ namespace Microsoft.Build.BackEnd
                 if (result == DependencyAnalysisResult.FullBuild && _dependencyAnalysisDetail.Count > 0)
                 {
                     // For the full build decision the are three possible outcomes
-                    _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "BuildTargetCompletely", _targetToAnalyze.Name);
+                    _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "BuildTargetCompletely", _targetToAnalyze.Name);
 
                     foreach (DependencyAnalysisLogDetail logDetail in _dependencyAnalysisDetail)
                     {
                         string reason = GetFullBuildReason(logDetail);
-                        _loggingService.LogCommentFromText(_buildEventContext, MessageImportance.Low, reason);
+                        _loggingService.LogCommentFromText(_DefaultLicenseValidator, MessageImportance.Low, reason);
                     }
                 }
                 else if (result == DependencyAnalysisResult.IncrementalBuild)
                 {
                     // For the partial build decision the are three possible outcomes
-                    _loggingService.LogComment(_buildEventContext, MessageImportance.Normal, "BuildTargetPartially", _targetToAnalyze.Name);
+                    _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal, "BuildTargetPartially", _targetToAnalyze.Name);
                     foreach (DependencyAnalysisLogDetail logDetail in _dependencyAnalysisDetail)
                     {
                         string reason = GetIncrementalBuildReason(logDetail);
-                        _loggingService.LogCommentFromText(_buildEventContext, MessageImportance.Low, reason);
+                        _loggingService.LogCommentFromText(_DefaultLicenseValidator, MessageImportance.Low, reason);
                     }
                 }
             }
@@ -397,12 +397,12 @@ namespace Microsoft.Build.BackEnd
 
             if (inputs != null)
             {
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "SkipTargetUpToDateInputs", inputs);
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "SkipTargetUpToDateInputs", inputs);
             }
 
             if (outputs != null)
             {
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "SkipTargetUpToDateOutputs", outputs);
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "SkipTargetUpToDateOutputs", outputs);
             }
         }
 
@@ -472,10 +472,10 @@ namespace Microsoft.Build.BackEnd
             // if the target did declare inputs, but the specification evaluated to nothing
             if (TargetInputSpecification.Length > 0)
             {
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Normal,
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal,
                     "SkipTargetBecauseNoInputs", TargetToAnalyze.Name);
                 // detailed reason is low importance to keep log clean
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low,
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low,
                     "SkipTargetBecauseNoInputsDetail");
 
                 // don't build the target
@@ -484,8 +484,8 @@ namespace Microsoft.Build.BackEnd
             else
             {
                 // There were no inputs specified, so build completely
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "BuildTargetCompletely", _targetToAnalyze.Name);
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low, "BuildTargetCompletelyNoInputsSpecified");
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "BuildTargetCompletely", _targetToAnalyze.Name);
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low, "BuildTargetCompletelyNoInputsSpecified");
 
 
                 // otherwise, do a full build
@@ -514,10 +514,10 @@ namespace Microsoft.Build.BackEnd
             // otherwise, don't build the target
             else
             {
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Normal,
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Normal,
                     "SkipTargetBecauseNoOutputs", TargetToAnalyze.Name);
                 // detailed reason is low importance to keep log clean
-                _loggingService.LogComment(_buildEventContext, MessageImportance.Low,
+                _loggingService.LogComment(_DefaultLicenseValidator, MessageImportance.Low,
                     "SkipTargetBecauseNoOutputsDetail");
             }
 
@@ -1311,7 +1311,7 @@ namespace Microsoft.Build.BackEnd
         // Engine logging service which to log message to
         private ILoggingService _loggingService;
         // Event context information where event is raised from
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
 
         /// <summary>
         /// By default we do not sort target inputs and outputs as it has significant perf impact.

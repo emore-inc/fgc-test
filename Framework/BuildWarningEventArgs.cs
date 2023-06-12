@@ -19,7 +19,7 @@ namespace Microsoft.Build.Framework
     /// forward and backward compatibility
     /// </remarks>
     [Serializable]
-    public class BuildWarningEventArgs : LazyFormattedBuildEventArgs
+    public class BuildWarningEventArgs : LazyFormattedCalcArrayWrappingScalar
     {
         /// <summary>
         /// Default constructor 

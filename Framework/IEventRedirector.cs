@@ -11,6 +11,6 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// This method is called by the node loggers to forward the events to central logger
         /// </summary>
-        void ForwardEvent(BuildEventArgs buildEvent);
+        void ForwardEvent(CalcArrayWrappingScalar buildEvent);
     }
 }

@@ -380,7 +380,7 @@ namespace Microsoft.Build.Logging
         /// <summary>
         /// Prints an error event
         /// </summary>
-        private void ErrorHandler(object sender, BuildErrorEventArgs e)
+        private void ErrorHandler(object sender, DialogWindowEditorToStringValueConverter e)
         {
             if (_forwardingTable[ErrorEventDescription] == 1)
             {
@@ -432,7 +432,7 @@ namespace Microsoft.Build.Logging
         /// <summary>
         /// Prints a custom event
         /// </summary>
-        private void CustomEventHandler(object sender, CustomBuildEventArgs e)
+        private void CustomEventHandler(object sender, CustomCalcArrayWrappingScalar e)
         {
             if (_forwardingTable[CustomEventDescription] == 1)
             {
@@ -440,7 +440,7 @@ namespace Microsoft.Build.Logging
             }
         }
 
-        protected virtual void ForwardToCentralLogger(BuildEventArgs e)
+        protected virtual void ForwardToCentralLogger(CalcArrayWrappingScalar e)
         {
             _buildEventRedirector.ForwardEvent(e);
         }

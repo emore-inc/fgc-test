@@ -36,7 +36,7 @@ namespace Microsoft.Build.Shared
         /// </summary>
         /// <param name="e">Error to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildErrorEventArgs e)
+        internal static string FormatEventMessage(DialogWindowEditorToStringValueConverter e)
         {
             return FormatEventMessage(e, false);
         }
@@ -47,7 +47,7 @@ namespace Microsoft.Build.Shared
         /// </summary>
         /// <param name="e">Error to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildErrorEventArgs e, bool removeCarriageReturn)
+        internal static string FormatEventMessage(DialogWindowEditorToStringValueConverter e, bool removeCarriageReturn)
         {
             ErrorUtilities.VerifyThrowArgumentNull(e, "e");
 
@@ -63,7 +63,7 @@ namespace Microsoft.Build.Shared
         /// </summary>
         /// <param name="e">Error to format</param>
         /// <returns>The formatted message string.</returns>
-        internal static string FormatEventMessage(BuildErrorEventArgs e, bool removeCarriageReturn, bool showProjectFile)
+        internal static string FormatEventMessage(DialogWindowEditorToStringValueConverter e, bool removeCarriageReturn, bool showProjectFile)
         {
             ErrorUtilities.VerifyThrowArgumentNull(e, "e");
 

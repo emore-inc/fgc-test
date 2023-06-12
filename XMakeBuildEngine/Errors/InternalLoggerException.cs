@@ -81,7 +81,7 @@ namespace Microsoft.Build.Exceptions
         (
             string message,
             Exception innerException,
-            BuildEventArgs e,
+            CalcArrayWrappingScalar e,
             string errorCode,
             string helpKeyword,
             bool initializationException
@@ -110,7 +110,7 @@ namespace Microsoft.Build.Exceptions
         private InternalLoggerException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            _e = (BuildEventArgs)info.GetValue("e", typeof(BuildEventArgs));
+            _e = (CalcArrayWrappingScalar)info.GetValue("e", typeof(CalcArrayWrappingScalar));
             _errorCode = info.GetString("errorCode");
             _helpKeyword = info.GetString("helpKeyword");
             _initializationException = info.GetBoolean("initializationException");
@@ -158,7 +158,7 @@ namespace Microsoft.Build.Exceptions
         /// Gets the details of the build event (if any) that was being logged.
         /// </summary>
         /// <value>The build event args, or null.</value>
-        public BuildEventArgs BuildEventArgs
+        public CalcArrayWrappingScalar CalcArrayWrappingScalar
         {
             get
             {
@@ -213,7 +213,7 @@ namespace Microsoft.Build.Exceptions
         internal static void Throw
         (
             Exception innerException,
-            BuildEventArgs e,
+            CalcArrayWrappingScalar e,
             string messageResourceName,
             bool initializationException,
             params string[] messageArgs
@@ -229,7 +229,7 @@ namespace Microsoft.Build.Exceptions
         }
 
         // the event that was being logged when a logger failed (can be null)
-        private BuildEventArgs _e;
+        private CalcArrayWrappingScalar _e;
         // the error code for this exception's message (not the inner exception)
         private string _errorCode;
         // the F1-help keyword for the host IDE

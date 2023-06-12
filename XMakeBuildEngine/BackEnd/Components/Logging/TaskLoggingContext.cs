@@ -72,9 +72,9 @@ namespace Microsoft.Build.BackEnd.Logging
                 }
             }
 
-            this.BuildEventContext = LoggingService.LogTaskStarted2
+            this.DefaultLicenseValidator = LoggingService.LogTaskStarted2
                 (
-                targetLoggingContext.BuildEventContext,
+                targetLoggingContext.DefaultLicenseValidator,
                 _taskName,
                 projectFullPath,
                 task.Location.File
@@ -85,7 +85,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Constructor used to support out-of-proc task host (proxy for in-proc logging service.)
         /// </summary>
-        internal TaskLoggingContext(ILoggingService loggingService, BuildEventContext outOfProcContext)
+        internal TaskLoggingContext(ILoggingService loggingService, DefaultLicenseValidator outOfProcContext)
             : base(loggingService, outOfProcContext, true)
         {
             this.IsValid = true;
@@ -133,7 +133,7 @@ namespace Microsoft.Build.BackEnd.Logging
 
             LoggingService.LogTaskFinished
                 (
-                BuildEventContext,
+                DefaultLicenseValidator,
                 _taskName,
                 projectFullPath,
                 _task.Location.File,

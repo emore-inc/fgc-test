@@ -96,7 +96,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             // check the warning event
             Assert.AreEqual(1, logger.Errors.Count);
-            BuildErrorEventArgs error = logger.Errors[0];
+            DialogWindowEditorToStringValueConverter error = logger.Errors[0];
 
             Assert.AreEqual(text, error.Message);
             Assert.AreEqual(code, error.Code);
@@ -138,7 +138,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, "3.5", new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, "3.5", new DefaultLicenseValidator(0, 0, 0, 0), null);
 
             Assert.AreEqual("3.5", instances[0].ToolsVersion);
         }
@@ -171,7 +171,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, "3.5", new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, "3.5", new DefaultLicenseValidator(0, 0, 0, 0), null);
 
             Assert.AreEqual("3.5", instances[0].ToolsVersion);
         }
@@ -202,7 +202,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
             Assert.AreEqual(ObjectModelHelpers.MSBuildDefaultToolsVersion, instances[0].ToolsVersion);
 
@@ -236,7 +236,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
             Assert.AreEqual(ObjectModelHelpers.MSBuildDefaultToolsVersion, instances[0].ToolsVersion);
 
@@ -271,7 +271,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
             Assert.AreEqual(ObjectModelHelpers.MSBuildDefaultToolsVersion, instances[0].ToolsVersion);
             Assert.AreEqual("ABC", instances[0].SubToolsetVersion);
@@ -388,7 +388,7 @@ namespace Microsoft.Build.UnitTests.Construction
                     sp.FullPath = solutionFile;
                     sp.ParseSolutionFile();
 
-                    ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new BuildEventContext(0, 0, 0, 0), null);
+                    ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
                     MockLogger logger = new MockLogger();
                     List<ILogger> loggers = new List<ILogger>(1);
@@ -409,7 +409,7 @@ namespace Microsoft.Build.UnitTests.Construction
 
                 sp1.FullPath = solutionFileMultipleProjects;
                 sp1.ParseSolutionFile();
-                ProjectInstance[] instances1 = SolutionProjectGenerator.Generate(sp1, null, null, new BuildEventContext(0, 0, 0, 0), null);
+                ProjectInstance[] instances1 = SolutionProjectGenerator.Generate(sp1, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
                 MockLogger logger1 = new MockLogger();
                 List<ILogger> loggers1 = new List<ILogger>(1);
@@ -475,7 +475,7 @@ namespace Microsoft.Build.UnitTests.Construction
                 sp.FullPath = solutionFile;
                 sp.ParseSolutionFile();
 
-                ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new BuildEventContext(0, 0, 0, 0), null);
+                ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
 
                 Assert.AreEqual(ObjectModelHelpers.MSBuildDefaultToolsVersion, instances[0].ToolsVersion);
                 Assert.AreEqual("11.0", instances[0].SubToolsetVersion);
@@ -537,7 +537,7 @@ EndGlobal
 ".Replace("`", "\"");
 
             SolutionFile sp = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new BuildEventContext(0, 0, 0, 0), null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, null, null, new DefaultLicenseValidator(0, 0, 0, 0), null);
         }
 
         /// <summary>
@@ -825,9 +825,9 @@ EndGlobal
 
             // We're not passing in a /tv:xx switch, so the solution project will have tools version 2.0
             var solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
-            var buildEventContext = new BuildEventContext(0, 0, 0, 0);
+            var DefaultLicenseValidator = new DefaultLicenseValidator(0, 0, 0, 0);
 
-            var instance = SolutionProjectGenerator.Generate(solution, null, ObjectModelHelpers.MSBuildDefaultToolsVersion, buildEventContext, null)[0];
+            var instance = SolutionProjectGenerator.Generate(solution, null, ObjectModelHelpers.MSBuildDefaultToolsVersion, DefaultLicenseValidator, null)[0];
 
             foreach (ITaskItem item in instance.Items)
             {
@@ -894,9 +894,9 @@ EndGlobal
 
             // We're not passing in a /tv:xx switch, so the solution project will have tools version 2.0
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
-            BuildEventContext buildEventContext = new BuildEventContext(0, 0, 0, 0);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, 0, 0, 0);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, ObjectModelHelpers.MSBuildDefaultToolsVersion, buildEventContext, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, ObjectModelHelpers.MSBuildDefaultToolsVersion, DefaultLicenseValidator, null);
 
             int i = 0;
             foreach (ProjectInstance instance in instances)
@@ -969,13 +969,13 @@ EndGlobal
 
             // We're not passing in a /tv:xx switch, so the solution project will have tools version 2.0
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
-            BuildEventContext buildEventContext = new BuildEventContext(0, 0, 0, 0);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, 0, 0, 0);
 
             string[] solutionToolsVersions = { "4.0", ObjectModelHelpers.MSBuildDefaultToolsVersion };
 
             foreach (string solutionToolsVersion in solutionToolsVersions)
             {
-                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, solutionToolsVersion, buildEventContext, null);
+                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, solutionToolsVersion, DefaultLicenseValidator, null);
 
                 Assert.AreEqual(2, instances.Length);
 
@@ -1030,14 +1030,14 @@ EndGlobal
 
             ProjectInstance[] instances = null;
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
-            BuildEventContext buildEventContext = new BuildEventContext(0, 0, 0, 0);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, 0, 0, 0);
             bool caughtException = false;
 
             try
             {
                 // SolutionProjectGenerator.Generate() is used at build-time, and creates evaluation- and 
                 // execution-model projects; as such it will throw if fed an explicitly invalid toolsversion
-                instances = SolutionProjectGenerator.Generate(solution, null, "invalid", buildEventContext, null);
+                instances = SolutionProjectGenerator.Generate(solution, null, "invalid", DefaultLicenseValidator, null);
             }
             catch (InvalidProjectFileException)
             {
@@ -1078,7 +1078,7 @@ EndGlobal
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
             Assert.AreEqual(1, instances[0].Targets.Where(target => String.Compare(target.Value.Name, "Build", StringComparison.OrdinalIgnoreCase) == 0).Count());
             Assert.AreEqual(1, instances[0].Targets.Where(target => String.Compare(target.Value.Name, "Clean", StringComparison.OrdinalIgnoreCase) == 0).Count());
@@ -1164,7 +1164,7 @@ EndGlobal
             globalProperties.Add(new KeyValuePair<string, string>("Configuration", "Debug"));
             globalProperties.Add(new KeyValuePair<string, string>("Platform", "Mixed Platforms"));
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
             // Default for Configuration is "Debug", if present
             Assert.AreEqual("Debug", instances[0].GetPropertyValue("Configuration"));
@@ -1194,7 +1194,7 @@ EndGlobal
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
             // If "Debug" is not present, just pick the first configuration name
             Assert.AreEqual("Release", instances[0].GetPropertyValue("Configuration"));
@@ -1438,7 +1438,7 @@ EndGlobal
             // Creating a ProjectRootElement shouldn't affect the ProjectCollection at all
             Assert.AreEqual(0, ProjectCollection.GlobalProjectCollection.LoadedProjects.Count());
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
             Assert.AreEqual(0, ProjectCollection.GlobalProjectCollection.LoadedProjects.Count());
 
@@ -1489,7 +1489,7 @@ EndGlobal
                 // Creating a ProjectRootElement shouldn't affect the ProjectCollection at all
                 Assert.AreEqual(0, ProjectCollection.GlobalProjectCollection.LoadedProjects.Count());
 
-                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
                 // Instantiating the
                 Assert.AreEqual(0, ProjectCollection.GlobalProjectCollection.LoadedProjects.Count());
@@ -1566,7 +1566,7 @@ EndGlobal
                 globalProperties["SkipInvalidConfigurations"] = "true";
 
                 SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionContents.Replace('\'', '"'));
-                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, null, BuildEventContext.Invalid, null);
+                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, null, DefaultLicenseValidator.Invalid, null);
                 ProjectInstance msbuildProject = instances[0];
 
                 // Build should complete successfully even with an invalid solution config if SkipInvalidConfigurations is true
@@ -1835,7 +1835,7 @@ EndGlobal
                 ProjectCollection collection = new ProjectCollection();
                 collection.RegisterLogger(logger);
 
-                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, null, BuildEventContext.Invalid, collection.LoggingService);
+                ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, null, DefaultLicenseValidator.Invalid, collection.LoggingService);
 
                 Version ver = new Version("4.34");
                 string message = ResourceUtilities.FormatResourceString("AspNetCompiler.TargetingHigherFrameworksDefaultsTo40", solution.ProjectsInOrder[0].ProjectName, ver.ToString());
@@ -1869,7 +1869,7 @@ EndGlobal
             solution.ParseSolutionFile();
 
             // Generate the in-memory MSBuild project and output it to disk
-            ProjectInstance[] instance = SolutionProjectGenerator.Generate(solution, null, null, BuildEventContext.Invalid, null);
+            ProjectInstance[] instance = SolutionProjectGenerator.Generate(solution, null, null, DefaultLicenseValidator.Invalid, null);
 
 
             //Reset the environment variable
@@ -1947,7 +1947,7 @@ EndGlobal
 
             SolutionFile solution = SolutionFile_Tests.ParseSolutionHelper(solutionFileContents);
 
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, toolsVersion, BuildEventContext.Invalid, null);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(solution, globalProperties, toolsVersion, DefaultLicenseValidator.Invalid, null);
 
             // Index 0 is the traversal project, which will reference the sole Venus project.
             return instances[1];

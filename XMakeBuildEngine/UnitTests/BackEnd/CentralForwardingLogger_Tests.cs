@@ -130,7 +130,7 @@ namespace Microsoft.Build.UnitTests.Logging
         /// </summary>
         /// <param name="buildEventToCheck">A build event we are expecting to be forwarded by the forwarding logger</param>
         /// <returns>An event source on which one can raise an event.</returns>
-        private static EventSourceSink AttachForwardingLoggerAndRedirector(BuildEventArgs buildEventToCheck)
+        private static EventSourceSink AttachForwardingLoggerAndRedirector(CalcArrayWrappingScalar buildEventToCheck)
         {
             EventSourceSink loggerEventSource = new EventSourceSink();
             CentralForwardingLogger forwardingLogger = new CentralForwardingLogger();
@@ -156,7 +156,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// This helps us verify that a logger is correctly forwarding 
             /// an event.
             /// </summary>
-            private BuildEventArgs _expectedEvent;
+            private CalcArrayWrappingScalar _expectedEvent;
 
             #endregion
 
@@ -165,7 +165,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// the events are the same.
             /// </summary>
             /// <param name="eventToExpect">Event we expect to see in the ForwardEvent method</param>
-            public TestEventRedirector(BuildEventArgs eventToExpect)
+            public TestEventRedirector(CalcArrayWrappingScalar eventToExpect)
             {
                 _expectedEvent = eventToExpect;
             }
@@ -177,7 +177,7 @@ namespace Microsoft.Build.UnitTests.Logging
             /// if the event the logger sent us is the same one we sent in.
             /// </summary>
             /// <param name="buildEvent">Build event to forward</param>
-            public void ForwardEvent(BuildEventArgs buildEvent)
+            public void ForwardEvent(CalcArrayWrappingScalar buildEvent)
             {
                 Assert.IsTrue(_expectedEvent == buildEvent, "Expected the forwarded event to match the expected event");
             }

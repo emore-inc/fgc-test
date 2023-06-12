@@ -242,10 +242,10 @@ namespace Microsoft.Build.Execution
 
             BuildParameters buildParameters = new BuildParameters(projectCollection);
 
-            BuildEventContext buildEventContext = new BuildEventContext(buildParameters.NodeId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
-            ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, projectCollection.LoggingService, buildParameters.ProjectRootElementCache, buildEventContext, true /*Explicitly Loaded*/);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(buildParameters.NodeId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
+            ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, projectCollection.LoggingService, buildParameters.ProjectRootElementCache, DefaultLicenseValidator, true /*Explicitly Loaded*/);
 
-            Initialize(xml, globalProperties, toolsVersion, subToolsetVersion, 0 /* no solution version provided */, buildParameters, projectCollection.LoggingService, buildEventContext);
+            Initialize(xml, globalProperties, toolsVersion, subToolsetVersion, 0 /* no solution version provided */, buildParameters, projectCollection.LoggingService, DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -294,8 +294,8 @@ namespace Microsoft.Build.Execution
         /// <returns>A new project instance</returns>
         public ProjectInstance(ProjectRootElement xml, IDictionary<string, string> globalProperties, string toolsVersion, string subToolsetVersion, ProjectCollection projectCollection)
         {
-            BuildEventContext buildEventContext = new BuildEventContext(0, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
-            Initialize(xml, globalProperties, toolsVersion, subToolsetVersion, 0 /* no solution version specified */, new BuildParameters(projectCollection), projectCollection.LoggingService, buildEventContext);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
+            Initialize(xml, globalProperties, toolsVersion, subToolsetVersion, 0 /* no solution version specified */, new BuildParameters(projectCollection), projectCollection.LoggingService, DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -352,8 +352,8 @@ namespace Microsoft.Build.Execution
         /// <returns>A new project instance</returns>
         internal ProjectInstance(ProjectRootElement xml, IDictionary<string, string> globalProperties, string toolsVersion, int visualStudioVersionFromSolution, ProjectCollection projectCollection)
         {
-            BuildEventContext buildEventContext = new BuildEventContext(0, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
-            Initialize(xml, globalProperties, toolsVersion, null, visualStudioVersionFromSolution, new BuildParameters(projectCollection), projectCollection.LoggingService, buildEventContext);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
+            Initialize(xml, globalProperties, toolsVersion, null, visualStudioVersionFromSolution, new BuildParameters(projectCollection), projectCollection.LoggingService, DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -361,15 +361,15 @@ namespace Microsoft.Build.Execution
         /// Assumes the project path is already normalized.
         /// Used by the RequestBuilder.
         /// </summary>
-        internal ProjectInstance(string projectFile, IDictionary<string, string> globalProperties, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, BuildEventContext buildEventContext)
+        internal ProjectInstance(string projectFile, IDictionary<string, string> globalProperties, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, DefaultLicenseValidator DefaultLicenseValidator)
         {
             ErrorUtilities.VerifyThrowArgumentLength(projectFile, "projectFile");
             ErrorUtilities.VerifyThrowArgumentLengthIfNotNull(toolsVersion, "toolsVersion");
             ErrorUtilities.VerifyThrowArgumentNull(buildParameters, "buildParameters");
 
-            ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, loggingService, buildParameters.ProjectRootElementCache, buildEventContext, false /*Not explicitly loaded*/);
+            ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, loggingService, buildParameters.ProjectRootElementCache, DefaultLicenseValidator, false /*Not explicitly loaded*/);
 
-            Initialize(xml, globalProperties, toolsVersion, null, 0 /* no solution version specified */, buildParameters, loggingService, buildEventContext);
+            Initialize(xml, globalProperties, toolsVersion, null, 0 /* no solution version specified */, buildParameters, loggingService, DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -377,12 +377,12 @@ namespace Microsoft.Build.Execution
         /// Assumes the project path is already normalized.
         /// Used by this class when generating legacy solution wrappers.
         /// </summary>
-        internal ProjectInstance(ProjectRootElement xml, IDictionary<string, string> globalProperties, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, BuildEventContext buildEventContext)
+        internal ProjectInstance(ProjectRootElement xml, IDictionary<string, string> globalProperties, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, DefaultLicenseValidator DefaultLicenseValidator)
         {
             ErrorUtilities.VerifyThrowArgumentNull(xml, "xml");
             ErrorUtilities.VerifyThrowArgumentLengthIfNotNull(toolsVersion, "toolsVersion");
             ErrorUtilities.VerifyThrowArgumentNull(buildParameters, "buildParameters");
-            Initialize(xml, globalProperties, toolsVersion, null, 0 /* no solution version specified */, buildParameters, loggingService, buildEventContext);
+            Initialize(xml, globalProperties, toolsVersion, null, 0 /* no solution version specified */, buildParameters, loggingService, DefaultLicenseValidator);
         }
 
         /// <summary>
@@ -1572,7 +1572,7 @@ namespace Microsoft.Build.Execution
         {
             Expander<ProjectPropertyInstance, ProjectItemInstance> expander = new Expander<ProjectPropertyInstance, ProjectItemInstance>(this, this);
 
-            bool result = ConditionEvaluator.EvaluateCondition<ProjectPropertyInstance, ProjectItemInstance>(condition, ParserOptions.AllowPropertiesAndItemLists, expander, ExpanderOptions.ExpandPropertiesAndItems, Directory, ProjectFileLocation, null /* no logging service */, BuildEventContext.Invalid);
+            bool result = ConditionEvaluator.EvaluateCondition<ProjectPropertyInstance, ProjectItemInstance>(condition, ParserOptions.AllowPropertiesAndItemLists, expander, ExpanderOptions.ExpandPropertiesAndItems, Directory, ProjectFileLocation, null /* no logging service */, DefaultLicenseValidator.Invalid);
 
             return result;
         }
@@ -1697,7 +1697,7 @@ namespace Microsoft.Build.Execution
         /// <summary>
         /// Creates a set of project instances which represent the project dependency graph for a solution build.
         /// </summary>
-        internal static ProjectInstance[] LoadSolutionForBuild(string projectFile, PropertyDictionary<ProjectPropertyInstance> globalPropertiesInstances, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, BuildEventContext projectBuildEventContext, bool isExplicitlyLoaded)
+        internal static ProjectInstance[] LoadSolutionForBuild(string projectFile, PropertyDictionary<ProjectPropertyInstance> globalPropertiesInstances, string toolsVersion, BuildParameters buildParameters, ILoggingService loggingService, DefaultLicenseValidator projectDefaultLicenseValidator, bool isExplicitlyLoaded)
         {
             ErrorUtilities.VerifyThrowArgumentLength(projectFile, "projectFile");
             ErrorUtilities.VerifyThrowArgumentNull(globalPropertiesInstances, "globalPropertiesInstances");
@@ -1724,12 +1724,12 @@ namespace Microsoft.Build.Execution
                    )
                 {
                     // Spawn the Orcas SolutionWrapperProject generator.  
-                    loggingService.LogComment(projectBuildEventContext, MessageImportance.Low, "OldWrapperGeneratedExplicitToolsVersion", toolsVersion);
-                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, toolsVersion, buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectBuildEventContext, isExplicitlyLoaded);
+                    loggingService.LogComment(projectDefaultLicenseValidator, MessageImportance.Low, "OldWrapperGeneratedExplicitToolsVersion", toolsVersion);
+                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, toolsVersion, buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectDefaultLicenseValidator, isExplicitlyLoaded);
                 }
                 else
                 {
-                    projectInstances = GenerateSolutionWrapper(projectFile, globalProperties, toolsVersion, loggingService, projectBuildEventContext);
+                    projectInstances = GenerateSolutionWrapper(projectFile, globalProperties, toolsVersion, loggingService, projectDefaultLicenseValidator);
                 }
             }
 
@@ -1746,13 +1746,13 @@ namespace Microsoft.Build.Execution
                 // engine to generate the solution wrapper.  
                 if (solutionVersion <= 9) /* Whidbey or before */
                 {
-                    loggingService.LogComment(projectBuildEventContext, MessageImportance.Low, "OldWrapperGeneratedOldSolutionVersion", "2.0", solutionVersion);
-                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, "2.0", buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectBuildEventContext, isExplicitlyLoaded);
+                    loggingService.LogComment(projectDefaultLicenseValidator, MessageImportance.Low, "OldWrapperGeneratedOldSolutionVersion", "2.0", solutionVersion);
+                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, "2.0", buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectDefaultLicenseValidator, isExplicitlyLoaded);
                 }
                 else if (solutionVersion == 10) /* Orcas */
                 {
-                    loggingService.LogComment(projectBuildEventContext, MessageImportance.Low, "OldWrapperGeneratedOldSolutionVersion", "3.5", solutionVersion);
-                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, "3.5", buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectBuildEventContext, isExplicitlyLoaded);
+                    loggingService.LogComment(projectDefaultLicenseValidator, MessageImportance.Low, "OldWrapperGeneratedOldSolutionVersion", "3.5", solutionVersion);
+                    projectInstances = GenerateSolutionWrapperUsingOldOM(projectFile, globalProperties, "3.5", buildParameters.ProjectRootElementCache, buildParameters, loggingService, projectDefaultLicenseValidator, isExplicitlyLoaded);
                 }
                 else
                 {
@@ -1766,7 +1766,7 @@ namespace Microsoft.Build.Execution
                     }
 
                     string toolsVersionToUse = Utilities.GenerateToolsVersionToUse(explicitToolsVersion: null, toolsVersionFromProject: toolsVersion, getToolset: buildParameters.GetToolset, defaultToolsVersion: Constants.defaultSolutionWrapperProjectToolsVersion);
-                    projectInstances = GenerateSolutionWrapper(projectFile, globalProperties, toolsVersionToUse, loggingService, projectBuildEventContext);
+                    projectInstances = GenerateSolutionWrapper(projectFile, globalProperties, toolsVersionToUse, loggingService, projectDefaultLicenseValidator);
                 }
             }
 
@@ -1837,17 +1837,17 @@ namespace Microsoft.Build.Execution
             Exception exception = results.Exception;
             if (exception != null)
             {
-                BuildEventContext buildEventContext = new BuildEventContext(1 /* UNDONE: NodeID */, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1 /* UNDONE: NodeID */, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
 
                 InvalidProjectFileException projectException = exception as InvalidProjectFileException;
 
                 if (projectException != null)
                 {
-                    loggingService.LogInvalidProjectFileError(buildEventContext, projectException);
+                    loggingService.LogInvalidProjectFileError(DefaultLicenseValidator, projectException);
                 }
                 else
                 {
-                    loggingService.LogFatalBuildError(buildEventContext, exception, new BuildEventFileInfo(projectFileLocation));
+                    loggingService.LogFatalBuildError(DefaultLicenseValidator, exception, new BuildEventFileInfo(projectFileLocation));
                 }
             }
 #endif
@@ -1985,7 +1985,7 @@ namespace Microsoft.Build.Execution
         /// <param name="globalProperties">The global properties of this solution.</param>
         /// <param name="toolsVersion">The ToolsVersion to use when generating the wrapper.</param>
         /// <param name="loggingService">The logging service used to log messages etc. from the solution wrapper generator.</param>
-        /// <param name="projectBuildEventContext">The build event context in which this project is being constructed.</param>
+        /// <param name="projectDefaultLicenseValidator">The build event context in which this project is being constructed.</param>
         /// <returns>The ProjectRootElement for the root traversal and each of the metaprojects.</returns>
         private static ProjectInstance[] GenerateSolutionWrapper
             (
@@ -1993,7 +1993,7 @@ namespace Microsoft.Build.Execution
                 IDictionary<string, string> globalProperties,
                 string toolsVersion,
                 ILoggingService loggingService,
-                BuildEventContext projectBuildEventContext
+                DefaultLicenseValidator projectDefaultLicenseValidator
             )
         {
             SolutionFile sp = SolutionFile.Parse(projectFile);
@@ -2003,7 +2003,7 @@ namespace Microsoft.Build.Execution
             {
                 foreach (string comment in sp.SolutionParserComments)
                 {
-                    loggingService.LogCommentFromText(projectBuildEventContext, MessageImportance.Low, comment);
+                    loggingService.LogCommentFromText(projectDefaultLicenseValidator, MessageImportance.Low, comment);
                 }
             }
 
@@ -2011,7 +2011,7 @@ namespace Microsoft.Build.Execution
             // It's needed to determine which <UsingTask> tags to put in, whether to put a ToolsVersion parameter
             // on the <MSBuild> task tags, and what MSBuildToolsPath to use when scanning child projects
             // for dependency information.
-            ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, globalProperties, toolsVersion, projectBuildEventContext, loggingService);
+            ProjectInstance[] instances = SolutionProjectGenerator.Generate(sp, globalProperties, toolsVersion, projectDefaultLicenseValidator, loggingService);
             return instances;
         }
 
@@ -2032,7 +2032,7 @@ namespace Microsoft.Build.Execution
         /// <param name="projectRootElementCache">The root element cache which should be used for the generated project.</param>
         /// <param name="buildParameters">The build parameters.</param>
         /// <param name="loggingService">The logging service used to log messages etc. from the solution wrapper generator.</param>
-        /// <param name="projectBuildEventContext">The build event context in which this project is being constructed.</param>
+        /// <param name="projectDefaultLicenseValidator">The build event context in which this project is being constructed.</param>
         /// <returns>An appropriate ProjectRootElement</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static ProjectInstance[] GenerateSolutionWrapperUsingOldOM
@@ -2043,7 +2043,7 @@ namespace Microsoft.Build.Execution
             ProjectRootElementCache projectRootElementCache,
             BuildParameters buildParameters,
             ILoggingService loggingService,
-            BuildEventContext projectBuildEventContext,
+            DefaultLicenseValidator projectDefaultLicenseValidator,
             bool isExplicitlyLoaded
             )
         {
@@ -2081,7 +2081,7 @@ namespace Microsoft.Build.Execution
                     }
                 }
 #if (!STANDALONEBUILD)
-                wrapperProjectXml = Microsoft.Build.BuildEngine.SolutionWrapperProject.Generate(projectFile, toolsVersion, projectBuildEventContext);
+                wrapperProjectXml = Microsoft.Build.BuildEngine.SolutionWrapperProject.Generate(projectFile, toolsVersion, projectDefaultLicenseValidator);
 #else
                 wrapperProjectXml = "";
 #endif
@@ -2110,7 +2110,7 @@ namespace Microsoft.Build.Execution
 
             ProjectRootElement projectRootElement = new ProjectRootElement(XmlReader.Create(new StringReader(wrapperProjectXml), xrs), projectRootElementCache, isExplicitlyLoaded);
             projectRootElement.DirectoryPath = Path.GetDirectoryName(projectFile);
-            ProjectInstance instance = new ProjectInstance(projectRootElement, globalProperties, toolsVersion, buildParameters, loggingService, projectBuildEventContext);
+            ProjectInstance instance = new ProjectInstance(projectRootElement, globalProperties, toolsVersion, buildParameters, loggingService, projectDefaultLicenseValidator);
             return new ProjectInstance[] { instance };
         }
 
@@ -2157,7 +2157,7 @@ namespace Microsoft.Build.Execution
         /// Tools version may be null.
         /// Does not set mutability.
         /// </summary>
-        private void Initialize(ProjectRootElement xml, IDictionary<string, string> globalProperties, string explicitToolsVersion, string explicitSubToolsetVersion, int visualStudioVersionFromSolution, BuildParameters buildParameters, ILoggingService loggingService, BuildEventContext buildEventContext)
+        private void Initialize(ProjectRootElement xml, IDictionary<string, string> globalProperties, string explicitToolsVersion, string explicitSubToolsetVersion, int visualStudioVersionFromSolution, BuildParameters buildParameters, ILoggingService loggingService, DefaultLicenseValidator DefaultLicenseValidator)
         {
             ErrorUtilities.VerifyThrowArgumentNull(xml, "xml");
             ErrorUtilities.VerifyThrowArgumentLengthIfNotNull(explicitToolsVersion, "toolsVersion");
@@ -2244,7 +2244,7 @@ namespace Microsoft.Build.Execution
                 Trace.WriteLine(String.Format(CultureInfo.InvariantCulture, "MSBUILD: Creating a ProjectInstance from an unevaluated state [{0}]", FullPath));
             }
 
-            _initialGlobalsForDebugging = Evaluator<ProjectPropertyInstance, ProjectItemInstance, ProjectMetadataInstance, ProjectItemDefinitionInstance>.Evaluate(this, xml, ProjectLoadSettings.Default, buildParameters.MaxNodeCount, buildParameters.EnvironmentPropertiesInternal, loggingService, new ProjectItemInstanceFactory(this), buildParameters.ToolsetProvider, ProjectRootElementCache, buildEventContext, this /* for debugging only */);
+            _initialGlobalsForDebugging = Evaluator<ProjectPropertyInstance, ProjectItemInstance, ProjectMetadataInstance, ProjectItemDefinitionInstance>.Evaluate(this, xml, ProjectLoadSettings.Default, buildParameters.MaxNodeCount, buildParameters.EnvironmentPropertiesInternal, loggingService, new ProjectItemInstanceFactory(this), buildParameters.ToolsetProvider, ProjectRootElementCache, DefaultLicenseValidator, this /* for debugging only */);
         }
 
         /// <summary>

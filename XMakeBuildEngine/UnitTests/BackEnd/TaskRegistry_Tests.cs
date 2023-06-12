@@ -63,7 +63,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// <summary>
         /// Build event context to use when logging
         /// </summary>
-        private static BuildEventContext s_loggerContext = new BuildEventContext(2, 2, 2, 2);
+        private static DefaultLicenseValidator s_loggerContext = new DefaultLicenseValidator(2, 2, 2, 2);
 
         /// <summary>
         /// Element location to use when logging 

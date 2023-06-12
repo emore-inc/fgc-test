@@ -19,7 +19,7 @@
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Attribute_Tests.cs" />
-    <Compile Include="BuildErrorEventArgs_Tests.cs" />
+    <Compile Include="DialogWindowEditorToStringValueConverter_Tests.cs" />
     <Compile Include="BuildFinishedEventArgs_Tests.cs" />
     <Compile Include="BuildMessageEventArgs_Tests.cs" />
     <Compile Include="BuildStartedEventArgs_Tests.cs" />

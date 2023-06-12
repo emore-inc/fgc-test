@@ -17,7 +17,7 @@ namespace Microsoft.Build.Framework
     /// </summary>
     [Serializable]
     [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes", Justification = "Would require a public API change -- currently we're trying to keep our surface area static.")]
-    public struct BuildEngineResult
+    public struct ServerLicenseValidator
     {
         /// <summary>
         /// Did the build pass or fail
@@ -32,7 +32,7 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// The constructor takes the result of the build and a list of the target outputs per project
         /// </summary>
-        public BuildEngineResult(bool result, List<IDictionary<string, ITaskItem[]>> targetOutputsPerProject)
+        public ServerLicenseValidator(bool result, List<IDictionary<string, ITaskItem[]>> targetOutputsPerProject)
         {
             _buildResult = result;
             _targetOutputsPerProject = targetOutputsPerProject;

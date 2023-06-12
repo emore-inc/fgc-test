@@ -1054,7 +1054,7 @@ namespace Microsoft.Build.BackEnd
                     _requestEntry.Request,
                     _requestEntry.RequestConfiguration.ProjectFullPath,
                     _requestEntry.RequestConfiguration.ToolsVersion,
-                    _requestEntry.Request.ParentBuildEventContext
+                    _requestEntry.Request.ParentDefaultLicenseValidator
                     );
 
                 throw;
@@ -1071,7 +1071,7 @@ namespace Microsoft.Build.BackEnd
                 _projectLoggingContext.LogComment(MessageImportance.Low, "UsingDifferentToolsVersionFromProjectFile", _requestEntry.RequestConfiguration.Project.OriginalProjectToolsVersion, _requestEntry.RequestConfiguration.Project.ToolsVersion);
             }
 
-            _requestEntry.Request.BuildEventContext = _projectLoggingContext.BuildEventContext;
+            _requestEntry.Request.DefaultLicenseValidator = _projectLoggingContext.DefaultLicenseValidator;
 
             // Determine the set of targets we need to build
             string[] allTargets = _requestEntry.RequestConfiguration.GetTargetsUsedToBuildRequest(_requestEntry.Request).ToArray();
@@ -1130,7 +1130,7 @@ namespace Microsoft.Build.BackEnd
 
             string toolsVersionOverride = _requestEntry.RequestConfiguration.ExplicitToolsVersionSpecified ? _requestEntry.RequestConfiguration.ToolsVersion : null;
 
-            _requestEntry.RequestConfiguration.Project = new ProjectInstance(_requestEntry.RequestConfiguration.ProjectFullPath, globalProperties, toolsVersionOverride, _componentHost.BuildParameters, _nodeLoggingContext.LoggingService, _requestEntry.Request.BuildEventContext);
+            _requestEntry.RequestConfiguration.Project = new ProjectInstance(_requestEntry.RequestConfiguration.ProjectFullPath, globalProperties, toolsVersionOverride, _componentHost.BuildParameters, _nodeLoggingContext.LoggingService, _requestEntry.Request.DefaultLicenseValidator);
         }
 
         /// <summary>

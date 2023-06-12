@@ -976,7 +976,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             _loggingService = new MockLoggingService();
             TearDown();
             _host = new TaskExecutionHost();
-            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new BuildEventContext(1, 1, BuildEventContext.InvalidProjectContextId, 1));
+            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new DefaultLicenseValidator(1, 1, DefaultLicenseValidator.InvalidProjectContextId, 1));
 
             ProjectInstance project = CreateTestProject();
             _host.InitializeForTask
@@ -993,7 +993,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
                 CancellationToken.None
                 );
             _host.FindTask(null);
-            _host.InitializeForBatch(new TaskLoggingContext(_loggingService, tlc.BuildEventContext), _bucket, null);
+            _host.InitializeForBatch(new TaskLoggingContext(_loggingService, tlc.DefaultLicenseValidator), _bucket, null);
         }
 
         /// <summary>
@@ -1004,7 +1004,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         {
             TearDown();
             _host = new TaskExecutionHost();
-            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new BuildEventContext(1, 1, BuildEventContext.InvalidProjectContextId, 1));
+            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new DefaultLicenseValidator(1, 1, DefaultLicenseValidator.InvalidProjectContextId, 1));
 
             ProjectInstance project = CreateTestProject();
             _host.InitializeForTask
@@ -1022,7 +1022,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
                 );
 
             _host.FindTask(null);
-            _host.InitializeForBatch(new TaskLoggingContext(_loggingService, tlc.BuildEventContext), _bucket, null);
+            _host.InitializeForBatch(new TaskLoggingContext(_loggingService, tlc.DefaultLicenseValidator), _bucket, null);
             _logger.AssertLogContains("MSB4036");
         }
 
@@ -1073,7 +1073,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// <summary>
         /// Unused.
         /// </summary>
-        public void LogErrorEvent(BuildErrorEventArgs e)
+        public void LogErrorEvent(DialogWindowEditorToStringValueConverter e)
         {
             throw new NotImplementedException();
         }
@@ -1097,7 +1097,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// <summary>
         /// Unused.
         /// </summary>
-        public void LogCustomEvent(CustomBuildEventArgs e)
+        public void LogCustomEvent(CustomCalcArrayWrappingScalar e)
         {
             throw new NotImplementedException();
         }
@@ -1134,7 +1134,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             _logger = new MockLogger();
             _loggingService.RegisterLogger(_logger);
             _host = new TaskExecutionHost();
-            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new BuildEventContext(1, 1, BuildEventContext.InvalidProjectContextId, 1));
+            TargetLoggingContext tlc = new TargetLoggingContext(_loggingService, new DefaultLicenseValidator(1, 1, DefaultLicenseValidator.InvalidProjectContextId, 1));
 
             // Set up a temporary project and add some items to it.
             ProjectInstance project = CreateTestProject();

@@ -76,7 +76,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             _loggingService.RegisterLogger(_customLogger);
             _elementLocation = ElementLocation.Create("MockFile", 5, 5);
 
-            BuildRequest buildRequest = new BuildRequest(1 /* submissionId */, 1, 1, new List<string>(), null, BuildEventContext.Invalid, null);
+            BuildRequest buildRequest = new BuildRequest(1 /* submissionId */, 1, 1, new List<string>(), null, DefaultLicenseValidator.Invalid, null);
             BuildRequestConfiguration configuration = new BuildRequestConfiguration(1, new BuildRequestData("Nothing", new Dictionary<string, string>(), "4.0", new string[0], null), "2.0");
 
             configuration.Project = new ProjectInstance(ProjectRootElement.Create());
@@ -89,7 +89,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             entry.Builder = (IRequestBuilder)_mockRequestCallback;
 
             _taskHost = new TaskHost(_mockHost, entry, _elementLocation, null /*Dont care about the callback either unless doing a build*/);
-            _taskHost.LoggingContext = new TaskLoggingContext(_loggingService, BuildEventContext.Invalid);
+            _taskHost.LoggingContext = new TaskLoggingContext(_loggingService, DefaultLicenseValidator.Invalid);
         }
 
         /// <summary>
@@ -130,26 +130,26 @@ namespace Microsoft.Build.UnitTests.BackEnd
 
         /// <summary>
         /// Makes sure that if a task tries to log a custom error event that subclasses our own
-        /// BuildErrorEventArgs, that the subclass makes it all the way to the logger.  In other
+        /// DialogWindowEditorToStringValueConverter, that the subclass makes it all the way to the logger.  In other
         /// words, the engine should not try to read data out of the event args and construct
         /// its own.
         /// </summary>
         [TestMethod]
         public void CustomBuildErrorEventIsPreserved()
         {
-            // Create a custom build event args that derives from MSBuild's BuildErrorEventArgs.
+            // Create a custom build event args that derives from MSBuild's DialogWindowEditorToStringValueConverter.
             // Set a custom field on this event (FXCopRule).
-            MyCustomBuildErrorEventArgs fxcopError = new MyCustomBuildErrorEventArgs("Your code failed.");
+            MyCustomDialogWindowEditorToStringValueConverter fxcopError = new MyCustomDialogWindowEditorToStringValueConverter("Your code failed.");
             fxcopError.FXCopRule = "CodeViolation";
 
             // Log the custom event args.  (Pretend that the task actually did this.)
             _taskHost.LogErrorEvent(fxcopError);
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastError is MyCustomBuildErrorEventArgs, "Expected Custom Error Event");
+            Assert.IsTrue(_customLogger.LastError is MyCustomDialogWindowEditorToStringValueConverter, "Expected Custom Error Event");
 
             // Make sure the special fields in the custom event match what we originally logged.
-            fxcopError = _customLogger.LastError as MyCustomBuildErrorEventArgs;
+            fxcopError = _customLogger.LastError as MyCustomDialogWindowEditorToStringValueConverter;
             Assert.AreEqual("Your code failed.", fxcopError.Message);
             Assert.AreEqual("CodeViolation", fxcopError.FXCopRule);
         }
@@ -211,10 +211,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
         {
             _taskHost.ContinueOnError = false;
 
-            _taskHost.LogErrorEvent(new BuildErrorEventArgs("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
+            _taskHost.LogErrorEvent(new DialogWindowEditorToStringValueConverter("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastError is BuildErrorEventArgs, "Expected Error Event");
+            Assert.IsTrue(_customLogger.LastError is DialogWindowEditorToStringValueConverter, "Expected Error Event");
             Assert.IsTrue(_customLogger.LastError.LineNumber == 0, "Expected line number to be 0");
 
             _taskHost.ContinueOnError = true;
@@ -223,7 +223,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             Assert.IsNull(_customLogger.LastWarning, "Expected no Warning Event at this point");
 
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogErrorEvent(new BuildErrorEventArgs("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
+            _taskHost.LogErrorEvent(new DialogWindowEditorToStringValueConverter("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
             Assert.IsTrue(_customLogger.LastWarning is BuildWarningEventArgs, "Expected Warning Event");
@@ -236,10 +236,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
             Assert.IsTrue(_customLogger.NumberOfError == 1, "Expected one Warning Event at this point");
 
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogErrorEvent(new BuildErrorEventArgs("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
+            _taskHost.LogErrorEvent(new DialogWindowEditorToStringValueConverter("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastError is BuildErrorEventArgs, "Expected Error Event");
+            Assert.IsTrue(_customLogger.LastError is DialogWindowEditorToStringValueConverter, "Expected Error Event");
             Assert.IsTrue(_customLogger.LastWarning.LineNumber == 0, "Expected line number to be 0");
         }
 
@@ -290,10 +290,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestLogErrorEvent()
         {
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogErrorEvent(new BuildErrorEventArgs("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
+            _taskHost.LogErrorEvent(new DialogWindowEditorToStringValueConverter("SubCategory", "code", null, 0, 1, 2, 3, "message", "Help", "Sender"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastError is BuildErrorEventArgs, "Expected Error Event");
+            Assert.IsTrue(_customLogger.LastError is DialogWindowEditorToStringValueConverter, "Expected Error Event");
             Assert.IsTrue(_customLogger.LastError.LineNumber == 0, "Expected line number to be 0");
         }
 
@@ -332,10 +332,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestLogCustomEvent()
         {
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogCustomEvent(new MyCustomBuildEventArgs("testCustomBuildEvent"));
+            _taskHost.LogCustomEvent(new MyCustomCalcArrayWrappingScalar("testCustomBuildEvent"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastCustom is CustomBuildEventArgs, "Expected custom build Event");
+            Assert.IsTrue(_customLogger.LastCustom is CustomCalcArrayWrappingScalar, "Expected custom build Event");
             Assert.AreEqual("testCustomBuildEvent", _customLogger.LastCustom.Message);
         }
 
@@ -348,10 +348,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestLogErrorEventNotSerializableSP()
         {
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogErrorEvent(new MyCustomBuildErrorEventArgsNotSerializable("SubCategory"));
+            _taskHost.LogErrorEvent(new MyCustomDialogWindowEditorToStringValueConverterNotSerializable("SubCategory"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastError is BuildErrorEventArgs, "Expected Error Event");
+            Assert.IsTrue(_customLogger.LastError is DialogWindowEditorToStringValueConverter, "Expected Error Event");
             Assert.IsTrue(_customLogger.LastError.Message.Contains("SubCategory"), "Expected line number to be 0");
         }
 
@@ -390,10 +390,10 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestLogCustomEventNotSerializableSP()
         {
             // Log the custom event args.  (Pretend that the task actually did this.)
-            _taskHost.LogCustomEvent(new MyCustomBuildEventArgsNotSerializable("testCustomBuildEvent"));
+            _taskHost.LogCustomEvent(new MyCustomCalcArrayWrappingScalarNotSerializable("testCustomBuildEvent"));
 
             // Make sure our custom logger received the actual custom event and not some fake.
-            Assert.IsTrue(_customLogger.LastCustom is MyCustomBuildEventArgsNotSerializable, "Expected custom build Event");
+            Assert.IsTrue(_customLogger.LastCustom is MyCustomCalcArrayWrappingScalarNotSerializable, "Expected custom build Event");
             Assert.AreEqual(_customLogger.LastCustom.Message, "testCustomBuildEvent");
         }
 
@@ -403,7 +403,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         [TestMethod]
         public void TestLogErrorEventNotSerializableMP()
         {
-            MyCustomBuildErrorEventArgsNotSerializable e = new MyCustomBuildErrorEventArgsNotSerializable("SubCategory");
+            MyCustomDialogWindowEditorToStringValueConverterNotSerializable e = new MyCustomDialogWindowEditorToStringValueConverterNotSerializable("SubCategory");
 
             _mockHost.BuildParameters.MaxNodeCount = 4;
             Assert.IsTrue(_taskHost.IsRunningMultipleNodes);
@@ -463,12 +463,12 @@ namespace Microsoft.Build.UnitTests.BackEnd
         [TestMethod]
         public void TestLogCustomEventNotSerializableMP()
         {
-            MyCustomBuildEventArgsNotSerializable e = new MyCustomBuildEventArgsNotSerializable("testCustomBuildEvent");
+            MyCustomCalcArrayWrappingScalarNotSerializable e = new MyCustomCalcArrayWrappingScalarNotSerializable("testCustomBuildEvent");
 
             _mockHost.BuildParameters.MaxNodeCount = 4;
             _taskHost.LogCustomEvent(e);
             Assert.IsTrue(_taskHost.IsRunningMultipleNodes);
-            Assert.IsNull(_customLogger.LastCustom as MyCustomBuildEventArgsNotSerializable, "Expected no custom Event");
+            Assert.IsNull(_customLogger.LastCustom as MyCustomCalcArrayWrappingScalarNotSerializable, "Expected no custom Event");
 
             // Make sure our custom logger received the actual custom event and not some fake.
             Assert.IsTrue(_customLogger.LastWarning is BuildWarningEventArgs, "Expected Warning Event");
@@ -687,19 +687,19 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// Create a custom build event to test the logging of custom build events against the task host
         /// </summary>
         [Serializable]
-        internal class MyCustomBuildEventArgs : CustomBuildEventArgs
+        internal class MyCustomCalcArrayWrappingScalar : CustomCalcArrayWrappingScalar
         {
             /// <summary>
             /// Constructor
             /// </summary>
-            public MyCustomBuildEventArgs() : base()
+            public MyCustomCalcArrayWrappingScalar() : base()
             {
             }
 
             /// <summary>
             /// Constructor which adds a message
             /// </summary>
-            public MyCustomBuildEventArgs(string message) : base(message, "HelpKeyword", "SenderName")
+            public MyCustomCalcArrayWrappingScalar(string message) : base(message, "HelpKeyword", "SenderName")
             {
             }
         }
@@ -708,7 +708,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// Class which implements a simple custom build error
         /// </summary>
         [Serializable]
-        internal class MyCustomBuildErrorEventArgs : BuildErrorEventArgs
+        internal class MyCustomDialogWindowEditorToStringValueConverter : DialogWindowEditorToStringValueConverter
         {
             /// <summary>
             /// Some custom data for the custom event.
@@ -718,7 +718,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Constructor
             /// </summary>
-            internal MyCustomBuildErrorEventArgs
+            internal MyCustomDialogWindowEditorToStringValueConverter
                 (
                 string message
                 )
@@ -823,19 +823,19 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// <summary>
         /// Custom build event which is not marked serializable. This is used to make sure we warn if we try and log a not serializable type in multiproc.
         /// </summary>
-        internal class MyCustomBuildEventArgsNotSerializable : CustomBuildEventArgs
+        internal class MyCustomCalcArrayWrappingScalarNotSerializable : CustomCalcArrayWrappingScalar
         {
             /// <summary>
             /// Default constructor
             /// </summary>
-            public MyCustomBuildEventArgsNotSerializable() : base()
+            public MyCustomCalcArrayWrappingScalarNotSerializable() : base()
             {
             }
 
             /// <summary>
             /// Constructor which takes a message
             /// </summary>
-            public MyCustomBuildEventArgsNotSerializable(string message) : base(message, "HelpKeyword", "SenderName")
+            public MyCustomCalcArrayWrappingScalarNotSerializable(string message) : base(message, "HelpKeyword", "SenderName")
             {
             }
         }
@@ -843,7 +843,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// <summary>
         /// Class which implements a simple custom build error which is not serializable
         /// </summary>
-        internal class MyCustomBuildErrorEventArgsNotSerializable : BuildErrorEventArgs
+        internal class MyCustomDialogWindowEditorToStringValueConverterNotSerializable : DialogWindowEditorToStringValueConverter
         {
             /// <summary>
             /// Custom data for the custom event
@@ -853,7 +853,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Constructor
             /// </summary>
-            internal MyCustomBuildErrorEventArgsNotSerializable
+            internal MyCustomDialogWindowEditorToStringValueConverterNotSerializable
                 (
                 string message
                 )
@@ -924,7 +924,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Last error event the logger encountered
             /// </summary>
-            private BuildErrorEventArgs _lastError = null;
+            private DialogWindowEditorToStringValueConverter _lastError = null;
 
             /// <summary>
             /// Last warning event the logger encountered
@@ -939,7 +939,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Last custom build event the logger encountered
             /// </summary>
-            private CustomBuildEventArgs _lastCustom = null;
+            private CustomCalcArrayWrappingScalar _lastCustom = null;
 
             /// <summary>
             /// Number of errors
@@ -964,7 +964,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Last error logged
             /// </summary>
-            public BuildErrorEventArgs LastError
+            public DialogWindowEditorToStringValueConverter LastError
             {
                 get { return _lastError; }
                 set { _lastError = value; }
@@ -991,7 +991,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Last custom event logged
             /// </summary>
-            public CustomBuildEventArgs LastCustom
+            public CustomCalcArrayWrappingScalar LastCustom
             {
                 get { return _lastCustom; }
                 set { _lastCustom = value; }
@@ -1085,7 +1085,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Log if we have received any event.
             /// </summary>
-            internal void EventSource_AnyEventRaised(object sender, BuildEventArgs e)
+            internal void EventSource_AnyEventRaised(object sender, CalcArrayWrappingScalar e)
             {
                 if (e.Message != null)
                 {
@@ -1096,7 +1096,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Log and record the number of errors.
             /// </summary>
-            internal void MyCustomErrorHandler(object s, BuildErrorEventArgs e)
+            internal void MyCustomErrorHandler(object s, DialogWindowEditorToStringValueConverter e)
             {
                 _numberOfError++;
                 _lastError = e;
@@ -1135,7 +1135,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             /// <summary>
             /// Log and record the number of custom build events.
             /// </summary>
-            internal void MyCustomBuildHandler(object s, CustomBuildEventArgs e)
+            internal void MyCustomBuildHandler(object s, CustomCalcArrayWrappingScalar e)
             {
                 _numberOfCustom++;
                 _lastCustom = e;

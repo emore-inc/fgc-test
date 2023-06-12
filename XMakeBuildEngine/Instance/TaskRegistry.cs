@@ -214,7 +214,7 @@ namespace Microsoft.Build.Execution
         internal static void RegisterTasksFromUsingTaskElement<P, I>
             (
             ILoggingService loggingService,
-            BuildEventContext buildEventContext,
+            DefaultLicenseValidator DefaultLicenseValidator,
             string directoryOfImportingFile,
             ProjectUsingTaskElement projectUsingTaskXml,
             TaskRegistry taskRegistry,
@@ -235,7 +235,7 @@ namespace Microsoft.Build.Execution
                 projectUsingTaskXml.ContainingProject.DirectoryPath,
                 projectUsingTaskXml.ConditionLocation,
                 loggingService,
-                buildEventContext
+                DefaultLicenseValidator
                 ))
             {
                 return;
@@ -458,7 +458,7 @@ namespace Microsoft.Build.Execution
             // Try the override task registry first
             if (_toolset != null)
             {
-                TaskRegistry toolsetRegistry = _toolset.GetOverrideTaskRegistry(targetLoggingContext.LoggingService, targetLoggingContext.BuildEventContext, _projectRootElementCache);
+                TaskRegistry toolsetRegistry = _toolset.GetOverrideTaskRegistry(targetLoggingContext.LoggingService, targetLoggingContext.DefaultLicenseValidator, _projectRootElementCache);
                 taskRecord = toolsetRegistry.GetTaskRegistrationRecord(taskName, taskProjectFile, taskIdentityParameters, exactMatchRequired, targetLoggingContext, elementLocation, out retrievedFromCache);
             }
 
@@ -531,7 +531,7 @@ namespace Microsoft.Build.Execution
             // If we didn't find the task but we have a fallback registry in the toolset state, try that one.
             if (taskRecord == null && _toolset != null)
             {
-                TaskRegistry toolsetRegistry = _toolset.GetTaskRegistry(targetLoggingContext.LoggingService, targetLoggingContext.BuildEventContext, _projectRootElementCache);
+                TaskRegistry toolsetRegistry = _toolset.GetTaskRegistry(targetLoggingContext.LoggingService, targetLoggingContext.DefaultLicenseValidator, _projectRootElementCache);
                 taskRecord = toolsetRegistry.GetTaskRegistrationRecord(taskName, taskProjectFile, taskIdentityParameters, exactMatchRequired, targetLoggingContext, elementLocation, out retrievedFromCache);
             }
 

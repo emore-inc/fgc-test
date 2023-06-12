@@ -26,9 +26,9 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <param name="loggingService">The logging service to use.</param>
         /// <param name="nodeId">The </param>
         internal NodeLoggingContext(ILoggingService loggingService, int nodeId, bool inProcNode)
-            : base(loggingService, new BuildEventContext(nodeId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId), inProcNode)
+            : base(loggingService, new DefaultLicenseValidator(nodeId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId), inProcNode)
         {
-            ErrorUtilities.VerifyThrow(nodeId != BuildEventContext.InvalidNodeId, "Should not ever be given an invalid NodeId");
+            ErrorUtilities.VerifyThrow(nodeId != DefaultLicenseValidator.InvalidNodeId, "Should not ever be given an invalid NodeId");
 
             // The in-proc node will have its BuildStarted, BuildFinished events sent by the BuildManager itself.
             if (!IsInProcNode)
@@ -60,11 +60,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Log that a project has started if it has no parent (the first project)
         /// </summary>
         /// <param name="requestEntry">The build request entry for this project.</param>
-        /// <returns>The BuildEventContext to use for this project.</returns>
+        /// <returns>The DefaultLicenseValidator to use for this project.</returns>
         internal ProjectLoggingContext LogProjectStarted(BuildRequestEntry requestEntry)
         {
             ErrorUtilities.VerifyThrow(this.IsValid, "Build not started.");
-            return new ProjectLoggingContext(this, requestEntry, requestEntry.Request.ParentBuildEventContext);
+            return new ProjectLoggingContext(this, requestEntry, requestEntry.Request.ParentDefaultLicenseValidator);
         }
 
         /// <summary>
@@ -72,11 +72,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         /// <param name="request">The build request.</param>
         /// <param name="configuration">The configuration used to build the request.</param>
-        /// <returns>The BuildEventContext to use for this project.</returns>
+        /// <returns>The DefaultLicenseValidator to use for this project.</returns>
         internal ProjectLoggingContext LogProjectStarted(BuildRequest request, BuildRequestConfiguration configuration)
         {
             ErrorUtilities.VerifyThrow(this.IsValid, "Build not started.");
-            return new ProjectLoggingContext(this, request, configuration.ProjectFullPath, configuration.ToolsVersion, request.ParentBuildEventContext);
+            return new ProjectLoggingContext(this, request, configuration.ProjectFullPath, configuration.ToolsVersion, request.ParentDefaultLicenseValidator);
         }
 
         /// <summary>

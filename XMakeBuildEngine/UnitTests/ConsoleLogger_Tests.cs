@@ -126,17 +126,17 @@ namespace Microsoft.Build.UnitTests
                 string msg = "my 1337 message";
 
                 BuildMessageEventArgs be = new BuildMessageEventArgs(msg, "help", "sender", j);
-                be.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+                be.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
                 es.Consume(be);
 
                 if (i == 2 && v == LoggerVerbosity.Diagnostic)
                 {
-                    string context = ResourceUtilities.FormatResourceString("BuildEventContext", LogFormatter.FormatLogTimeStamp(be.Timestamp), 0) + ">";
-                    msg = context + ResourceUtilities.FormatResourceString("TaskMessageWithId", "my 1337 message", be.BuildEventContext.TaskId);
+                    string context = ResourceUtilities.FormatResourceString("DefaultLicenseValidator", LogFormatter.FormatLogTimeStamp(be.Timestamp), 0) + ">";
+                    msg = context + ResourceUtilities.FormatResourceString("TaskMessageWithId", "my 1337 message", be.DefaultLicenseValidator.TaskId);
                 }
                 else if (i == 2 && v == LoggerVerbosity.Detailed)
                 {
-                    string context = ResourceUtilities.FormatResourceString("BuildEventContext", string.Empty, 0) + ">";
+                    string context = ResourceUtilities.FormatResourceString("DefaultLicenseValidator", string.Empty, 0) + ">";
                     msg = context + "my 1337 message";
                 }
                 else if (i == 2)
@@ -148,22 +148,22 @@ namespace Microsoft.Build.UnitTests
             }
         }
 
-        private sealed class MyCustomBuildEventArgs : CustomBuildEventArgs
+        private sealed class MyCustomCalcArrayWrappingScalar : CustomCalcArrayWrappingScalar
         {
-            internal MyCustomBuildEventArgs()
+            internal MyCustomCalcArrayWrappingScalar()
                 : base()
             {
                 // do nothing
             }
 
-            internal MyCustomBuildEventArgs(string message)
+            internal MyCustomCalcArrayWrappingScalar(string message)
                 : base(message, null, null)
             {
                 // do nothing
             }
         }
 
-        private class MyCustomBuildEventArgs2 : CustomBuildEventArgs { }
+        private class MyCustomCalcArrayWrappingScalar2 : CustomCalcArrayWrappingScalar { }
 
         [TestInitialize]
         public void SuiteSetup()
@@ -360,14 +360,14 @@ namespace Microsoft.Build.UnitTests
             es.Consume(new TaskStartedEventArgs(null, null, null, null, "task"));
             es.Consume(new BuildMessageEventArgs(null, null, null, MessageImportance.High));
             es.Consume(new BuildWarningEventArgs(null, null, null, 0, 0, 0, 0, null, null, null));
-            es.Consume(new BuildErrorEventArgs(null, null, null, 0, 0, 0, 0, null, null, null));
+            es.Consume(new DialogWindowEditorToStringValueConverter(null, null, null, 0, 0, 0, 0, null, null, null));
             es.Consume(new TaskFinishedEventArgs(null, null, null, null, "task", true));
             es.Consume(new TargetFinishedEventArgs(null, null, "t", null, null, true));
             es.Consume(new ProjectFinishedEventArgs(null, null, "p", true));
             es.Consume(new BuildFinishedEventArgs(null, null, true));
             es.Consume(new BuildFinishedEventArgs(null, null, true));
             es.Consume(new BuildFinishedEventArgs(null, null, true));
-            es.Consume(new MyCustomBuildEventArgs2());
+            es.Consume(new MyCustomCalcArrayWrappingScalar2());
             // No exception raised
         }
 
@@ -380,32 +380,32 @@ namespace Microsoft.Build.UnitTests
                                                 sc.Write, sc.SetColor,
                                                 sc.ResetColor);
             L.Initialize(es, 2);
-            BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+            DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
             BuildStartedEventArgs bse = new BuildStartedEventArgs(null, null);
-            bse.BuildEventContext = buildEventContext;
-            ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, null, null, "p", null, null, null, buildEventContext);
-            pse.BuildEventContext = buildEventContext;
+            bse.DefaultLicenseValidator = DefaultLicenseValidator;
+            ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, null, null, "p", null, null, null, DefaultLicenseValidator);
+            pse.DefaultLicenseValidator = DefaultLicenseValidator;
             TargetStartedEventArgs trse = new TargetStartedEventArgs(null, null, "t", null, null);
-            trse.BuildEventContext = buildEventContext;
+            trse.DefaultLicenseValidator = DefaultLicenseValidator;
             TaskStartedEventArgs tase = new TaskStartedEventArgs(null, null, null, null, "task");
-            tase.BuildEventContext = buildEventContext;
+            tase.DefaultLicenseValidator = DefaultLicenseValidator;
             BuildMessageEventArgs bmea = new BuildMessageEventArgs(null, null, null, MessageImportance.High);
-            bmea.BuildEventContext = buildEventContext;
+            bmea.DefaultLicenseValidator = DefaultLicenseValidator;
             BuildWarningEventArgs bwea = new BuildWarningEventArgs(null, null, null, 0, 0, 0, 0, null, null, null);
-            bwea.BuildEventContext = buildEventContext;
-            BuildErrorEventArgs beea = new BuildErrorEventArgs(null, null, null, 0, 0, 0, 0, null, null, null);
-            beea.BuildEventContext = buildEventContext;
+            bwea.DefaultLicenseValidator = DefaultLicenseValidator;
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter(null, null, null, 0, 0, 0, 0, null, null, null);
+            beea.DefaultLicenseValidator = DefaultLicenseValidator;
             TaskFinishedEventArgs trfea = new TaskFinishedEventArgs(null, null, null, null, "task", true);
-            trfea.BuildEventContext = buildEventContext;
+            trfea.DefaultLicenseValidator = DefaultLicenseValidator;
             TargetFinishedEventArgs tafea = new TargetFinishedEventArgs(null, null, "t", null, null, true);
-            tafea.BuildEventContext = buildEventContext;
+            tafea.DefaultLicenseValidator = DefaultLicenseValidator;
             ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs(null, null, "p", true);
-            pfea.BuildEventContext = buildEventContext;
+            pfea.DefaultLicenseValidator = DefaultLicenseValidator;
             BuildFinishedEventArgs bfea = new BuildFinishedEventArgs(null, null, true);
-            bfea.BuildEventContext = buildEventContext;
-            MyCustomBuildEventArgs2 mcea = new MyCustomBuildEventArgs2();
-            mcea.BuildEventContext = buildEventContext;
+            bfea.DefaultLicenseValidator = DefaultLicenseValidator;
+            MyCustomCalcArrayWrappingScalar2 mcea = new MyCustomCalcArrayWrappingScalar2();
+            mcea.DefaultLicenseValidator = DefaultLicenseValidator;
 
 
             // Not all parameters are null here, but that's fine, we assume the engine will never
@@ -658,7 +658,7 @@ namespace Microsoft.Build.UnitTests
             ConsoleLogger L = new ConsoleLogger(LoggerVerbosity.Quiet, sc.Write, sc.SetColor, sc.ResetColor);
             L.Initialize(es);
 
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC", "31415", "file.vb", 42, 0, 0, 0, "Some long message", "help", "sender");
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC", "31415", "file.vb", 42, 0, 0, 0, "Some long message", "help", "sender");
             es.Consume(beea);
             Assert.AreEqual("<red>file.vb(42): VBC error 31415: Some long message" + Environment.NewLine + "<reset color>", sc.ToString());
         }
@@ -674,11 +674,11 @@ namespace Microsoft.Build.UnitTests
                                                 sc.ResetColor);
             L.Initialize(es, 4);
 
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
 
-            beea.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+            beea.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
             es.Consume(beea);
 
@@ -724,7 +724,7 @@ namespace Microsoft.Build.UnitTests
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
 
-            bwea.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+            bwea.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
             es.Consume(bwea);
 
             Assert.AreEqual(
@@ -767,42 +767,42 @@ namespace Microsoft.Build.UnitTests
                                                     sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 1, 1, 1));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 1, 1, 1));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
                 BuildMessageEventArgs bmea = new BuildMessageEventArgs("foo!", null, "sender", MessageImportance.High);
-                bmea.BuildEventContext = buildEventContext;
+                bmea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bmea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Assert.AreEqual(String.Empty, sc.ToString());
@@ -820,45 +820,45 @@ namespace Microsoft.Build.UnitTests
                                                     sc.Write, sc.SetColor, sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 2, 3, 4));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 2, 3, 4));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
-                BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+                DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                                 "31415", "file.vb", 42, 0, 0, 0,
                                 "Some long message", "help", "sender");
 
-                beea.BuildEventContext = buildEventContext;
+                beea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(beea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Console.WriteLine("==");
@@ -899,22 +899,22 @@ namespace Microsoft.Build.UnitTests
                                                     sc.Write, sc.SetColor, sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 2, 3, 4));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 2, 3, 4));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
                 BuildWarningEventArgs beea = new BuildWarningEventArgs("VBC",
@@ -922,23 +922,23 @@ namespace Microsoft.Build.UnitTests
                                 "Some long message", "help", "sender");
 
 
-                beea.BuildEventContext = buildEventContext;
+                beea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(beea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Console.WriteLine("==");
@@ -979,42 +979,42 @@ namespace Microsoft.Build.UnitTests
                                                     sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 1, 1, 1));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 1, 1, 1));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
                 BuildMessageEventArgs bmea = new BuildMessageEventArgs("foo!", null, "sender", MessageImportance.Normal);
-                bmea.BuildEventContext = buildEventContext;
+                bmea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bmea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Assert.AreEqual(String.Empty, sc.ToString());
@@ -1035,45 +1035,45 @@ namespace Microsoft.Build.UnitTests
                                                     sc.Write, sc.SetColor, sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 2, 3, 4));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 2, 3, 4));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
-                BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+                DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                                 "31415", "file.vb", 42, 0, 0, 0,
                                 "Some long message", "help", "sender");
 
-                beea.BuildEventContext = buildEventContext;
+                beea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(beea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Console.WriteLine("==");
@@ -1113,22 +1113,22 @@ namespace Microsoft.Build.UnitTests
                                                     sc.Write, sc.SetColor, sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 2, 3, 4));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 2, 3, 4));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tase);
 
                 BuildWarningEventArgs beea = new BuildWarningEventArgs("VBC",
@@ -1136,23 +1136,23 @@ namespace Microsoft.Build.UnitTests
                                 "Some long message", "help", "sender");
 
 
-                beea.BuildEventContext = buildEventContext;
+                beea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(beea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 es.Consume(bfea);
 
                 Console.WriteLine("==");
@@ -1192,22 +1192,22 @@ namespace Microsoft.Build.UnitTests
                                                     sc.Write, sc.SetColor, sc.ResetColor);
                 L.Initialize(es, i);
 
-                BuildEventContext buildEventContext = new BuildEventContext(1, 2, 3, 4);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
 
                 BuildStartedEventArgs bse = new BuildStartedEventArgs("bs", null);
-                bse.BuildEventContext = buildEventContext;
+                bse.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.BuildStartedHandler(null, bse);
 
-                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new BuildEventContext(1, 2, 3, 4));
-                pse.BuildEventContext = buildEventContext;
+                ProjectStartedEventArgs pse = new ProjectStartedEventArgs(-1, "ps", null, "fname", "", null, null, new DefaultLicenseValidator(1, 2, 3, 4));
+                pse.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.ProjectStartedHandler(null, pse);
 
                 TargetStartedEventArgs trse = new TargetStartedEventArgs("ts", null, "trname", "pfile", "tfile");
-                trse.BuildEventContext = buildEventContext;
+                trse.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.TargetStartedHandler(null, trse);
 
                 TaskStartedEventArgs tase = new TaskStartedEventArgs("tks", null, "tname", "tfname", "tsname");
-                tase.BuildEventContext = buildEventContext;
+                tase.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.TaskStartedHandler(null, tase);
 
                 BuildWarningEventArgs beea = new BuildWarningEventArgs("VBC",
@@ -1215,23 +1215,23 @@ namespace Microsoft.Build.UnitTests
                                 "Some long message", "help", "sender");
 
 
-                beea.BuildEventContext = buildEventContext;
+                beea.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.WarningHandler(null, beea);
 
                 TaskFinishedEventArgs tafea = new TaskFinishedEventArgs("tkf", null, "fname", "tsname", "tfname", true);
-                tafea.BuildEventContext = buildEventContext;
+                tafea.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.TaskFinishedHandler(null, tafea);
 
                 TargetFinishedEventArgs trfea = new TargetFinishedEventArgs("tf", null, "trname", "fname", "tfile", true);
-                trfea.BuildEventContext = buildEventContext;
+                trfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.TargetFinishedHandler(null, trfea);
 
                 ProjectFinishedEventArgs pfea = new ProjectFinishedEventArgs("pf", null, "fname", true);
-                pfea.BuildEventContext = buildEventContext;
+                pfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.ProjectFinishedHandler(null, pfea);
 
                 BuildFinishedEventArgs bfea = new BuildFinishedEventArgs("bf", null, true);
-                bfea.BuildEventContext = buildEventContext;
+                bfea.DefaultLicenseValidator = DefaultLicenseValidator;
                 L.BuildFinishedHandler(null, bfea);
 
                 Console.WriteLine("==");
@@ -1343,7 +1343,7 @@ namespace Microsoft.Build.UnitTests
 
             Assert.AreEqual(string.Empty, sc.ToString());
 
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
 
@@ -1487,8 +1487,8 @@ namespace Microsoft.Build.UnitTests
                                                 sc.Write, null, null);
             L.Initialize(es);
 
-            MyCustomBuildEventArgs c =
-                    new MyCustomBuildEventArgs("msg");
+            MyCustomCalcArrayWrappingScalar c =
+                    new MyCustomCalcArrayWrappingScalar("msg");
 
             es.Consume(c);
 
@@ -1505,9 +1505,9 @@ namespace Microsoft.Build.UnitTests
                                                 sc.Write, null, null);
             L.Initialize(es, 2);
 
-            MyCustomBuildEventArgs c =
-                    new MyCustomBuildEventArgs("msg");
-            c.BuildEventContext = new BuildEventContext(1, 1, 1, 1);
+            MyCustomCalcArrayWrappingScalar c =
+                    new MyCustomCalcArrayWrappingScalar("msg");
+            c.DefaultLicenseValidator = new DefaultLicenseValidator(1, 1, 1, 1);
             es.Consume(c);
 
             Assert.IsTrue(sc.ToString().Contains("msg"));
@@ -1522,8 +1522,8 @@ namespace Microsoft.Build.UnitTests
                                                 sc.Write, null, null);
             L.Initialize(es);
 
-            MyCustomBuildEventArgs c =
-                    new MyCustomBuildEventArgs("msg");
+            MyCustomCalcArrayWrappingScalar c =
+                    new MyCustomCalcArrayWrappingScalar("msg");
 
             es.Consume(c);
 
@@ -1555,8 +1555,8 @@ namespace Microsoft.Build.UnitTests
             }
             else
             {
-                BuildEventArgs buildEvent = new BuildErrorEventArgs("", "", "", 0, 0, 0, 0, "", "", "");
-                buildEvent.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+                CalcArrayWrappingScalar buildEvent = new DialogWindowEditorToStringValueConverter("", "", "", 0, 0, 0, 0, "", "", "");
+                buildEvent.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
                 ((ParallelConsoleLogger)cl).WriteProperties(buildEvent, properties);
                 prop1 = String.Format(CultureInfo.CurrentCulture, "{0} = {1}", "prop1", "val1");
                 prop2 = String.Format(CultureInfo.CurrentCulture, "{0} = {1}", "prop2", "val2");
@@ -1802,8 +1802,8 @@ namespace Microsoft.Build.UnitTests
             }
             else
             {
-                BuildEventArgs buildEvent = new BuildErrorEventArgs("", "", "", 0, 0, 0, 0, "", "", "");
-                buildEvent.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+                CalcArrayWrappingScalar buildEvent = new DialogWindowEditorToStringValueConverter("", "", "", 0, 0, 0, 0, "", "", "");
+                buildEvent.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
                 ((ParallelConsoleLogger)cl).WriteItems(buildEvent, items);
                 item1spec = Environment.NewLine + "    spec" + Environment.NewLine;
                 item2spec = Environment.NewLine + "    spec2" + Environment.NewLine;
@@ -1880,8 +1880,8 @@ namespace Microsoft.Build.UnitTests
                 }
                 else
                 {
-                    BuildEventArgs buildEvent = new BuildErrorEventArgs("", "", "", 0, 0, 0, 0, "", "", "");
-                    buildEvent.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+                    CalcArrayWrappingScalar buildEvent = new DialogWindowEditorToStringValueConverter("", "", "", 0, 0, 0, 0, "", "", "");
+                    buildEvent.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
                     ((ParallelConsoleLogger)cl).WriteItems(buildEvent, items);
                 }
 
@@ -1923,8 +1923,8 @@ namespace Microsoft.Build.UnitTests
                 }
                 else
                 {
-                    BuildEventArgs buildEvent = new BuildErrorEventArgs("", "", "", 0, 0, 0, 0, "", "", "");
-                    buildEvent.BuildEventContext = new BuildEventContext(1, 2, 3, 4);
+                    CalcArrayWrappingScalar buildEvent = new DialogWindowEditorToStringValueConverter("", "", "", 0, 0, 0, 0, "", "", "");
+                    buildEvent.DefaultLicenseValidator = new DefaultLicenseValidator(1, 2, 3, 4);
                     ((ParallelConsoleLogger)cl).WriteProperties(buildEvent, properties);
                 }
 
@@ -2073,7 +2073,7 @@ namespace Microsoft.Build.UnitTests
             es.Consume(bwea);
 
             // Introduce an error
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
 
@@ -2163,7 +2163,7 @@ namespace Microsoft.Build.UnitTests
             es.Consume(bwea);
 
             // Introduce an error
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
 
@@ -2244,68 +2244,68 @@ namespace Microsoft.Build.UnitTests
                 // BuildStarted Event
                 es.Consume(new BuildStartedEventArgs("bs", null));
                 //Project Started Event
-                ProjectStartedEventArgs project1Started = new ProjectStartedEventArgs(1, null, null, "p", "t", null, null, new BuildEventContext(BuildEventContext.InvalidNodeId, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId));
-                project1Started.BuildEventContext = new BuildEventContext(1, 1, 1, 1);
+                ProjectStartedEventArgs project1Started = new ProjectStartedEventArgs(1, null, null, "p", "t", null, null, new DefaultLicenseValidator(DefaultLicenseValidator.InvalidNodeId, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId));
+                project1Started.DefaultLicenseValidator = new DefaultLicenseValidator(1, 1, 1, 1);
                 es.Consume(project1Started);
                 TargetStartedEventArgs targetStarted1 = new TargetStartedEventArgs(null, null, "t", null, null);
-                targetStarted1.BuildEventContext = project1Started.BuildEventContext;
+                targetStarted1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // TargetStarted Event
                 es.Consume(targetStarted1);
 
                 TaskStartedEventArgs taskStarted1 = new TaskStartedEventArgs(null, null, null, null, "task");
-                taskStarted1.BuildEventContext = project1Started.BuildEventContext;
+                taskStarted1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // TaskStarted Event 
                 es.Consume(taskStarted1);
 
                 BuildMessageEventArgs messsage1 = new BuildMessageEventArgs(null, null, null, MessageImportance.High);
-                messsage1.BuildEventContext = project1Started.BuildEventContext;
+                messsage1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // Message Event
                 es.Consume(messsage1);
                 TaskFinishedEventArgs taskFinished1 = new TaskFinishedEventArgs(null, null, null, null, "task", true);
-                taskFinished1.BuildEventContext = project1Started.BuildEventContext;
+                taskFinished1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // TaskFinished Event
                 es.Consume(taskFinished1);
 
                 TargetFinishedEventArgs targetFinished1 = new TargetFinishedEventArgs(null, null, "t", null, null, true);
-                targetFinished1.BuildEventContext = project1Started.BuildEventContext;
+                targetFinished1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // TargetFinished Event
                 es.Consume(targetFinished1);
 
-                ProjectStartedEventArgs project2Started = new ProjectStartedEventArgs(2, null, null, "p2", "t2", null, null, project1Started.BuildEventContext);
+                ProjectStartedEventArgs project2Started = new ProjectStartedEventArgs(2, null, null, "p2", "t2", null, null, project1Started.DefaultLicenseValidator);
                 //Project Started Event
-                project2Started.BuildEventContext = new BuildEventContext(2, 2, 2, 2);
+                project2Started.DefaultLicenseValidator = new DefaultLicenseValidator(2, 2, 2, 2);
                 es.Consume(project2Started);
                 TargetStartedEventArgs targetStarted2 = new TargetStartedEventArgs(null, null, "t2", null, null);
-                targetStarted2.BuildEventContext = project2Started.BuildEventContext;
+                targetStarted2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // TargetStarted Event
                 es.Consume(targetStarted2);
 
                 TaskStartedEventArgs taskStarted2 = new TaskStartedEventArgs(null, null, null, null, "task2");
-                taskStarted2.BuildEventContext = project2Started.BuildEventContext;
+                taskStarted2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // TaskStarted Event 
                 es.Consume(taskStarted2);
 
                 BuildMessageEventArgs messsage2 = new BuildMessageEventArgs(null, null, null, MessageImportance.High);
-                messsage2.BuildEventContext = project2Started.BuildEventContext;
+                messsage2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // Message Event
                 es.Consume(messsage2);
                 TaskFinishedEventArgs taskFinished2 = new TaskFinishedEventArgs(null, null, null, null, "task2", true);
-                taskFinished2.BuildEventContext = project2Started.BuildEventContext;
+                taskFinished2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // TaskFinished Event
                 es.Consume(taskFinished2);
 
                 TargetFinishedEventArgs targetFinished2 = new TargetFinishedEventArgs(null, null, "t2", null, null, true);
-                targetFinished2.BuildEventContext = project2Started.BuildEventContext;
+                targetFinished2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // TargetFinished Event
                 es.Consume(targetFinished2);
 
                 ProjectFinishedEventArgs finished2 = new ProjectFinishedEventArgs(null, null, "p2", true);
-                finished2.BuildEventContext = project2Started.BuildEventContext;
+                finished2.DefaultLicenseValidator = project2Started.DefaultLicenseValidator;
                 // ProjectFinished Event
                 es.Consume(finished2);            // BuildFinished Event
 
                 ProjectFinishedEventArgs finished1 = new ProjectFinishedEventArgs(null, null, "p", true);
-                finished1.BuildEventContext = project1Started.BuildEventContext;
+                finished1.DefaultLicenseValidator = project1Started.DefaultLicenseValidator;
                 // ProjectFinished Event
                 es.Consume(finished1);            // BuildFinished Event
                 es.Consume(new BuildFinishedEventArgs("bf",
@@ -2359,7 +2359,7 @@ namespace Microsoft.Build.UnitTests
             L.Initialize(es, 2);
             es.Consume(new BuildStartedEventArgs("bs", null));
             TaskCommandLineEventArgs messsage1 = new TaskCommandLineEventArgs("Message", null, MessageImportance.High);
-            messsage1.BuildEventContext = new BuildEventContext(1, 1, 1, 1);
+            messsage1.DefaultLicenseValidator = new DefaultLicenseValidator(1, 1, 1, 1);
             // Message Event
             es.Consume(messsage1);
             es.Consume(new BuildFinishedEventArgs("bf", null, true));
@@ -2373,7 +2373,7 @@ namespace Microsoft.Build.UnitTests
             L.Initialize(es, 2);
             es.Consume(new BuildStartedEventArgs("bs", null));
             BuildMessageEventArgs messsage2 = new BuildMessageEventArgs("Message", null, null, MessageImportance.High);
-            messsage2.BuildEventContext = new BuildEventContext(1, 1, 1, 1);
+            messsage2.DefaultLicenseValidator = new DefaultLicenseValidator(1, 1, 1, 1);
             // Message Event
             es.Consume(messsage2);
             es.Consume(new BuildFinishedEventArgs("bf", null, true));
@@ -2387,11 +2387,11 @@ namespace Microsoft.Build.UnitTests
             L.Initialize(es, 2);
             es.Consume(new BuildStartedEventArgs("bs", null));
             messsage2 = new BuildMessageEventArgs("Message", null, null, MessageImportance.High);
-            messsage2.BuildEventContext = new BuildEventContext(1, 1, 1, 1);
+            messsage2.DefaultLicenseValidator = new DefaultLicenseValidator(1, 1, 1, 1);
             // Message Event
             es.Consume(messsage2);
-            ProjectStartedEventArgs project = new ProjectStartedEventArgs(1, "Hello,", "HI", "None", "Build", null, null, messsage1.BuildEventContext);
-            project.BuildEventContext = messsage1.BuildEventContext;
+            ProjectStartedEventArgs project = new ProjectStartedEventArgs(1, "Hello,", "HI", "None", "Build", null, null, messsage1.DefaultLicenseValidator);
+            project.DefaultLicenseValidator = messsage1.DefaultLicenseValidator;
             es.Consume(project);
             es.Consume(new BuildFinishedEventArgs("bf", null, true));
             actualLog = sc.ToString();
@@ -2419,19 +2419,19 @@ namespace Microsoft.Build.UnitTests
                     L.Initialize(es);
                 }
                 es.Consume(new BuildStartedEventArgs("bs", null));
-                BuildEventContext context = new BuildEventContext(1, 1, 1, 1);
-                BuildEventContext context2 = new BuildEventContext(2, 2, 2, 2);
+                DefaultLicenseValidator context = new DefaultLicenseValidator(1, 1, 1, 1);
+                DefaultLicenseValidator context2 = new DefaultLicenseValidator(2, 2, 2, 2);
 
                 ProjectStartedEventArgs project = new ProjectStartedEventArgs(1, "Hello,", "HI", "None", "Build", null, null, context);
-                project.BuildEventContext = context;
+                project.DefaultLicenseValidator = context;
                 es.Consume(project);
 
                 TargetStartedEventArgs targetStarted1 = new TargetStartedEventArgs(null, null, "t", null, null);
-                targetStarted1.BuildEventContext = context;
+                targetStarted1.DefaultLicenseValidator = context;
                 es.Consume(targetStarted1);
 
                 BuildMessageEventArgs messsage1 = new BuildMessageEventArgs("Message", null, null, MessageImportance.High);
-                messsage1.BuildEventContext = context;
+                messsage1.DefaultLicenseValidator = context;
                 es.Consume(messsage1);
                 string actualLog = sc.ToString();
                 string resourceString = ResourceUtilities.FormatResourceString("ProjectStartedTopLevelProjectWithTargetNames", "None", 1, "Build");
@@ -2449,31 +2449,31 @@ namespace Microsoft.Build.UnitTests
             ConsoleLogger L = new ConsoleLogger(LoggerVerbosity.Normal, sc.Write, sc.SetColor, sc.ResetColor);
             L.Initialize(es, 2);
             es.Consume(new BuildStartedEventArgs("bs", null));
-            BuildEventContext context = new BuildEventContext(1, 1, 1, 1);
-            BuildEventContext context2 = new BuildEventContext(2, 2, 2, 2);
+            DefaultLicenseValidator context = new DefaultLicenseValidator(1, 1, 1, 1);
+            DefaultLicenseValidator context2 = new DefaultLicenseValidator(2, 2, 2, 2);
 
             ProjectStartedEventArgs project = new ProjectStartedEventArgs(1, "Hello,", "HI", "None", "Build", null, null, context);
-            project.BuildEventContext = context;
+            project.DefaultLicenseValidator = context;
             es.Consume(project);
 
             ProjectStartedEventArgs project2 = new ProjectStartedEventArgs(2, "Hello,", "HI", "None", "Build", null, null, context2);
-            project2.BuildEventContext = context2;
+            project2.DefaultLicenseValidator = context2;
             es.Consume(project2);
 
             TargetStartedEventArgs targetStarted1 = new TargetStartedEventArgs(null, null, "t", null, null);
-            targetStarted1.BuildEventContext = context;
+            targetStarted1.DefaultLicenseValidator = context;
             es.Consume(targetStarted1);
 
             TargetStartedEventArgs targetStarted2 = new TargetStartedEventArgs(null, null, "t2", null, null);
-            targetStarted2.BuildEventContext = context2;
+            targetStarted2.DefaultLicenseValidator = context2;
             es.Consume(targetStarted2);
 
             BuildMessageEventArgs messsage1 = new BuildMessageEventArgs("Message", null, null, MessageImportance.High);
-            messsage1.BuildEventContext = context;
+            messsage1.DefaultLicenseValidator = context;
             BuildMessageEventArgs messsage2 = new BuildMessageEventArgs("Message2", null, null, MessageImportance.High);
-            messsage2.BuildEventContext = context2;
+            messsage2.DefaultLicenseValidator = context2;
             BuildMessageEventArgs messsage3 = new BuildMessageEventArgs("Message3", null, null, MessageImportance.High);
-            messsage3.BuildEventContext = context;
+            messsage3.DefaultLicenseValidator = context;
             es.Consume(messsage1);
             es.Consume(messsage2);
             es.Consume(messsage3);
@@ -2518,22 +2518,22 @@ namespace Microsoft.Build.UnitTests
                 }
 
                 es.Consume(new BuildStartedEventArgs("bs", null));
-                BuildEventContext context = new BuildEventContext(1, 1, 1, 1);
+                DefaultLicenseValidator context = new DefaultLicenseValidator(1, 1, 1, 1);
 
                 ProjectStartedEventArgs project = new ProjectStartedEventArgs(1, "Hello,", "HI", "None", "Build", null, null, context);
-                project.BuildEventContext = context;
+                project.DefaultLicenseValidator = context;
                 es.Consume(project);
 
                 TargetStartedEventArgs targetStarted1 = new TargetStartedEventArgs(null, null, "t", null, null);
-                targetStarted1.BuildEventContext = context;
+                targetStarted1.DefaultLicenseValidator = context;
                 es.Consume(targetStarted1);
 
                 BuildMessageEventArgs messsage1 = new BuildMessageEventArgs("Message", null, null, MessageImportance.High);
-                messsage1.BuildEventContext = context;
+                messsage1.DefaultLicenseValidator = context;
                 es.Consume(messsage1);
 
                 ProjectFinishedEventArgs projectFinished = new ProjectFinishedEventArgs("Finished,", "HI", "projectFile", true);
-                projectFinished.BuildEventContext = context;
+                projectFinished.DefaultLicenseValidator = context;
                 es.Consume(projectFinished);
 
                 string actualLog = sc.ToString();

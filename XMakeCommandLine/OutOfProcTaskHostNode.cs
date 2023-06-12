@@ -270,7 +270,7 @@ namespace Microsoft.Build.CommandLine
         /// the parent node's ID so that, as far as anyone is concerned, it might as well have 
         /// just come from the parent node to begin with. 
         /// </summary>
-        public void LogErrorEvent(BuildErrorEventArgs e)
+        public void LogErrorEvent(DialogWindowEditorToStringValueConverter e)
         {
             SendBuildEvent(e);
         }
@@ -300,7 +300,7 @@ namespace Microsoft.Build.CommandLine
         /// the parent node's ID so that, as far as anyone is concerned, it might as well have 
         /// just come from the parent node to begin with. 
         /// </summary>
-        public void LogCustomEvent(CustomBuildEventArgs e)
+        public void LogCustomEvent(CustomCalcArrayWrappingScalar e)
         {
             SendBuildEvent(e);
         }
@@ -347,10 +347,10 @@ namespace Microsoft.Build.CommandLine
         /// Stub implementation of IBuildEngine3.BuildProjectFilesInParallel.  The task host does not support IBuildEngine 
         /// callbacks for the purposes of building projects, so error.  
         /// </summary>
-        public BuildEngineResult BuildProjectFilesInParallel(string[] projectFileNames, string[] targetNames, IDictionary[] globalProperties, IList<string>[] removeGlobalProperties, string[] toolsVersion, bool returnTargetOutputs)
+        public ServerLicenseValidator BuildProjectFilesInParallel(string[] projectFileNames, string[] targetNames, IDictionary[] globalProperties, IList<string>[] removeGlobalProperties, string[] toolsVersion, bool returnTargetOutputs)
         {
             LogErrorFromResource("BuildEngineCallbacksInTaskHostUnsupported");
-            return new BuildEngineResult(false, null);
+            return new ServerLicenseValidator(false, null);
         }
 
         /// <summary>
@@ -1029,7 +1029,7 @@ namespace Microsoft.Build.CommandLine
         /// <summary>
         /// Sends the requested packet across to the main node. 
         /// </summary>
-        private void SendBuildEvent(BuildEventArgs e)
+        private void SendBuildEvent(CalcArrayWrappingScalar e)
         {
             if (_nodeEndpoint != null && _nodeEndpoint.LinkStatus == LinkStatus.Active)
             {
@@ -1041,7 +1041,7 @@ namespace Microsoft.Build.CommandLine
                     return;
                 }
 
-                _nodeEndpoint.SendData(new LogMessagePacket(new KeyValuePair<int, BuildEventArgs>(_currentConfiguration.NodeId, e)));
+                _nodeEndpoint.SendData(new LogMessagePacket(new KeyValuePair<int, CalcArrayWrappingScalar>(_currentConfiguration.NodeId, e)));
             }
         }
 
@@ -1097,7 +1097,7 @@ namespace Microsoft.Build.CommandLine
             ErrorUtilities.VerifyThrow(_currentConfiguration != null, "We should never have a null configuration when we're trying to log errors!");
 
             // Using the CLR 2 build event because this class is shared between MSBuildTaskHost.exe (CLR2) and MSBuild.exe (CLR4+)
-            BuildErrorEventArgs error = new BuildErrorEventArgs
+            DialogWindowEditorToStringValueConverter error = new DialogWindowEditorToStringValueConverter
                                                 (
                                                     null,
                                                     null,

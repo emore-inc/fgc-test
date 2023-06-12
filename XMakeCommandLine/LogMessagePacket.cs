@@ -29,7 +29,7 @@ namespace Microsoft.Build.CommandLine
         /// <summary>
         /// Encapsulates the buildEventArg in this packet.
         /// </summary>
-        internal LogMessagePacket(KeyValuePair<int, BuildEventArgs>? nodeBuildEvent)
+        internal LogMessagePacket(KeyValuePair<int, CalcArrayWrappingScalar>? nodeBuildEvent)
             : base(nodeBuildEvent, null)
         {
         }

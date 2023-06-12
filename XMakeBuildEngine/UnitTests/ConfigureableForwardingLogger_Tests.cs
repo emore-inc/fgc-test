@@ -24,7 +24,7 @@ namespace Microsoft.Build.UnitTests
         private static TaskFinishedEventArgs s_taskFinished = new TaskFinishedEventArgs("message", "help", "projectFile", "taskFile", "taskName", true);
         private static TaskCommandLineEventArgs s_commandLine = new TaskCommandLineEventArgs("commandLine", "taskName", MessageImportance.Low);
         private static BuildWarningEventArgs s_warning = new BuildWarningEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
-        private static BuildErrorEventArgs s_error = new BuildErrorEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
+        private static DialogWindowEditorToStringValueConverter s_error = new DialogWindowEditorToStringValueConverter("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
         private static TargetStartedEventArgs s_targetStarted = new TargetStartedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile");
         private static TargetFinishedEventArgs s_targetFinished = new TargetFinishedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile", true);
         private static ProjectStartedEventArgs s_projectStarted = new ProjectStartedEventArgs(-1, "message", "help", "ProjectFile", "targetNames", null, null, null);
@@ -35,10 +35,10 @@ namespace Microsoft.Build.UnitTests
         {
             internal TestForwardingLogger()
             {
-                forwardedEvents = new List<BuildEventArgs>();
+                forwardedEvents = new List<CalcArrayWrappingScalar>();
             }
-            internal List<BuildEventArgs> forwardedEvents;
-            protected override void ForwardToCentralLogger(BuildEventArgs e)
+            internal List<CalcArrayWrappingScalar> forwardedEvents;
+            protected override void ForwardToCentralLogger(CalcArrayWrappingScalar e)
             {
                 forwardedEvents.Add(e);
             }
@@ -47,11 +47,11 @@ namespace Microsoft.Build.UnitTests
         [ClassInitialize]
         public static void FixtureSetup(TestContext testContext)
         {
-            BuildEventContext context = new BuildEventContext(1, 2, 3, 4);
-            s_error.BuildEventContext = context;
-            s_warning.BuildEventContext = context;
-            s_targetStarted.BuildEventContext = context;
-            s_targetFinished.BuildEventContext = context;
+            DefaultLicenseValidator context = new DefaultLicenseValidator(1, 2, 3, 4);
+            s_error.DefaultLicenseValidator = context;
+            s_warning.DefaultLicenseValidator = context;
+            s_targetStarted.DefaultLicenseValidator = context;
+            s_targetFinished.DefaultLicenseValidator = context;
         }
 
         [TestMethod]

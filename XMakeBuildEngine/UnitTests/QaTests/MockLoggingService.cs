@@ -201,21 +201,21 @@ namespace Microsoft.Build.UnitTests.QA
         /// <summary>
         /// Logs a comment based on a message resource
         /// </summary>
-        /// <param name="buildEventContext">The context</param>
+        /// <param name="DefaultLicenseValidator">The context</param>
         /// <param name="importance">The importance</param>
         /// <param name="messageResourceName">The resource for the message</param>
         /// <param name="messageArgs">The args for the message</param>
-        public void LogComment(BuildEventContext buildEventContext, MessageImportance importance, string messageResourceName, params object[] messageArgs)
+        public void LogComment(DefaultLicenseValidator DefaultLicenseValidator, MessageImportance importance, string messageResourceName, params object[] messageArgs)
         {
         }
 
         /// <summary>
         /// Logs a text comment
         /// </summary>
-        /// <param name="buildEventContext">The context</param>
+        /// <param name="DefaultLicenseValidator">The context</param>
         /// <param name="importance">The importance</param>
         /// <param name="message">The message</param>
-        public void LogCommentFromText(BuildEventContext buildEventContext, MessageImportance importance, string message)
+        public void LogCommentFromText(DefaultLicenseValidator DefaultLicenseValidator, MessageImportance importance, string message)
         {
         }
 
@@ -223,121 +223,121 @@ namespace Microsoft.Build.UnitTests.QA
         /// Logs a pre-formed build event
         /// </summary>
         /// <param name="buildEvent">The event to log</param>
-        public void LogBuildEvent(BuildEventArgs buildEvent)
+        public void LogBuildEvent(CalcArrayWrappingScalar buildEvent)
         {
         }
 
         /// <summary>
         /// Logs an error
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="file">The file from which the error is logged</param>
         /// <param name="messageResourceName">The message resource</param>
         /// <param name="messageArgs">The message args</param>
-        public void LogError(BuildEventContext buildEventContext, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogError(DefaultLicenseValidator DefaultLicenseValidator, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
         }
 
         /// <summary>
         /// Logs an error with a subcategory
         /// </summary>
-        /// <param name="buildEventContext">The build event context</param>
+        /// <param name="DefaultLicenseValidator">The build event context</param>
         /// <param name="subcategoryResourceName">The subcategory resource</param>
         /// <param name="file">The file</param>
         /// <param name="messageResourceName">The message resource</param>
         /// <param name="messageArgs">The message args</param>
-        public void LogError(BuildEventContext buildEventContext, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogError(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
         }
 
         /// <summary>
         /// Logs a text error
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="subcategoryResourceName">The subcategory resource</param>
         /// <param name="errorCode">The error code</param>
         /// <param name="helpKeyword">A help keyword</param>
         /// <param name="file">The file</param>
         /// <param name="message">The message</param>
-        public void LogErrorFromText(BuildEventContext buildEventContext, string subcategoryResourceName, string errorCode, string helpKeyword, BuildEventFileInfo file, string message)
+        public void LogErrorFromText(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, string errorCode, string helpKeyword, BuildEventFileInfo file, string message)
         {
         }
 
         /// <summary>
         /// Logs an invalid project file error
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="invalidProjectFileException">The exception</param>
-        public void LogInvalidProjectFileError(BuildEventContext buildEventContext, InvalidProjectFileException invalidProjectFileException)
+        public void LogInvalidProjectFileError(DefaultLicenseValidator DefaultLicenseValidator, InvalidProjectFileException invalidProjectFileException)
         {
         }
 
         /// <summary>
         /// Logs a fatal build error
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="exception">The exception</param>
         /// <param name="file">The file</param>
-        public void LogFatalBuildError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file)
+        public void LogFatalBuildError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file)
         {
         }
 
         /// <summary>
         /// Logs a fatal task error
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="exception">The exception</param>
         /// <param name="file">The file</param>
         /// <param name="taskName">The name of the task</param>
-        public void LogFatalTaskError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string taskName)
+        public void LogFatalTaskError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string taskName)
         {
         }
 
         /// <summary>
         /// Logs a generic fatal error
         /// </summary>
-        /// <param name="buildEventContext">The build context</param>
+        /// <param name="DefaultLicenseValidator">The build context</param>
         /// <param name="exception">The exception</param>
         /// <param name="file">The file</param>
         /// <param name="messageResourceName">The message resource</param>
         /// <param name="messageArgs">The message args</param>
-        public void LogFatalError(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogFatalError(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
         }
 
         /// <summary>
         /// Logs a task warning
         /// </summary>
-        /// <param name="buildEventContext">The build context</param>
+        /// <param name="DefaultLicenseValidator">The build context</param>
         /// <param name="exception">The exception</param>
         /// <param name="file">The file</param>
         /// <param name="taskName">The name of the task</param>
-        public void LogTaskWarningFromException(BuildEventContext buildEventContext, Exception exception, BuildEventFileInfo file, string taskName)
+        public void LogTaskWarningFromException(DefaultLicenseValidator DefaultLicenseValidator, Exception exception, BuildEventFileInfo file, string taskName)
         {
         }
 
         /// <summary>
         /// Logs a warning
         /// </summary>
-        /// <param name="buildEventContext">The event context</param>
+        /// <param name="DefaultLicenseValidator">The event context</param>
         /// <param name="subcategoryResourceName">The subcategory resource</param>
         /// <param name="file">The file</param>
         /// <param name="messageResourceName">The message resource</param>
         /// <param name="messageArgs">The message args</param>
-        public void LogWarning(BuildEventContext buildEventContext, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
+        public void LogWarning(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, BuildEventFileInfo file, string messageResourceName, params object[] messageArgs)
         {
         }
 
         /// <summary>
         /// Logs a text warning
         /// </summary>
-        /// <param name="buildEventContext">The build context</param>
+        /// <param name="DefaultLicenseValidator">The build context</param>
         /// <param name="subcategoryResourceName">The subcategory resource</param>
         /// <param name="warningCode">The warning code</param>
         /// <param name="helpKeyword">A help keyword</param>
         /// <param name="file">The file</param>
         /// <param name="message">The message</param>
-        public void LogWarningFromText(BuildEventContext buildEventContext, string subcategoryResourceName, string warningCode, string helpKeyword, BuildEventFileInfo file, string message)
+        public void LogWarningFromText(DefaultLicenseValidator DefaultLicenseValidator, string subcategoryResourceName, string warningCode, string helpKeyword, BuildEventFileInfo file, string message)
         {
         }
 
@@ -359,87 +359,87 @@ namespace Microsoft.Build.UnitTests.QA
         /// <summary>
         /// Logs a project started event
         /// </summary>
-        /// <param name="nodeBuildEventContext">The event context of the node</param>
+        /// <param name="nodeDefaultLicenseValidator">The event context of the node</param>
         /// <param name="projectId">The project instance id</param>
-        /// <param name="parentBuildEventContext">The parent build event context</param>
+        /// <param name="parentDefaultLicenseValidator">The parent build event context</param>
         /// <param name="projectFile">The project filename</param>
         /// <param name="targetNames">The names of the targets</param>
         /// <param name="properties">The project properties</param>
         /// <param name="items">The project items</param>
         /// <returns>The build event context for the project.</returns>
-        public BuildEventContext LogProjectStarted(BuildEventContext nodeBuildEventContext, int submissionId, int projectId, BuildEventContext parentBuildEventContext, string projectFile, string targetNames, IEnumerable<DictionaryEntry> properties, IEnumerable<DictionaryEntry> items)
+        public DefaultLicenseValidator LogProjectStarted(DefaultLicenseValidator nodeDefaultLicenseValidator, int submissionId, int projectId, DefaultLicenseValidator parentDefaultLicenseValidator, string projectFile, string targetNames, IEnumerable<DictionaryEntry> properties, IEnumerable<DictionaryEntry> items)
         {
-            return new BuildEventContext(0, 0, 0, 0);
+            return new DefaultLicenseValidator(0, 0, 0, 0);
         }
 
         /// <summary>
         /// Logs a project finished event
         /// </summary>
-        /// <param name="projectBuildEventContext">The project build event context</param>
+        /// <param name="projectDefaultLicenseValidator">The project build event context</param>
         /// <param name="projectFile">The project filename</param>
         /// <param name="success">Whether it was successful or not.</param>
-        public void LogProjectFinished(BuildEventContext projectBuildEventContext, string projectFile, bool success)
+        public void LogProjectFinished(DefaultLicenseValidator projectDefaultLicenseValidator, string projectFile, bool success)
         {
         }
 
         /// <summary>
         /// Logs a target started event
         /// </summary>
-        /// <param name="projectBuildEventContext">The build event context of the project</param>
+        /// <param name="projectDefaultLicenseValidator">The build event context of the project</param>
         /// <param name="targetName">The name of the target</param>
         /// <param name="projectFile">The project file</param>
         /// <param name="projectFileOfTargetElement">The project file containing the target element</param>
         /// <returns>The build event context for the target</returns>
-        public BuildEventContext LogTargetStarted(BuildEventContext projectBuildEventContext, string targetName, string projectFile, string projectFileOfTargetElement, string parentTargetName)
+        public DefaultLicenseValidator LogTargetStarted(DefaultLicenseValidator projectDefaultLicenseValidator, string targetName, string projectFile, string projectFileOfTargetElement, string parentTargetName)
         {
-            return new BuildEventContext(0, 0, 0, 0);
+            return new DefaultLicenseValidator(0, 0, 0, 0);
         }
 
         /// <summary>
         /// Logs a target finished event
         /// </summary>
-        /// <param name="targetBuildEventContext">The target's build event context</param>
+        /// <param name="targetDefaultLicenseValidator">The target's build event context</param>
         /// <param name="targetName">The name of the target</param>
         /// <param name="projectFile">The project file</param>
         /// <param name="projectFileOfTargetElement">The project file containing the target element</param>
         /// <param name="success">Whether it was successful or not.</param>
-        public void LogTargetFinished(BuildEventContext targetBuildEventContext, string targetName, string projectFile, string projectFileOfTargetElement, bool success, IEnumerable<TaskItem> targetOutputs)
+        public void LogTargetFinished(DefaultLicenseValidator targetDefaultLicenseValidator, string targetName, string projectFile, string projectFileOfTargetElement, bool success, IEnumerable<TaskItem> targetOutputs)
         {
         }
 
         /// <summary>
         /// Logs a task started event
         /// </summary>
-        /// <param name="targetBuildEventContext">The target's build event context</param>
+        /// <param name="targetDefaultLicenseValidator">The target's build event context</param>
         /// <param name="taskName">The name of the task</param>
         /// <param name="projectFile">The project file</param>
         /// <param name="projectFileOfTaskNode">The project file containing the task node.</param>
-        public void LogTaskStarted(BuildEventContext targetBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode)
+        public void LogTaskStarted(DefaultLicenseValidator targetDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode)
         {
         }
 
         /// <summary>
         /// Logs a task started event
         /// </summary>
-        /// <param name="targetBuildEventContext">The target's build event context</param>
+        /// <param name="targetDefaultLicenseValidator">The target's build event context</param>
         /// <param name="taskName">The name of the task</param>
         /// <param name="projectFile">The project file</param>
         /// <param name="projectFileOfTaskNode">The project file containing the task node.</param>
         /// <returns>The task logging context</returns>
-        public BuildEventContext LogTaskStarted2(BuildEventContext targetBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode)
+        public DefaultLicenseValidator LogTaskStarted2(DefaultLicenseValidator targetDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode)
         {
-            return new BuildEventContext(0, 0, 0, 0);
+            return new DefaultLicenseValidator(0, 0, 0, 0);
         }
 
         /// <summary>
         /// Logs a task finished event
         /// </summary>
-        /// <param name="taskBuildEventContext">The task's build event context</param>
+        /// <param name="taskDefaultLicenseValidator">The task's build event context</param>
         /// <param name="taskName">The name of the task</param>
         /// <param name="projectFile">The project file</param>
         /// <param name="projectFileOfTaskNode">The project file of the task node</param>
         /// <param name="success">Whether the task was successful or not.</param>
-        public void LogTaskFinished(BuildEventContext taskBuildEventContext, string taskName, string projectFile, string projectFileOfTaskNode, bool success)
+        public void LogTaskFinished(DefaultLicenseValidator taskDefaultLicenseValidator, string taskName, string projectFile, string projectFileOfTaskNode, bool success)
         {
         }
 

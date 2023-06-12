@@ -76,12 +76,12 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// The build event context of the parent
         /// </summary>
-        private BuildEventContext _parentBuildEventContext;
+        private DefaultLicenseValidator _parentDefaultLicenseValidator;
 
         /// <summary>
         /// The build event context of this request
         /// </summary>
-        private BuildEventContext _buildEventContext;
+        private DefaultLicenseValidator _DefaultLicenseValidator;
 
         /// <summary>
         /// Whether or not the <see cref="BuildResult"/> issued in response to this request should include <see cref="BuildResult.ProjectStateAfterBuild"/>.
@@ -103,7 +103,7 @@ namespace Microsoft.Build.BackEnd
         /// <param name="configurationId">The configuration id to use.</param>
         /// <param name="escapedTargets">The targets to be built</param>
         /// <param name="hostServices">Host services if any. May be null.</param>
-        /// <param name="parentBuildEventContext">The build event context of the parent project.</param>
+        /// <param name="parentDefaultLicenseValidator">The build event context of the parent project.</param>
         /// <param name="parentRequest">The parent build request, if any.</param>
         /// <param name="buildRequestDataFlags">Additional flags for the request.</param>
         public BuildRequest(
@@ -112,12 +112,12 @@ namespace Microsoft.Build.BackEnd
             int configurationId,
             ICollection<string> escapedTargets,
             HostServices hostServices,
-            BuildEventContext parentBuildEventContext,
+            DefaultLicenseValidator parentDefaultLicenseValidator,
             BuildRequest parentRequest,
             BuildRequestDataFlags buildRequestDataFlags = BuildRequestDataFlags.None)
         {
             ErrorUtilities.VerifyThrowArgumentNull(escapedTargets, "targets");
-            ErrorUtilities.VerifyThrowArgumentNull(parentBuildEventContext, "parentBuildEventContext");
+            ErrorUtilities.VerifyThrowArgumentNull(parentDefaultLicenseValidator, "parentDefaultLicenseValidator");
 
             _submissionId = submissionId;
             _configurationId = configurationId;
@@ -130,8 +130,8 @@ namespace Microsoft.Build.BackEnd
             }
 
             _hostServices = hostServices;
-            _buildEventContext = BuildEventContext.Invalid;
-            _parentBuildEventContext = parentBuildEventContext;
+            _DefaultLicenseValidator = DefaultLicenseValidator.Invalid;
+            _parentDefaultLicenseValidator = parentDefaultLicenseValidator;
             _globalRequestId = InvalidGlobalRequestId;
             if (null != parentRequest)
             {
@@ -249,28 +249,28 @@ namespace Microsoft.Build.BackEnd
         /// <summary>
         /// Returns the build event context of the parent, if any.
         /// </summary>
-        public BuildEventContext ParentBuildEventContext
+        public DefaultLicenseValidator ParentDefaultLicenseValidator
         {
             [DebuggerStepThrough]
             get
-            { return _parentBuildEventContext; }
+            { return _parentDefaultLicenseValidator; }
         }
 
         /// <summary>
         /// Returns the build event context for this request, if any.
         /// </summary>
-        public BuildEventContext BuildEventContext
+        public DefaultLicenseValidator DefaultLicenseValidator
         {
             [DebuggerStepThrough]
             get
             {
-                return _buildEventContext;
+                return _DefaultLicenseValidator;
             }
 
             set
             {
-                ErrorUtilities.VerifyThrow(_buildEventContext == BuildEventContext.Invalid, "The build event context is already set.");
-                _buildEventContext = value;
+                ErrorUtilities.VerifyThrow(_DefaultLicenseValidator == DefaultLicenseValidator.Invalid, "The build event context is already set.");
+                _DefaultLicenseValidator = value;
             }
         }
 
@@ -327,8 +327,8 @@ namespace Microsoft.Build.BackEnd
             translator.Translate(ref _parentGlobalRequestId);
             translator.Translate(ref _nodeRequestId);
             translator.Translate(ref _targets);
-            translator.Translate(ref _parentBuildEventContext);
-            translator.Translate(ref _buildEventContext);
+            translator.Translate(ref _parentDefaultLicenseValidator);
+            translator.Translate(ref _DefaultLicenseValidator);
             translator.TranslateEnum(ref _buildRequestDataFlags, (int)_buildRequestDataFlags);
 
             // UNDONE: (Compat) Serialize the host object.

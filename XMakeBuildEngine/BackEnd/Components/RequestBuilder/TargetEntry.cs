@@ -342,7 +342,7 @@ namespace Microsoft.Build.BackEnd
                 _requestEntry.ProjectRootDirectory,
                 _target.ConditionLocation,
                 projectLoggingContext.LoggingService,
-                projectLoggingContext.BuildEventContext
+                projectLoggingContext.DefaultLicenseValidator
                 );
 
             if (!condition)
@@ -442,7 +442,7 @@ namespace Microsoft.Build.BackEnd
                         Lookup lookupForExecution;
 
                         // UNDONE: (Refactor) Refactor TargetUpToDateChecker to take a logging context, not a logging service.
-                        TargetUpToDateChecker dependencyAnalyzer = new TargetUpToDateChecker(requestEntry.RequestConfiguration.Project, _target, targetLoggingContext.LoggingService, targetLoggingContext.BuildEventContext);
+                        TargetUpToDateChecker dependencyAnalyzer = new TargetUpToDateChecker(requestEntry.RequestConfiguration.Project, _target, targetLoggingContext.LoggingService, targetLoggingContext.DefaultLicenseValidator);
                         DependencyAnalysisResult dependencyResult = dependencyAnalyzer.PerformDependencyAnalysis(bucket, out changedTargetInputs, out upToDateTargetInputs);
 
                         switch (dependencyResult)
@@ -595,7 +595,7 @@ namespace Microsoft.Build.BackEnd
                                  requestEntry.ProjectRootDirectory,
                                  _target.KeepDuplicateOutputsLocation,
                                  projectLoggingContext.LoggingService,
-                                 projectLoggingContext.BuildEventContext
+                                 projectLoggingContext.DefaultLicenseValidator
                                  );
 
                         // NOTE: we need to gather the outputs in batches, because the output specification may reference item metadata
@@ -688,7 +688,7 @@ namespace Microsoft.Build.BackEnd
                     _requestEntry.ProjectRootDirectory,
                     errorTargetInstance.ConditionLocation,
                     projectLoggingContext.LoggingService,
-                    projectLoggingContext.BuildEventContext
+                    projectLoggingContext.DefaultLicenseValidator
                 );
 
                 if (condition)

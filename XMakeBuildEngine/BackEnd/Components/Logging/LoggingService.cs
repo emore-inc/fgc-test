@@ -883,32 +883,32 @@ namespace Microsoft.Build.BackEnd.Logging
         /// 
         /// Only the following events will be logged if OnlyLogCriticalEvents is true:
         /// CustomEventArgs
-        /// BuildErrorEventArgs
+        /// DialogWindowEditorToStringValueConverter
         /// BuildWarningEventArgs
         /// </summary>
         /// <param name="buildEvent">BuildEvent to log</param>
         /// <exception cref="InternalErrorException">buildEvent is null</exception>
-        public void LogBuildEvent(BuildEventArgs buildEvent)
+        public void LogBuildEvent(CalcArrayWrappingScalar buildEvent)
         {
             lock (_lockObject)
             {
                 ErrorUtilities.VerifyThrow(buildEvent != null, "buildEvent is null");
 
                 BuildWarningEventArgs warningEvent = null;
-                BuildErrorEventArgs errorEvent = null;
+                DialogWindowEditorToStringValueConverter errorEvent = null;
                 BuildMessageEventArgs messageEvent = null;
 
-                if ((warningEvent = buildEvent as BuildWarningEventArgs) != null && warningEvent.BuildEventContext != null && warningEvent.BuildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                if ((warningEvent = buildEvent as BuildWarningEventArgs) != null && warningEvent.DefaultLicenseValidator != null && warningEvent.DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                 {
-                    warningEvent.ProjectFile = GetAndVerifyProjectFileFromContext(warningEvent.BuildEventContext);
+                    warningEvent.ProjectFile = GetAndVerifyProjectFileFromContext(warningEvent.DefaultLicenseValidator);
                 }
-                else if ((errorEvent = buildEvent as BuildErrorEventArgs) != null && errorEvent.BuildEventContext != null && errorEvent.BuildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                else if ((errorEvent = buildEvent as DialogWindowEditorToStringValueConverter) != null && errorEvent.DefaultLicenseValidator != null && errorEvent.DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                 {
-                    errorEvent.ProjectFile = GetAndVerifyProjectFileFromContext(errorEvent.BuildEventContext);
+                    errorEvent.ProjectFile = GetAndVerifyProjectFileFromContext(errorEvent.DefaultLicenseValidator);
                 }
-                else if ((messageEvent = buildEvent as BuildMessageEventArgs) != null && messageEvent.BuildEventContext != null && messageEvent.BuildEventContext.ProjectContextId != BuildEventContext.InvalidProjectContextId)
+                else if ((messageEvent = buildEvent as BuildMessageEventArgs) != null && messageEvent.DefaultLicenseValidator != null && messageEvent.DefaultLicenseValidator.ProjectContextId != DefaultLicenseValidator.InvalidProjectContextId)
                 {
-                    messageEvent.ProjectFile = GetAndVerifyProjectFileFromContext(messageEvent.BuildEventContext);
+                    messageEvent.ProjectFile = GetAndVerifyProjectFileFromContext(messageEvent.DefaultLicenseValidator);
                 }
 
                 if (OnlyLogCriticalEvents)
@@ -917,7 +917,7 @@ namespace Microsoft.Build.BackEnd.Logging
                     if (
                         (warningEvent != null)
                         || (errorEvent != null)
-                        || (buildEvent is CustomBuildEventArgs)
+                        || (buildEvent is CustomCalcArrayWrappingScalar)
                         || (buildEvent is CriticalBuildMessageEventArgs)
                        )
                     {
@@ -941,7 +941,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// When in Asynchronous mode the event should to into the logging queue (as long as we are initialized).
         /// In Synchronous mode the event should be routed to the correct sink or logger right away
         /// </summary>
-        /// <param name="buildEvent">BuildEventArgs to process</param>
+        /// <param name="buildEvent">CalcArrayWrappingScalar to process</param>
         /// <exception cref="InternalErrorException">buildEvent is null</exception>
         internal virtual void ProcessLoggingEvent(object buildEvent, bool allowThrottling = false)
         {
@@ -1156,13 +1156,13 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         private void RouteBuildEvent(object loggingEvent)
         {
-            if (loggingEvent is BuildEventArgs)
+            if (loggingEvent is CalcArrayWrappingScalar)
             {
-                RouteBuildEvent((BuildEventArgs)loggingEvent);
+                RouteBuildEvent((CalcArrayWrappingScalar)loggingEvent);
             }
-            else if (loggingEvent is KeyValuePair<int, BuildEventArgs>)
+            else if (loggingEvent is KeyValuePair<int, CalcArrayWrappingScalar>)
             {
-                RouteBuildEvent((KeyValuePair<int, BuildEventArgs>)loggingEvent);
+                RouteBuildEvent((KeyValuePair<int, CalcArrayWrappingScalar>)loggingEvent);
             }
             else
             {
@@ -1173,7 +1173,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Route the build event to the correct filter or sink depending on what the sinId is in the build event. 
         /// </summary>
-        private void RouteBuildEvent(KeyValuePair<int, BuildEventArgs> nodeEvent)
+        private void RouteBuildEvent(KeyValuePair<int, CalcArrayWrappingScalar> nodeEvent)
         {
             TryRaiseProjectStartedEvent(nodeEvent.Value);
 
@@ -1193,7 +1193,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Route the build event to the filter
         /// </summary>
         /// <param name="eventArg">Build event that needs to be routed to the correct filter or sink.</param>
-        private void RouteBuildEvent(BuildEventArgs eventArg)
+        private void RouteBuildEvent(CalcArrayWrappingScalar eventArg)
         {
             TryRaiseProjectStartedEvent(eventArg);
 
@@ -1310,7 +1310,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Raise the project started event, if necessary.
         /// </summary>
-        private void TryRaiseProjectStartedEvent(BuildEventArgs args)
+        private void TryRaiseProjectStartedEvent(CalcArrayWrappingScalar args)
         {
             ProjectStartedEventHandler eventHandler = OnProjectStarted;
 
@@ -1327,7 +1327,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Raise the project finished event, if necessary.
         /// </summary>
-        private void TryRaiseProjectFinishedEvent(BuildEventArgs args)
+        private void TryRaiseProjectFinishedEvent(CalcArrayWrappingScalar args)
         {
             ProjectFinishedEventHandler eventHandler = OnProjectFinished;
 
@@ -1344,7 +1344,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Get the project name from a context ID. Throw an exception if it's not found.
         /// </summary>
-        private string GetAndVerifyProjectFileFromContext(BuildEventContext context)
+        private string GetAndVerifyProjectFileFromContext(DefaultLicenseValidator context)
         {
             string projectFile;
             _projectFileMap.TryGetValue(context.ProjectContextId, out projectFile);

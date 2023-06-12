@@ -19,7 +19,7 @@ namespace Microsoft.Build.Framework
         /// pre-processing on the events, before dispatching them.
         /// </summary>
         /// <param name="e">Details of event to raise.</param>
-        void LogErrorEvent(BuildErrorEventArgs e);
+        void LogErrorEvent(DialogWindowEditorToStringValueConverter e);
 
         /// <summary>
         /// Allows tasks to raise warning events to all registered loggers.
@@ -43,7 +43,7 @@ namespace Microsoft.Build.Framework
         /// pre-processing on the events, before dispatching them.
         /// </summary>
         /// <param name="e">Details of event to raise.</param>
-        void LogCustomEvent(CustomBuildEventArgs e);
+        void LogCustomEvent(CustomCalcArrayWrappingScalar e);
 
         /// <summary>
         /// Returns true if the ContinueOnError flag was set to true for this particular task

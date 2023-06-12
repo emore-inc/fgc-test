@@ -282,8 +282,8 @@ namespace Microsoft.Build.Evaluation
                             }
                             catch (InvalidProjectFileException ex2)
                             {
-                                BuildEventContext buildEventContext = new BuildEventContext(0 /* node ID */, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
-                                LoggingService.LogInvalidProjectFileError(buildEventContext, ex2);
+                                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0 /* node ID */, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
+                                LoggingService.LogInvalidProjectFileError(DefaultLicenseValidator, ex2);
                                 throw;
                             }
                         }
@@ -1013,7 +1013,7 @@ namespace Microsoft.Build.Evaluation
             lock (_locker)
             {
                 ErrorUtilities.VerifyThrowArgumentLength(fileName, "fileName");
-                BuildEventContext buildEventContext = new BuildEventContext(0 /* node ID */, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
+                DefaultLicenseValidator DefaultLicenseValidator = new DefaultLicenseValidator(0 /* node ID */, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
 
                 if (globalProperties == null)
                 {
@@ -1048,12 +1048,12 @@ namespace Microsoft.Build.Evaluation
                     // Either way, no time wasted.
                     try
                     {
-                        ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(fileName, globalProperties, toolsVersion, LoggingService, ProjectRootElementCache, buildEventContext, true /*explicitlyloaded*/);
+                        ProjectRootElement xml = ProjectRootElement.OpenProjectOrSolution(fileName, globalProperties, toolsVersion, LoggingService, ProjectRootElementCache, DefaultLicenseValidator, true /*explicitlyloaded*/);
                         toolsVersionFromProject = (xml.ToolsVersion.Length > 0) ? xml.ToolsVersion : DefaultToolsVersion;
                     }
                     catch (InvalidProjectFileException ex)
                     {
-                        LoggingService.LogInvalidProjectFileError(buildEventContext, ex);
+                        LoggingService.LogInvalidProjectFileError(DefaultLicenseValidator, ex);
                         throw;
                     }
                 }
@@ -2131,7 +2131,7 @@ namespace Microsoft.Build.Evaluation
             /// <summary>
             /// Handler for Error events.
             /// </summary>
-            private void ErrorRaisedHandler(object sender, BuildErrorEventArgs e)
+            private void ErrorRaisedHandler(object sender, DialogWindowEditorToStringValueConverter e)
             {
                 if (ErrorRaised != null)
                 {
@@ -2142,7 +2142,7 @@ namespace Microsoft.Build.Evaluation
             /// <summary>
             /// Handler for Custom events.
             /// </summary>
-            private void CustomEventRaisedHandler(object sender, CustomBuildEventArgs e)
+            private void CustomEventRaisedHandler(object sender, CustomCalcArrayWrappingScalar e)
             {
                 if (CustomEventRaised != null)
                 {
@@ -2175,7 +2175,7 @@ namespace Microsoft.Build.Evaluation
             /// <summary>
             /// Handler for Any events.
             /// </summary>
-            private void AnyEventRaisedHandler(object sender, BuildEventArgs e)
+            private void AnyEventRaisedHandler(object sender, CalcArrayWrappingScalar e)
             {
                 if (AnyEventRaised != null)
                 {

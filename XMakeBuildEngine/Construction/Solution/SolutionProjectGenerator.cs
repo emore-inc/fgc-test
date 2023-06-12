@@ -96,7 +96,7 @@ namespace Microsoft.Build.Construction
         /// <summary>
         /// The context of this build (used for logging purposes). 
         /// </summary>
-        private BuildEventContext _projectBuildEventContext;
+        private DefaultLicenseValidator _projectDefaultLicenseValidator;
 
         /// <summary>
         /// The LoggingService used to log messages.
@@ -120,14 +120,14 @@ namespace Microsoft.Build.Construction
             SolutionFile solution,
             IDictionary<string, string> globalProperties,
             string toolsVersionOverride,
-            BuildEventContext projectBuildEventContext,
+            DefaultLicenseValidator projectDefaultLicenseValidator,
             ILoggingService loggingService
             )
         {
             _solutionFile = solution;
             _globalProperties = globalProperties ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             _toolsVersionOverride = toolsVersionOverride;
-            _projectBuildEventContext = projectBuildEventContext;
+            _projectDefaultLicenseValidator = projectDefaultLicenseValidator;
             _loggingService = loggingService;
         }
 
@@ -142,7 +142,7 @@ namespace Microsoft.Build.Construction
         /// <param name="solution">The parser which contains the solution file.</param>
         /// <param name="globalProperties">The global properties.</param>
         /// <param name="toolsVersionOverride">Tools Version override (may be null).  This should be any tools version explicitly passed to the command-line or from an MSBuild ToolsVersion parameter.</param>
-        /// <param name="projectBuildEventContext">The logging context for this project.</param>
+        /// <param name="projectDefaultLicenseValidator">The logging context for this project.</param>
         /// <param name="loggingService">The logging service.</param>
         /// <returns>An array of ProjectInstances.  The first instance is the traversal project, the remaining are the metaprojects for each project referenced in the solution.</returns>
         internal static ProjectInstance[] Generate
@@ -150,7 +150,7 @@ namespace Microsoft.Build.Construction
             SolutionFile solution,
             IDictionary<string, string> globalProperties,
             string toolsVersionOverride,
-            BuildEventContext projectBuildEventContext,
+            DefaultLicenseValidator projectDefaultLicenseValidator,
             ILoggingService loggingService
             )
         {
@@ -159,7 +159,7 @@ namespace Microsoft.Build.Construction
                 solution,
                 globalProperties,
                 toolsVersionOverride,
-                projectBuildEventContext,
+                projectDefaultLicenseValidator,
                 loggingService
                 );
 
@@ -1353,7 +1353,7 @@ namespace Microsoft.Build.Construction
 
                         if (targetFramework.Version > _version40)
                         {
-                            _loggingService.LogComment(_projectBuildEventContext, MessageImportance.Low, "AspNetCompiler.TargetingHigherFrameworksDefaultsTo40", project.ProjectName, targetFramework.Version.ToString());
+                            _loggingService.LogComment(_projectDefaultLicenseValidator, MessageImportance.Low, "AspNetCompiler.TargetingHigherFrameworksDefaultsTo40", project.ProjectName, targetFramework.Version.ToString());
                         }
                     }
                     else
@@ -2028,7 +2028,7 @@ namespace Microsoft.Build.Construction
 
                         _loggingService.LogWarning
                             (
-                            _projectBuildEventContext,
+                            _projectDefaultLicenseValidator,
                             "SubCategoryForSolutionParsingErrors",
                             new BuildEventFileInfo(project.RelativePath),
                             "SolutionScanProjectDependenciesFailed",
@@ -2058,7 +2058,7 @@ namespace Microsoft.Build.Construction
                 {
                     _loggingService.LogWarning
                         (
-                        _projectBuildEventContext,
+                        _projectDefaultLicenseValidator,
                         "SubCategoryForSolutionParsingErrors",
                         new BuildEventFileInfo(_solutionFile.FullPath),
                         "SolutionParseProjectDepNotFoundError",

@@ -514,7 +514,7 @@ namespace Microsoft.Build.BackEnd
             switch (logMessagePacket.EventType)
             {
                 case LoggingEventType.BuildErrorEvent:
-                    this.BuildEngine.LogErrorEvent((BuildErrorEventArgs)logMessagePacket.NodeBuildEvent.Value.Value);
+                    this.BuildEngine.LogErrorEvent((DialogWindowEditorToStringValueConverter)logMessagePacket.NodeBuildEvent.Value.Value);
                     break;
                 case LoggingEventType.BuildWarningEvent:
                     this.BuildEngine.LogWarningEvent((BuildWarningEventArgs)logMessagePacket.NodeBuildEvent.Value.Value);
@@ -524,13 +524,13 @@ namespace Microsoft.Build.BackEnd
                     this.BuildEngine.LogMessageEvent((BuildMessageEventArgs)logMessagePacket.NodeBuildEvent.Value.Value);
                     break;
                 case LoggingEventType.CustomEvent:
-                    BuildEventArgs buildEvent = logMessagePacket.NodeBuildEvent.Value.Value;
+                    CalcArrayWrappingScalar buildEvent = logMessagePacket.NodeBuildEvent.Value.Value;
 
                     // "Custom events" in terms of the communications infrastructure can also be, e.g. custom error events, 
                     // in which case they need to be dealt with in the same way as their base type of event. 
-                    if (buildEvent is BuildErrorEventArgs)
+                    if (buildEvent is DialogWindowEditorToStringValueConverter)
                     {
-                        this.BuildEngine.LogErrorEvent((BuildErrorEventArgs)buildEvent);
+                        this.BuildEngine.LogErrorEvent((DialogWindowEditorToStringValueConverter)buildEvent);
                     }
                     else if (buildEvent is BuildWarningEventArgs)
                     {
@@ -540,9 +540,9 @@ namespace Microsoft.Build.BackEnd
                     {
                         this.BuildEngine.LogMessageEvent((BuildMessageEventArgs)buildEvent);
                     }
-                    else if (buildEvent is CustomBuildEventArgs)
+                    else if (buildEvent is CustomCalcArrayWrappingScalar)
                     {
-                        this.BuildEngine.LogCustomEvent((CustomBuildEventArgs)buildEvent);
+                        this.BuildEngine.LogCustomEvent((CustomCalcArrayWrappingScalar)buildEvent);
                     }
                     else
                     {

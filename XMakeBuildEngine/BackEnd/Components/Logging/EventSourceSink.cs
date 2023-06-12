@@ -131,9 +131,9 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Raises the given event to all registered loggers. This method up-cast the events
         /// extracted from the queue.
         /// </summary>
-        /// <param name="buildEvent">BuildEventArgs</param>
+        /// <param name="buildEvent">CalcArrayWrappingScalar</param>
         /// <param name="sinkId">Note this is not used in the eventsource sink</param>
-        public void Consume(BuildEventArgs buildEvent, int sinkId)
+        public void Consume(CalcArrayWrappingScalar buildEvent, int sinkId)
         {
             Consume(buildEvent);
         }
@@ -142,7 +142,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Raises the given event to all registered loggers. This method up-cast the events
         /// extracted from the queue.
         /// </summary>
-        public void Consume(BuildEventArgs buildEvent)
+        public void Consume(CalcArrayWrappingScalar buildEvent)
         {
             // FXCop may complain that there are unecessary casts here, and there are, but
             // using "as" and allocating another variable for each event is extremely costly
@@ -185,9 +185,9 @@ namespace Microsoft.Build.BackEnd.Logging
                 HaveLoggedBuildFinishedEvent = true;
                 this.RaiseBuildFinishedEvent(null, (BuildFinishedEventArgs)buildEvent);
             }
-            else if (buildEvent is CustomBuildEventArgs)
+            else if (buildEvent is CustomCalcArrayWrappingScalar)
             {
-                this.RaiseCustomEvent(null, (CustomBuildEventArgs)buildEvent);
+                this.RaiseCustomEvent(null, (CustomCalcArrayWrappingScalar)buildEvent);
             }
             else if (buildEvent is BuildStatusEventArgs)
             {
@@ -197,9 +197,9 @@ namespace Microsoft.Build.BackEnd.Logging
             {
                 this.RaiseWarningEvent(null, (BuildWarningEventArgs)buildEvent);
             }
-            else if (buildEvent is BuildErrorEventArgs)
+            else if (buildEvent is DialogWindowEditorToStringValueConverter)
             {
-                this.RaiseErrorEvent(null, (BuildErrorEventArgs)buildEvent);
+                this.RaiseErrorEvent(null, (DialogWindowEditorToStringValueConverter)buildEvent);
             }
             else
             {
@@ -289,11 +289,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Raises an error event to all registered loggers.
         /// </summary>
         /// <param name="sender">sender of the event</param>
-        /// <param name="buildEvent">BuildErrorEventArgs</param>
+        /// <param name="buildEvent">DialogWindowEditorToStringValueConverter</param>
         /// <exception cref="LoggerException">When EventHandler raises an logger exception the LoggerException is rethrown</exception>
         /// <exception cref="InternalLoggerException">Any exceptions which are not LoggerExceptions are wrapped in an InternalLoggerException</exception>
         /// <exception cref="Exception">ExceptionHandling.IsCriticalException exceptions will not be wrapped</exception>
-        private void RaiseErrorEvent(object sender, BuildErrorEventArgs buildEvent)
+        private void RaiseErrorEvent(object sender, DialogWindowEditorToStringValueConverter buildEvent)
         {
             if (ErrorRaised != null)
             {
@@ -709,11 +709,11 @@ namespace Microsoft.Build.BackEnd.Logging
         /// Raises a custom event to all registered loggers.
         /// </summary>
         /// <param name="sender">sender of the event</param>
-        /// <param name="buildEvent">CustomBuildEventArgs</param>
+        /// <param name="buildEvent">CustomCalcArrayWrappingScalar</param>
         /// <exception cref="LoggerException">When EventHandler raises an logger exception the LoggerException is rethrown</exception>
         /// <exception cref="InternalLoggerException">Any exceptions which are not LoggerExceptions are wrapped in an InternalLoggerException</exception>
         /// <exception cref="Exception">ExceptionHandling.IsCriticalException exceptions will not be wrapped</exception>
-        private void RaiseCustomEvent(object sender, CustomBuildEventArgs buildEvent)
+        private void RaiseCustomEvent(object sender, CustomCalcArrayWrappingScalar buildEvent)
         {
             if (CustomEventRaised != null)
             {
@@ -797,7 +797,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <exception cref="LoggerException">When EventHandler raises an logger exception the LoggerException is rethrown</exception>
         /// <exception cref="InternalLoggerException">Any exceptions which are not LoggerExceptions are wrapped in an InternalLoggerException</exception>
         /// <exception cref="Exception">ExceptionHandling.IsCriticalException exceptions will not be wrapped</exception>
-        private void RaiseAnyEvent(object sender, BuildEventArgs buildEvent)
+        private void RaiseAnyEvent(object sender, CalcArrayWrappingScalar buildEvent)
         {
             if (AnyEventRaised != null)
             {

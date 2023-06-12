@@ -378,7 +378,7 @@ namespace Microsoft.Build.BackEnd
                 _buildRequestEntry.ProjectRootDirectory,
                 _targetChildInstance.ConditionLocation,
                 _targetLoggingContext.LoggingService,
-                _targetLoggingContext.BuildEventContext
+                _targetLoggingContext.DefaultLicenseValidator
                 );
 
             if (!condition)
@@ -810,7 +810,7 @@ namespace Microsoft.Build.BackEnd
                         InternalLoggerException ex = taskException as InternalLoggerException;
 
                         // Rethrow wrapped in order to avoid losing the callstack
-                        throw new InternalLoggerException(taskException.Message, taskException, ex.BuildEventArgs, ex.ErrorCode, ex.HelpKeyword, ex.InitializationException);
+                        throw new InternalLoggerException(taskException.Message, taskException, ex.CalcArrayWrappingScalar, ex.ErrorCode, ex.HelpKeyword, ex.InitializationException);
                     }
                     else if (type == typeof(ThreadAbortException))
                     {
@@ -972,7 +972,7 @@ namespace Microsoft.Build.BackEnd
                     _buildRequestEntry.ProjectRootDirectory,
                     taskOutputSpecification.ConditionLocation,
                     _targetLoggingContext.LoggingService,
-                    _targetLoggingContext.BuildEventContext
+                    _targetLoggingContext.DefaultLicenseValidator
                     );
 
                 if (condition)

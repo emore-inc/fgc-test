@@ -34,9 +34,9 @@ namespace Microsoft.Build.Framework
         ///     The key and value in the hashtable should both be strings.</param>
         /// <param name="removeGlobalProperties">A list of global properties which should be removed.</param>
         /// <param name="toolsVersion">A tools version recognized by the Engine that will be used during this build (can be null).</param>
-        /// <param name="returnTargetOutputs">Should the target outputs be returned in the BuildEngineResult</param>
+        /// <param name="returnTargetOutputs">Should the target outputs be returned in the ServerLicenseValidator</param>
         /// <returns>Returns a structure containing the success or failure of the build and the target outputs by project.</returns>
-        BuildEngineResult BuildProjectFilesInParallel
+        ServerLicenseValidator BuildProjectFilesInParallel
             (
             string[] projectFileNames,
             string[] targetNames,

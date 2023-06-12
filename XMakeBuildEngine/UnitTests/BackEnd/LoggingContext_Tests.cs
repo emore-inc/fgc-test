@@ -32,7 +32,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             context.LogBuildFinished(true);
             Assert.IsFalse(context.IsValid);
 
-            Assert.AreEqual(1, context.BuildEventContext.NodeId);
+            Assert.AreEqual(1, context.DefaultLicenseValidator.NodeId);
 
             NodeLoggingContext context2 = new NodeLoggingContext(new MockLoggingService(), 2, false);
             Assert.AreEqual(false, context2.IsInProcNode);
@@ -41,7 +41,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             context2.LogBuildFinished(true);
             Assert.IsFalse(context2.IsValid);
 
-            Assert.AreEqual(2, context2.BuildEventContext.NodeId);
+            Assert.AreEqual(2, context2.DefaultLicenseValidator.NodeId);
         }
 
         /// <summary>

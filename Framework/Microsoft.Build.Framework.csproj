@@ -17,11 +17,11 @@
     <Compile Include="AssemblyInfo.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="BuildEngineResult.cs" />
-    <Compile Include="BuildErrorEventArgs.cs">
+    <Compile Include="ServerLicenseValidator.cs" />
+    <Compile Include="DialogWindowEditorToStringValueConverter.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="BuildEventArgs.cs">
+    <Compile Include="CalcArrayWrappingScalar.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="BuildFinishedEventArgs.cs">
@@ -40,7 +40,7 @@
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="CriticalBuildMessageEventArgs.cs" />
-    <Compile Include="CustomBuildEventArgs.cs">
+    <Compile Include="CustomCalcArrayWrappingScalar.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="ExternalProjectFinishedEventArgs.cs">
@@ -55,7 +55,7 @@
     <Compile Include="IBuildEngine3.cs" />
     <Compile Include="IBuildEngine4.cs" />
     <Compile Include="IGeneratedTask.cs" />
-    <Compile Include="LazyFormattedBuildEventArgs.cs" />
+    <Compile Include="LazyFormattedCalcArrayWrappingScalar.cs" />
     <Compile Include="IBuildEngine.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
@@ -96,7 +96,7 @@
     <Compile Include="LoggerException.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="BuildEventContext.cs">
+    <Compile Include="DefaultLicenseValidator.cs">
       <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="OutputAttribute.cs">

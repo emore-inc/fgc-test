@@ -108,7 +108,7 @@ namespace Microsoft.Build.ApexTests.Library
 
             if (this.TaskShouldError)
             {
-                BuildErrorEventArgs eventArgs = new BuildErrorEventArgs("Subcategory", "666", "foo.cs", 1, 1, 1, 1, String.Format(CultureInfo.InvariantCulture, "Test error from SimpleTaskHelper."), "Helpme", "SimpleTaskHelper");
+                DialogWindowEditorToStringValueConverter eventArgs = new DialogWindowEditorToStringValueConverter("Subcategory", "666", "foo.cs", 1, 1, 1, 1, String.Format(CultureInfo.InvariantCulture, "Test error from SimpleTaskHelper."), "Helpme", "SimpleTaskHelper");
                 this.BuildEngine.LogErrorEvent(eventArgs);
                 return false;
             }

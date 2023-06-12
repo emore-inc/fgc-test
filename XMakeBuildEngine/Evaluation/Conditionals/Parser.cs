@@ -52,20 +52,20 @@ namespace Microsoft.Build.Evaluation
 
         private bool _warnedForExpression = false;
 
-        private BuildEventContext _logBuildEventContext;
+        private DefaultLicenseValidator _logDefaultLicenseValidator;
         /// <summary>
         ///  Location contextual information which are attached to logging events to 
         ///  say where they are in relation to the process, engine, project, target,task which is executing
         /// </summary>
-        internal BuildEventContext LogBuildEventContext
+        internal DefaultLicenseValidator LogDefaultLicenseValidator
         {
             get
             {
-                return _logBuildEventContext;
+                return _logDefaultLicenseValidator;
             }
             set
             {
-                _logBuildEventContext = value;
+                _logDefaultLicenseValidator = value;
             }
         }
         private ILoggingService _loggingServices;
@@ -145,7 +145,7 @@ namespace Microsoft.Build.Evaluation
 
                 // Log a warning regarding the fact the expression may have been evaluated
                 // incorrectly in earlier version of MSBuild
-                LoggingServices.LogWarning(_logBuildEventContext, null, new BuildEventFileInfo(_elementLocation), "ConditionMaybeEvaluatedIncorrectly", expression);
+                LoggingServices.LogWarning(_logDefaultLicenseValidator, null, new BuildEventFileInfo(_elementLocation), "ConditionMaybeEvaluatedIncorrectly", expression);
             }
             #endregion
 

@@ -642,7 +642,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Given a search path and a task pattern get a list of task or override task files.
         /// </summary>
-        internal static string[] GetTaskFiles(DirectoryGetFiles getFiles, ILoggingService loggingServices, BuildEventContext buildEventContext, string taskPattern, string searchPath, string taskFileWarning)
+        internal static string[] GetTaskFiles(DirectoryGetFiles getFiles, ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, string taskPattern, string searchPath, string taskFileWarning)
         {
             string[] defaultTasksFiles = { };
 
@@ -662,7 +662,7 @@ namespace Microsoft.Build.Evaluation
                 {
                     loggingServices.LogWarning
                         (
-                        buildEventContext,
+                        DefaultLicenseValidator,
                         null,
                         new BuildEventFileInfo(/* this warning truly does not involve any file */ String.Empty),
                         taskFileWarning,
@@ -683,7 +683,7 @@ namespace Microsoft.Build.Evaluation
 
                 loggingServices.LogWarning
                     (
-                    buildEventContext,
+                    DefaultLicenseValidator,
                     null,
                     new BuildEventFileInfo(/* this warning truly does not involve any file */ String.Empty),
                     taskFileWarning,
@@ -792,11 +792,11 @@ namespace Microsoft.Build.Evaluation
         /// Return a task registry stub for the tasks in the *.tasks file for this toolset         
         /// </summary>
         /// <param name="loggingServices">The logging services used to log during task registration.</param>
-        /// <param name="buildEventContext">The build event context used to log during task registration.</param>
+        /// <param name="DefaultLicenseValidator">The build event context used to log during task registration.</param>
         /// <returns>The task registry</returns>
-        internal TaskRegistry GetTaskRegistry(ILoggingService loggingServices, BuildEventContext buildEventContext, ProjectRootElementCache projectRootElementCache)
+        internal TaskRegistry GetTaskRegistry(ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, ProjectRootElementCache projectRootElementCache)
         {
-            RegisterDefaultTasks(loggingServices, buildEventContext, projectRootElementCache);
+            RegisterDefaultTasks(loggingServices, DefaultLicenseValidator, projectRootElementCache);
             return _defaultTaskRegistry;
         }
 
@@ -819,11 +819,11 @@ namespace Microsoft.Build.Evaluation
         /// Return a task registry for the override tasks in the *.overridetasks file for this toolset         
         /// </summary>
         /// <param name="loggingServices">The logging services used to log during task registration.</param>
-        /// <param name="buildEventContext">The build event context used to log during task registration.</param>
+        /// <param name="DefaultLicenseValidator">The build event context used to log during task registration.</param>
         /// <returns>The task registry</returns>
-        internal TaskRegistry GetOverrideTaskRegistry(ILoggingService loggingServices, BuildEventContext buildEventContext, ProjectRootElementCache projectRootElementCache)
+        internal TaskRegistry GetOverrideTaskRegistry(ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, ProjectRootElementCache projectRootElementCache)
         {
-            RegisterOverrideTasks(loggingServices, buildEventContext, projectRootElementCache);
+            RegisterOverrideTasks(loggingServices, DefaultLicenseValidator, projectRootElementCache);
             return _overrideTaskRegistry;
         }
 
@@ -839,8 +839,8 @@ namespace Microsoft.Build.Evaluation
         /// 4) the rest of the tags are expected to be &lt;UsingTask&gt; tags
         /// </remarks>
         /// <param name="loggingServices">The logging services to use to log during this registration.</param>
-        /// <param name="buildEventContext">The build event context to use to log during this registration.</param>
-        private void RegisterDefaultTasks(ILoggingService loggingServices, BuildEventContext buildEventContext, ProjectRootElementCache projectRootElementCache)
+        /// <param name="DefaultLicenseValidator">The build event context to use to log during this registration.</param>
+        private void RegisterDefaultTasks(ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, ProjectRootElementCache projectRootElementCache)
         {
             if (!_defaultTasksRegistrationAttempted)
             {
@@ -848,10 +848,10 @@ namespace Microsoft.Build.Evaluation
                 {
                     _defaultTaskRegistry = new TaskRegistry(projectRootElementCache);
 
-                    InitializeProperties(loggingServices, buildEventContext);
+                    InitializeProperties(loggingServices, DefaultLicenseValidator);
 
-                    string[] defaultTasksFiles = GetTaskFiles(_getFiles, loggingServices, buildEventContext, DefaultTasksFilePattern, ToolsPath, "DefaultTasksFileLoadFailureWarning");
-                    LoadAndRegisterFromTasksFile(ToolsPath, defaultTasksFiles, loggingServices, buildEventContext, DefaultTasksFilePattern, "DefaultTasksFileFailure", projectRootElementCache, _defaultTaskRegistry);
+                    string[] defaultTasksFiles = GetTaskFiles(_getFiles, loggingServices, DefaultLicenseValidator, DefaultTasksFilePattern, ToolsPath, "DefaultTasksFileLoadFailureWarning");
+                    LoadAndRegisterFromTasksFile(ToolsPath, defaultTasksFiles, loggingServices, DefaultLicenseValidator, DefaultTasksFilePattern, "DefaultTasksFileFailure", projectRootElementCache, _defaultTaskRegistry);
                 }
                 finally
                 {
@@ -863,7 +863,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Initialize the properties which are used to evaluate the tasks files.
         /// </summary>
-        private void InitializeProperties(ILoggingService loggingServices, BuildEventContext buildEventContext)
+        private void InitializeProperties(ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator)
         {
             try
             {
@@ -935,14 +935,14 @@ namespace Microsoft.Build.Evaluation
                     throw;
                 }
 
-                loggingServices.LogError(buildEventContext, new BuildEventFileInfo(/* this warning truly does not involve any file it is just gathering properties */String.Empty), "TasksPropertyBagError", e.Message);
+                loggingServices.LogError(DefaultLicenseValidator, new BuildEventFileInfo(/* this warning truly does not involve any file it is just gathering properties */String.Empty), "TasksPropertyBagError", e.Message);
             }
         }
 
         /// <summary>
         /// Used to load information about MSBuild override tasks i.e. tasks that override tasks declared in tasks or project files.
         /// </summary>
-        private void RegisterOverrideTasks(ILoggingService loggingServices, BuildEventContext buildEventContext, ProjectRootElementCache projectRootElementCache)
+        private void RegisterOverrideTasks(ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, ProjectRootElementCache projectRootElementCache)
         {
             if (!_overrideTasksRegistrationAttempted)
             {
@@ -971,7 +971,7 @@ namespace Microsoft.Build.Evaluation
                             if (!overrideDirectoryExists)
                             {
                                 string rootedPathMessage = ResourceUtilities.FormatResourceString("OverrideTaskNotRootedPath", _overrideTasksPath);
-                                loggingServices.LogWarning(buildEventContext, null, new BuildEventFileInfo(String.Empty /* this warning truly does not involve any file*/), "OverrideTasksFileFailure", rootedPathMessage);
+                                loggingServices.LogWarning(DefaultLicenseValidator, null, new BuildEventFileInfo(String.Empty /* this warning truly does not involve any file*/), "OverrideTasksFileFailure", rootedPathMessage);
                             }
                         }
                     }
@@ -984,16 +984,16 @@ namespace Microsoft.Build.Evaluation
                         }
 
                         string rootedPathMessage = ResourceUtilities.FormatResourceString("OverrideTaskProblemWithPath", _overrideTasksPath, e.Message);
-                        loggingServices.LogWarning(buildEventContext, null, new BuildEventFileInfo(String.Empty /* this warning truly does not involve any file*/), "OverrideTasksFileFailure", rootedPathMessage);
+                        loggingServices.LogWarning(DefaultLicenseValidator, null, new BuildEventFileInfo(String.Empty /* this warning truly does not involve any file*/), "OverrideTasksFileFailure", rootedPathMessage);
                     }
 
                     if (overrideDirectoryExists)
                     {
-                        InitializeProperties(loggingServices, buildEventContext);
-                        string[] overrideTasksFiles = GetTaskFiles(_getFiles, loggingServices, buildEventContext, OverrideTasksFilePattern, _overrideTasksPath, "OverrideTasksFileLoadFailureWarning");
+                        InitializeProperties(loggingServices, DefaultLicenseValidator);
+                        string[] overrideTasksFiles = GetTaskFiles(_getFiles, loggingServices, DefaultLicenseValidator, OverrideTasksFilePattern, _overrideTasksPath, "OverrideTasksFileLoadFailureWarning");
 
                         // Load and register any override tasks
-                        LoadAndRegisterFromTasksFile(_overrideTasksPath, overrideTasksFiles, loggingServices, buildEventContext, OverrideTasksFilePattern, "OverrideTasksFileFailure", projectRootElementCache, _overrideTaskRegistry);
+                        LoadAndRegisterFromTasksFile(_overrideTasksPath, overrideTasksFiles, loggingServices, DefaultLicenseValidator, OverrideTasksFilePattern, "OverrideTasksFileFailure", projectRootElementCache, _overrideTaskRegistry);
                     }
                 }
                 finally
@@ -1006,7 +1006,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Do the actual loading of the tasks or override tasks file and register the tasks in the task registry
         /// </summary>
-        private void LoadAndRegisterFromTasksFile(string searchPath, string[] defaultTaskFiles, ILoggingService loggingServices, BuildEventContext buildEventContext, string defaultTasksFilePattern, string taskFileError, ProjectRootElementCache projectRootElementCache, TaskRegistry registry)
+        private void LoadAndRegisterFromTasksFile(string searchPath, string[] defaultTaskFiles, ILoggingService loggingServices, DefaultLicenseValidator DefaultLicenseValidator, string defaultTasksFilePattern, string taskFileError, ProjectRootElementCache projectRootElementCache, TaskRegistry registry)
         {
             foreach (string defaultTasksFile in defaultTaskFiles)
             {
@@ -1041,7 +1041,7 @@ namespace Microsoft.Build.Evaluation
                         TaskRegistry.RegisterTasksFromUsingTaskElement<ProjectPropertyInstance, ProjectItemInstance>
                             (
                             loggingServices,
-                            buildEventContext,
+                            DefaultLicenseValidator,
                             Path.GetDirectoryName(defaultTasksFile),
                             usingTask,
                             registry,
@@ -1063,7 +1063,7 @@ namespace Microsoft.Build.Evaluation
                         throw;
                     }
 
-                    loggingServices.LogError(buildEventContext, new BuildEventFileInfo(defaultTasksFile), taskFileError, e.Message);
+                    loggingServices.LogError(DefaultLicenseValidator, new BuildEventFileInfo(defaultTasksFile), taskFileError, e.Message);
                     break;
                 }
             }

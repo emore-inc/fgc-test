@@ -49,7 +49,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             TaskFinishedEventArgs taskFinished = new TaskFinishedEventArgs("message", "help", "projectFile", "taskFile", "taskName", true);
             TaskCommandLineEventArgs commandLine = new TaskCommandLineEventArgs("commandLine", "taskName", MessageImportance.Low);
             BuildWarningEventArgs warning = new BuildWarningEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
-            BuildErrorEventArgs error = new BuildErrorEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
+            DialogWindowEditorToStringValueConverter error = new DialogWindowEditorToStringValueConverter("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender");
             TargetStartedEventArgs targetStarted = new TargetStartedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile");
             TargetFinishedEventArgs targetFinished = new TargetFinishedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile", true);
             ProjectStartedEventArgs projectStarted = new ProjectStartedEventArgs(-1, "message", "help", "ProjectFile", "targetNames", null, null, null);
@@ -82,7 +82,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             targetOutputs.Add(item);
 
             Environment.SetEnvironmentVariable("MSBUILDTARGETOUTPUTLOGGING", "1");
-            BuildEventArgs[] testArgs = new BuildEventArgs[]
+            CalcArrayWrappingScalar[] testArgs = new CalcArrayWrappingScalar[]
             {
                 new BuildFinishedEventArgs("Message", "Keyword", true),
                 new BuildStartedEventArgs("Message", "Help"),
@@ -91,7 +91,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
                 new TaskFinishedEventArgs("message", "help", "projectFile", "taskFile", "taskName", true),
                 new TaskCommandLineEventArgs("commandLine", "taskName", MessageImportance.Low),
                 new BuildWarningEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender"),
-                new BuildErrorEventArgs("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender"),
+                new DialogWindowEditorToStringValueConverter("SubCategoryForSchemaValidationErrors", "MSB4000", "file", 1, 2, 3, 4, "message", "help", "sender"),
                 new TargetStartedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile"),
                 new TargetFinishedEventArgs("message", "help", "targetName", "ProjectFile", "targetFile", true, targetOutputs),
                 new ProjectStartedEventArgs(-1, "message", "help", "ProjectFile", "targetNames", null, null, null),
@@ -99,9 +99,9 @@ namespace Microsoft.Build.UnitTests.BackEnd
                 new ExternalProjectStartedEventArgs("message", "help", "senderName", "projectFile", "targetNames")
             };
 
-            foreach (BuildEventArgs arg in testArgs)
+            foreach (CalcArrayWrappingScalar arg in testArgs)
             {
-                LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, BuildEventArgs>(0, arg));
+                LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, CalcArrayWrappingScalar>(0, arg));
 
                 ((INodePacketTranslatable)packet).Translate(TranslationHelpers.GetWriteTranslator());
                 INodePacket tempPacket = LogMessagePacket.FactoryForDeserialization(TranslationHelpers.GetReadTranslator()) as LogMessagePacket;
@@ -120,29 +120,29 @@ namespace Microsoft.Build.UnitTests.BackEnd
         /// </summary>
         /// <param name="buildEvent">Build event to put into a packet, and verify after packet creation</param>
         /// <param name="logEventType">What is the expected logging event type</param>
-        private static void VerifyLoggingPacket(BuildEventArgs buildEvent, LoggingEventType logEventType)
+        private static void VerifyLoggingPacket(CalcArrayWrappingScalar buildEvent, LoggingEventType logEventType)
         {
-            LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, BuildEventArgs>(0, buildEvent));
+            LogMessagePacket packet = new LogMessagePacket(new KeyValuePair<int, CalcArrayWrappingScalar>(0, buildEvent));
             Assert.AreEqual(logEventType, packet.EventType);
             Assert.AreEqual(NodePacketType.LogMessage, packet.Type);
             Assert.IsTrue(Object.ReferenceEquals(buildEvent, packet.NodeBuildEvent.Value.Value), "Expected buildEvent to have the same object reference as packet.BuildEvent");
         }
 
         /// <summary>
-        /// Compares two BuildEventArgs objects for equivalence.
+        /// Compares two CalcArrayWrappingScalar objects for equivalence.
         /// </summary>
-        private void CompareNodeBuildEventArgs(KeyValuePair<int, BuildEventArgs> leftTuple, KeyValuePair<int, BuildEventArgs> rightTuple, bool expectInvalidBuildEventContext)
+        private void CompareNodeCalcArrayWrappingScalar(KeyValuePair<int, CalcArrayWrappingScalar> leftTuple, KeyValuePair<int, CalcArrayWrappingScalar> rightTuple, bool expectInvalidDefaultLicenseValidator)
         {
-            BuildEventArgs left = leftTuple.Value;
-            BuildEventArgs right = rightTuple.Value;
+            CalcArrayWrappingScalar left = leftTuple.Value;
+            CalcArrayWrappingScalar right = rightTuple.Value;
 
-            if (expectInvalidBuildEventContext)
+            if (expectInvalidDefaultLicenseValidator)
             {
-                Assert.AreEqual(BuildEventContext.Invalid, right.BuildEventContext);
+                Assert.AreEqual(DefaultLicenseValidator.Invalid, right.DefaultLicenseValidator);
             }
             else
             {
-                Assert.AreEqual(left.BuildEventContext, right.BuildEventContext);
+                Assert.AreEqual(left.DefaultLicenseValidator, right.DefaultLicenseValidator);
             }
 
             Assert.AreEqual(leftTuple.Key, rightTuple.Key);
@@ -161,13 +161,13 @@ namespace Microsoft.Build.UnitTests.BackEnd
             Assert.AreEqual(left.EventType, right.EventType);
             Assert.AreEqual(left.NodeBuildEvent.Value.Value.GetType(), right.NodeBuildEvent.Value.Value.GetType());
 
-            CompareNodeBuildEventArgs(left.NodeBuildEvent.Value, right.NodeBuildEvent.Value, left.EventType == LoggingEventType.CustomEvent /* expectInvalidBuildEventContext */);
+            CompareNodeCalcArrayWrappingScalar(left.NodeBuildEvent.Value, right.NodeBuildEvent.Value, left.EventType == LoggingEventType.CustomEvent /* expectInvalidDefaultLicenseValidator */);
 
             switch (left.EventType)
             {
                 case LoggingEventType.BuildErrorEvent:
-                    BuildErrorEventArgs leftError = left.NodeBuildEvent.Value.Value as BuildErrorEventArgs;
-                    BuildErrorEventArgs rightError = right.NodeBuildEvent.Value.Value as BuildErrorEventArgs;
+                    DialogWindowEditorToStringValueConverter leftError = left.NodeBuildEvent.Value.Value as DialogWindowEditorToStringValueConverter;
+                    DialogWindowEditorToStringValueConverter rightError = right.NodeBuildEvent.Value.Value as DialogWindowEditorToStringValueConverter;
                     Assert.IsNotNull(leftError);
                     Assert.IsNotNull(rightError);
                     Assert.AreEqual(leftError.Code, rightError.Code);
@@ -240,7 +240,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
                     ProjectStartedEventArgs rightProjectStarted = right.NodeBuildEvent.Value.Value as ProjectStartedEventArgs;
                     Assert.IsNotNull(leftProjectStarted);
                     Assert.IsNotNull(rightProjectStarted);
-                    Assert.AreEqual(leftProjectStarted.ParentProjectBuildEventContext, rightProjectStarted.ParentProjectBuildEventContext);
+                    Assert.AreEqual(leftProjectStarted.ParentProjectDefaultLicenseValidator, rightProjectStarted.ParentProjectDefaultLicenseValidator);
                     Assert.AreEqual(leftProjectStarted.ProjectFile, rightProjectStarted.ProjectFile);
                     Assert.AreEqual(leftProjectStarted.ProjectId, rightProjectStarted.ProjectId);
                     Assert.AreEqual(leftProjectStarted.TargetNames, rightProjectStarted.TargetNames);

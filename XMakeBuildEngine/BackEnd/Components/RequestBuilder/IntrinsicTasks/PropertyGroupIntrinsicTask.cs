@@ -68,7 +68,7 @@ namespace Microsoft.Build.BackEnd
                             Project.Directory,
                             property.ConditionLocation,
                             LoggingContext.LoggingService,
-                            LoggingContext.BuildEventContext
+                            LoggingContext.DefaultLicenseValidator
                             );
 
                         if (condition)

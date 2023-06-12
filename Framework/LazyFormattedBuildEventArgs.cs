@@ -16,7 +16,7 @@ namespace Microsoft.Build.Framework
     /// Stores strings for parts of a message delaying the formatting until it needs to be shown
     /// </summary>
     [Serializable]
-    public class LazyFormattedBuildEventArgs : BuildEventArgs
+    public class LazyFormattedCalcArrayWrappingScalar : CalcArrayWrappingScalar
     {
         /// <summary>
         /// Stores the message arguments.
@@ -40,7 +40,7 @@ namespace Microsoft.Build.Framework
         /// <param name="message">text message.</param>
         /// <param name="helpKeyword">help keyword.</param>
         /// <param name="senderName">name of event sender.</param>
-        public LazyFormattedBuildEventArgs
+        public LazyFormattedCalcArrayWrappingScalar
         (
             string message,
             string helpKeyword,
@@ -58,7 +58,7 @@ namespace Microsoft.Build.Framework
         /// <param name="senderName">name of event sender.</param>
         /// <param name="eventTimestamp">Timestamp when event was created.</param>
         /// <param name="messageArgs">Message arguments.</param>
-        public LazyFormattedBuildEventArgs
+        public LazyFormattedCalcArrayWrappingScalar
         (
             string message,
             string helpKeyword,
@@ -76,7 +76,7 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// Default constructor.
         /// </summary>
-        protected LazyFormattedBuildEventArgs()
+        protected LazyFormattedCalcArrayWrappingScalar()
             : base()
         {
             _locker = new Object();
@@ -118,7 +118,7 @@ namespace Microsoft.Build.Framework
 
                 if (hasArguments && _arguments == null)
                 {
-                    throw new InvalidOperationException("BuildEventArgs has formatted message while serializing!");
+                    throw new InvalidOperationException("CalcArrayWrappingScalar has formatted message while serializing!");
                 }
 
                 if (_arguments != null)
@@ -271,7 +271,7 @@ namespace Microsoft.Build.Framework
                     //          (16,14):  error : "This message logged from a task {1} has too few formatting parameters."
                     //             at System.Text.StringBuilder.AppendFormat(IFormatProvider provider, String format, Object[] args)
                     //             at System.String.Format(IFormatProvider provider, String format, Object[] args)
-                    //             at Microsoft.Build.Framework.LazyFormattedBuildEventArgs.FormatString(CultureInfo culture, String unformatted, Object[] args) in d:\W8T_Refactor\src\vsproject\xmake\Framework\LazyFormattedBuildEventArgs.cs:line 263
+                    //             at Microsoft.Build.Framework.LazyFormattedCalcArrayWrappingScalar.FormatString(CultureInfo culture, String unformatted, Object[] args) in d:\W8T_Refactor\src\vsproject\xmake\Framework\LazyFormattedCalcArrayWrappingScalar.cs:line 263
                     //          Done executing task "Crash".
                     //
                     // T

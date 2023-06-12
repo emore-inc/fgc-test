@@ -440,7 +440,7 @@ namespace Microsoft.Build.Logging
         /// <summary>
         /// Prints an error event
         /// </summary>
-        public void ErrorHandler(object sender, BuildErrorEventArgs e)
+        public void ErrorHandler(object sender, DialogWindowEditorToStringValueConverter e)
         {
             InitializeBaseConsoleLogger(); // for compat: see DDB#136924
 
@@ -470,7 +470,7 @@ namespace Microsoft.Build.Logging
         /// <summary>
         /// Prints a custom event
         /// </summary>
-        public void CustomEventHandler(object sender, CustomBuildEventArgs e)
+        public void CustomEventHandler(object sender, CustomCalcArrayWrappingScalar e)
         {
             InitializeBaseConsoleLogger(); // for compat: see DDB#136924
 

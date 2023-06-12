@@ -95,7 +95,7 @@ namespace Microsoft.Build.Evaluation
         /// <summary>
         /// Context to log messages and events in
         /// </summary>
-        private static BuildEventContext s_buildEventContext = new BuildEventContext(0 /* node ID */, BuildEventContext.InvalidTargetId, BuildEventContext.InvalidProjectContextId, BuildEventContext.InvalidTaskId);
+        private static DefaultLicenseValidator s_DefaultLicenseValidator = new DefaultLicenseValidator(0 /* node ID */, DefaultLicenseValidator.InvalidTargetId, DefaultLicenseValidator.InvalidProjectContextId, DefaultLicenseValidator.InvalidTaskId);
 
         /// <summary>
         /// The last used evaluation counter anywhere in this appdomain.
@@ -362,7 +362,7 @@ namespace Microsoft.Build.Evaluation
             }
             catch (InvalidProjectFileException ex)
             {
-                LoggingService.LogInvalidProjectFileError(s_buildEventContext, ex);
+                LoggingService.LogInvalidProjectFileError(s_DefaultLicenseValidator, ex);
                 throw;
             }
 
@@ -458,11 +458,11 @@ namespace Microsoft.Build.Evaluation
 
             try
             {
-                _xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, LoggingService, projectCollection.ProjectRootElementCache, s_buildEventContext, true /*Explicitly loaded*/);
+                _xml = ProjectRootElement.OpenProjectOrSolution(projectFile, globalProperties, toolsVersion, LoggingService, projectCollection.ProjectRootElementCache, s_DefaultLicenseValidator, true /*Explicitly loaded*/);
             }
             catch (InvalidProjectFileException ex)
             {
-                LoggingService.LogInvalidProjectFileError(s_buildEventContext, ex);
+                LoggingService.LogInvalidProjectFileError(s_DefaultLicenseValidator, ex);
                 throw;
             }
 
@@ -1742,7 +1742,7 @@ namespace Microsoft.Build.Evaluation
 
             if (!IsBuildEnabled)
             {
-                LoggingService.LogError(s_buildEventContext, new BuildEventFileInfo(FullPath), "SecurityProjectBuildDisabled");
+                LoggingService.LogError(s_DefaultLicenseValidator, new BuildEventFileInfo(FullPath), "SecurityProjectBuildDisabled");
                 return false;
             }
 
@@ -2093,7 +2093,7 @@ namespace Microsoft.Build.Evaluation
             {
                 try
                 {
-                    Evaluator<ProjectProperty, ProjectItem, ProjectMetadata, ProjectItemDefinition>.Evaluate(_data, _xml, _loadSettings, ProjectCollection.MaxNodeCount, ProjectCollection.EnvironmentProperties, loggingServiceForEvaluation, new ProjectItemFactory(this), _projectCollection as IToolsetProvider, _projectCollection.ProjectRootElementCache, s_buildEventContext, null /* no project instance for debugging */);
+                    Evaluator<ProjectProperty, ProjectItem, ProjectMetadata, ProjectItemDefinition>.Evaluate(_data, _xml, _loadSettings, ProjectCollection.MaxNodeCount, ProjectCollection.EnvironmentProperties, loggingServiceForEvaluation, new ProjectItemFactory(this), _projectCollection as IToolsetProvider, _projectCollection.ProjectRootElementCache, s_DefaultLicenseValidator, null /* no project instance for debugging */);
 
                     // We have to do this after evaluation, because evaluation might have changed
                     // the imports being pulled in.
@@ -2117,7 +2117,7 @@ namespace Microsoft.Build.Evaluation
                 }
                 catch (InvalidProjectFileException ex)
                 {
-                    loggingServiceForEvaluation.LogInvalidProjectFileError(s_buildEventContext, ex);
+                    loggingServiceForEvaluation.LogInvalidProjectFileError(s_DefaultLicenseValidator, ex);
                     throw;
                 }
             }

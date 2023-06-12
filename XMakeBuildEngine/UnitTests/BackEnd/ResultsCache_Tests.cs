@@ -41,7 +41,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestAddAndRetrieveResults()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, BuildEventContext.Invalid, null); BuildResult result = new BuildResult(request);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, DefaultLicenseValidator.Invalid, null); BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
 
@@ -54,12 +54,12 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestAddAndRetrieveResultsByConfiguration()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
 
-            request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "otherTarget" }, null, BuildEventContext.Invalid, null);
+            request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "otherTarget" }, null, DefaultLicenseValidator.Invalid, null);
             result = new BuildResult(request);
             result.AddResultsForTarget("otherTarget", TestUtilities.GetEmptySucceedingTargetResult());
             cache.AddResult(result);
@@ -75,7 +75,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         {
             ResultsCache cache = new ResultsCache();
 
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult retrievedResult = cache.GetResultForRequest(request);
             Assert.IsNull(retrievedResult);
         }
@@ -84,7 +84,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestRetrieveMergedResults()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[2] { "testTarget", "testTarget2" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[2] { "testTarget", "testTarget2" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
@@ -103,7 +103,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestMergeResultsWithException()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[] { "testTarget" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[] { "testTarget" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
@@ -121,7 +121,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestRetrieveIncompleteResults()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[2] { "testTarget", "testTarget2" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[2] { "testTarget", "testTarget2" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
@@ -133,7 +133,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestRetrieveSubsetResults()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);
@@ -156,7 +156,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
         public void TestRetrieveSubsetTargetsFromResult()
         {
             ResultsCache cache = new ResultsCache();
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, DefaultLicenseValidator.Invalid, null);
 
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
@@ -178,7 +178,7 @@ namespace Microsoft.Build.UnitTests.BackEnd
             ResultsCache cache = new ResultsCache();
             cache.ClearResults();
 
-            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, BuildEventContext.Invalid, null);
+            BuildRequest request = new BuildRequest(1 /* submissionId */, 0, 1, new string[1] { "testTarget2" }, null, DefaultLicenseValidator.Invalid, null);
             BuildResult result = new BuildResult(request);
             result.AddResultsForTarget("testTarget", TestUtilities.GetEmptyFailingTargetResult());
             cache.AddResult(result);

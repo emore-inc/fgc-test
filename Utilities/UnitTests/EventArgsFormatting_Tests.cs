@@ -100,7 +100,7 @@ namespace Microsoft.Build.UnitTests
         [TestMethod]
         public void EscapeCarriageReturnMessages()
         {
-            BuildErrorEventArgs error = new BuildErrorEventArgs("CS", "312", "source.cs", 42, 0, 0, 0, "message\r Hello", "help", "sender");
+            DialogWindowEditorToStringValueConverter error = new DialogWindowEditorToStringValueConverter("CS", "312", "source.cs", 42, 0, 0, 0, "message\r Hello", "help", "sender");
             BuildWarningEventArgs warning = new BuildWarningEventArgs("CS", "312", "source.cs", 42, 0, 0, 0, "message\r Hello", "help", "sender");
 
             // Testing the method in Shared.EventArgsFormatting directly
@@ -143,7 +143,7 @@ namespace Microsoft.Build.UnitTests
         public void FormatEventMessageOnBEEA()
         {
             MyLogger l = new MyLogger();
-            BuildErrorEventArgs beea = new BuildErrorEventArgs("VBC",
+            DialogWindowEditorToStringValueConverter beea = new DialogWindowEditorToStringValueConverter("VBC",
                         "31415", "file.vb", 42, 0, 0, 0,
                         "Some long message", "help", "sender");
             string s = l.FormatErrorEvent(beea);
@@ -174,7 +174,7 @@ namespace Microsoft.Build.UnitTests
         public void FormatEventMessageOnNullBEEA()
         {
             MyLogger l = new MyLogger();
-            BuildErrorEventArgs beea = null;
+            DialogWindowEditorToStringValueConverter beea = null;
             string s = l.FormatErrorEvent(beea);
         }
 

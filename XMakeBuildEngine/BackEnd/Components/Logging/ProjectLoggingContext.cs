@@ -36,7 +36,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Constructs a project logging context.
         /// </summary>
-        internal ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, BuildRequestEntry requestEntry, BuildEventContext parentBuildEventContext)
+        internal ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, BuildRequestEntry requestEntry, DefaultLicenseValidator parentDefaultLicenseValidator)
             : this
             (
             nodeLoggingContext,
@@ -47,7 +47,7 @@ namespace Microsoft.Build.BackEnd.Logging
             requestEntry.RequestConfiguration.ToolsVersion,
             requestEntry.RequestConfiguration.Project.PropertiesToBuildWith,
             requestEntry.RequestConfiguration.Project.ItemsToBuildWith,
-            parentBuildEventContext
+            parentDefaultLicenseValidator
             )
         {
         }
@@ -55,7 +55,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Constructs a project logging context.
         /// </summary>
-        internal ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, BuildRequest request, string projectFullPath, string toolsVersion, BuildEventContext parentBuildEventContext)
+        internal ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, BuildRequest request, string projectFullPath, string toolsVersion, DefaultLicenseValidator parentDefaultLicenseValidator)
             : this
             (
             nodeLoggingContext,
@@ -66,7 +66,7 @@ namespace Microsoft.Build.BackEnd.Logging
             toolsVersion,
             null,
             null,
-            parentBuildEventContext
+            parentDefaultLicenseValidator
             )
         {
         }
@@ -74,7 +74,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// <summary>
         /// Constructs a project logging contexts.
         /// </summary>
-        private ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, int submissionId, int configurationId, string projectFullPath, List<string> targets, string toolsVersion, PropertyDictionary<ProjectPropertyInstance> projectProperties, ItemDictionary<ProjectItemInstance> projectItems, BuildEventContext parentBuildEventContext)
+        private ProjectLoggingContext(NodeLoggingContext nodeLoggingContext, int submissionId, int configurationId, string projectFullPath, List<string> targets, string toolsVersion, PropertyDictionary<ProjectPropertyInstance> projectProperties, ItemDictionary<ProjectItemInstance> projectItems, DefaultLicenseValidator parentDefaultLicenseValidator)
             : base(nodeLoggingContext)
         {
             _nodeLoggingContext = nodeLoggingContext;
@@ -122,18 +122,18 @@ namespace Microsoft.Build.BackEnd.Logging
                 properties = new ProjectPropertyInstanceEnumeratorProxy(projectPropertiesToSerialize);
             }
 
-            this.BuildEventContext = LoggingService.LogProjectStarted
+            this.DefaultLicenseValidator = LoggingService.LogProjectStarted
                 (
-                nodeLoggingContext.BuildEventContext,
+                nodeLoggingContext.DefaultLicenseValidator,
                 submissionId,
                 configurationId,
-                parentBuildEventContext,
+                parentDefaultLicenseValidator,
                 projectFullPath,
                 String.Join(";", targets.ToArray()),
                 properties,
                 items
                 );
-            LoggingService.LogComment(this.BuildEventContext, MessageImportance.Low, "ToolsVersionInEffectForBuild", toolsVersion);
+            LoggingService.LogComment(this.DefaultLicenseValidator, MessageImportance.Low, "ToolsVersionInEffectForBuild", toolsVersion);
 
             this.IsValid = true;
         }
@@ -156,7 +156,7 @@ namespace Microsoft.Build.BackEnd.Logging
         internal void LogProjectFinished(bool success)
         {
             ErrorUtilities.VerifyThrow(this.IsValid, "invalid");
-            LoggingService.LogProjectFinished(BuildEventContext, _projectFullPath, success);
+            LoggingService.LogProjectFinished(DefaultLicenseValidator, _projectFullPath, success);
             this.IsValid = false;
         }
 

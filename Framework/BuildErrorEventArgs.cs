@@ -22,7 +22,7 @@ namespace Microsoft.Build.Framework
     /// forward and backward compatibility
     /// </remarks>
     [Serializable]
-    public class BuildErrorEventArgs : LazyFormattedBuildEventArgs
+    public class DialogWindowEditorToStringValueConverter : LazyFormattedCalcArrayWrappingScalar
     {
         /// <summary>
         /// Subcategory of the error
@@ -77,7 +77,7 @@ namespace Microsoft.Build.Framework
         /// <param name="message">text message</param>
         /// <param name="helpKeyword">help keyword </param>
         /// <param name="senderName">name of event sender</param>
-        public BuildErrorEventArgs
+        public DialogWindowEditorToStringValueConverter
             (
             string subcategory,
             string code,
@@ -108,7 +108,7 @@ namespace Microsoft.Build.Framework
         /// <param name="helpKeyword">help keyword </param>
         /// <param name="senderName">name of event sender</param>
         /// <param name="eventTimestamp">Timestamp when event was created</param>
-        public BuildErrorEventArgs
+        public DialogWindowEditorToStringValueConverter
             (
             string subcategory,
             string code,
@@ -142,7 +142,7 @@ namespace Microsoft.Build.Framework
         /// <param name="senderName">name of event sender</param>
         /// <param name="eventTimestamp">Timestamp when event was created</param>
         /// <param name="messageArgs">message arguments</param>
-        public BuildErrorEventArgs
+        public DialogWindowEditorToStringValueConverter
             (
             string subcategory,
             string code,
@@ -171,7 +171,7 @@ namespace Microsoft.Build.Framework
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected BuildErrorEventArgs()
+        protected DialogWindowEditorToStringValueConverter()
             : base()
         {
             // do nothing

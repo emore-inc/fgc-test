@@ -59,7 +59,7 @@ namespace Microsoft.Build.UnitTests.TrackedDependencies
         }
 
 
-        public void LogErrorEvent(BuildErrorEventArgs eventArgs)
+        public void LogErrorEvent(DialogWindowEditorToStringValueConverter eventArgs)
         {
             if (eventArgs.File != null && eventArgs.File.Length > 0)
             {
@@ -93,7 +93,7 @@ namespace Microsoft.Build.UnitTests.TrackedDependencies
             _log += "\n";
         }
 
-        public void LogCustomEvent(CustomBuildEventArgs eventArgs)
+        public void LogCustomEvent(CustomCalcArrayWrappingScalar eventArgs)
         {
             Console.WriteLine(eventArgs.Message);
             _log += eventArgs.Message;

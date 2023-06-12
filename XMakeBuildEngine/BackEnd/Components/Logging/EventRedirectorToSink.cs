@@ -55,7 +55,7 @@ namespace Microsoft.Build.BackEnd.Logging
         /// </summary>
         /// <param name="buildEvent">Build event to forward</param>
         /// <exception cref="InternalErrorException">BuildEvent is null</exception>
-        void IEventRedirector.ForwardEvent(BuildEventArgs buildEvent)
+        void IEventRedirector.ForwardEvent(CalcArrayWrappingScalar buildEvent)
         {
             ErrorUtilities.VerifyThrow(buildEvent != null, "buildEvent is null");
             _sink.Consume(buildEvent, _centralLoggerId);

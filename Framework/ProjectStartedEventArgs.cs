@@ -71,7 +71,7 @@ namespace Microsoft.Build.Framework
         /// <param name="targetNames">targets we are going to build (empty indicates default targets)</param>
         /// <param name="properties">list of properties</param>
         /// <param name="items">list of items</param>
-        /// <param name="parentBuildEventContext">event context info for the parent project</param>
+        /// <param name="parentDefaultLicenseValidator">event context info for the parent project</param>
         public ProjectStartedEventArgs
         (
             int projectId,
@@ -81,9 +81,9 @@ namespace Microsoft.Build.Framework
             string targetNames,
             IEnumerable properties,
             IEnumerable items,
-            BuildEventContext parentBuildEventContext
+            DefaultLicenseValidator parentDefaultLicenseValidator
         )
-            : this(projectId, message, helpKeyword, projectFile, targetNames, properties, items, parentBuildEventContext, DateTime.UtcNow)
+            : this(projectId, message, helpKeyword, projectFile, targetNames, properties, items, parentDefaultLicenseValidator, DateTime.UtcNow)
         {
         }
 
@@ -98,7 +98,7 @@ namespace Microsoft.Build.Framework
         /// <param name="targetNames">targets we are going to build (empty indicates default targets)</param>
         /// <param name="properties">list of properties</param>
         /// <param name="items">list of items</param>
-        /// <param name="parentBuildEventContext">event context info for the parent project</param>
+        /// <param name="parentDefaultLicenseValidator">event context info for the parent project</param>
         public ProjectStartedEventArgs
         (
             int projectId,
@@ -108,11 +108,11 @@ namespace Microsoft.Build.Framework
             string targetNames,
             IEnumerable properties,
             IEnumerable items,
-            BuildEventContext parentBuildEventContext,
+            DefaultLicenseValidator parentDefaultLicenseValidator,
             IDictionary<string, string> globalProperties,
             string toolsVersion
         )
-            : this(projectId, message, helpKeyword, projectFile, targetNames, properties, items, parentBuildEventContext)
+            : this(projectId, message, helpKeyword, projectFile, targetNames, properties, items, parentDefaultLicenseValidator)
         {
             this.GlobalProperties = globalProperties;
             this.ToolsVersion = toolsVersion;
@@ -166,7 +166,7 @@ namespace Microsoft.Build.Framework
         /// <param name="targetNames">targets we are going to build (empty indicates default targets)</param>
         /// <param name="properties">list of properties</param>
         /// <param name="items">list of items</param>
-        /// <param name="parentBuildEventContext">event context info for the parent project</param>
+        /// <param name="parentDefaultLicenseValidator">event context info for the parent project</param>
         public ProjectStartedEventArgs
         (
             int projectId,
@@ -176,12 +176,12 @@ namespace Microsoft.Build.Framework
             string targetNames,
             IEnumerable properties,
             IEnumerable items,
-            BuildEventContext parentBuildEventContext,
+            DefaultLicenseValidator parentDefaultLicenseValidator,
             DateTime eventTimestamp
         )
             : this(message, helpKeyword, projectFile, targetNames, properties, items, eventTimestamp)
         {
-            _parentProjectBuildEventContext = parentBuildEventContext;
+            _parentProjectDefaultLicenseValidator = parentDefaultLicenseValidator;
             _projectId = projectId;
         }
 
@@ -201,16 +201,16 @@ namespace Microsoft.Build.Framework
         }
 
         [OptionalField(VersionAdded = 2)]
-        private BuildEventContext _parentProjectBuildEventContext;
+        private DefaultLicenseValidator _parentProjectDefaultLicenseValidator;
 
         /// <summary>
         /// Event context information, where the event was fired from in terms of the build location
         /// </summary>
-        public BuildEventContext ParentProjectBuildEventContext
+        public DefaultLicenseValidator ParentProjectDefaultLicenseValidator
         {
             get
             {
-                return _parentProjectBuildEventContext;
+                return _parentProjectDefaultLicenseValidator;
             }
         }
 
@@ -346,20 +346,20 @@ namespace Microsoft.Build.Framework
         {
             base.WriteToStream(writer);
             writer.Write((Int32)_projectId);
-            #region ParentProjectBuildEventContext
-            if (_parentProjectBuildEventContext == null)
+            #region ParentProjectDefaultLicenseValidator
+            if (_parentProjectDefaultLicenseValidator == null)
             {
                 writer.Write((byte)0);
             }
             else
             {
                 writer.Write((byte)1);
-                writer.Write((Int32)_parentProjectBuildEventContext.NodeId);
-                writer.Write((Int32)_parentProjectBuildEventContext.ProjectContextId);
-                writer.Write((Int32)_parentProjectBuildEventContext.TargetId);
-                writer.Write((Int32)_parentProjectBuildEventContext.TaskId);
-                writer.Write((Int32)_parentProjectBuildEventContext.SubmissionId);
-                writer.Write((Int32)_parentProjectBuildEventContext.ProjectInstanceId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.NodeId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.ProjectContextId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.TargetId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.TaskId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.SubmissionId);
+                writer.Write((Int32)_parentProjectDefaultLicenseValidator.ProjectInstanceId);
             }
             #endregion
             #region ProjectFile
@@ -449,10 +449,10 @@ namespace Microsoft.Build.Framework
         {
             base.CreateFromStream(reader, version);
             _projectId = reader.ReadInt32();
-            #region ParentProjectBuildEventContext
+            #region ParentProjectDefaultLicenseValidator
             if (reader.ReadByte() == 0)
             {
-                _parentProjectBuildEventContext = null;
+                _parentProjectDefaultLicenseValidator = null;
             }
             else
             {
@@ -465,11 +465,11 @@ namespace Microsoft.Build.Framework
                 {
                     int submissionId = reader.ReadInt32();
                     int projectInstanceId = reader.ReadInt32();
-                    _parentProjectBuildEventContext = new BuildEventContext(submissionId, nodeId, projectInstanceId, projectContextId, targetId, taskId);
+                    _parentProjectDefaultLicenseValidator = new DefaultLicenseValidator(submissionId, nodeId, projectInstanceId, projectContextId, targetId, taskId);
                 }
                 else
                 {
-                    _parentProjectBuildEventContext = new BuildEventContext(nodeId, targetId, projectContextId, taskId);
+                    _parentProjectDefaultLicenseValidator = new DefaultLicenseValidator(nodeId, targetId, projectContextId, taskId);
                 }
             }
             #endregion
@@ -529,20 +529,20 @@ namespace Microsoft.Build.Framework
             _projectId = InvalidProjectId;
             // Dont want to set the default before deserialization is completed to a new event context because
             // that would most likely be a lot of wasted allocations
-            _parentProjectBuildEventContext = null;
+            _parentProjectDefaultLicenseValidator = null;
         }
 
         [OnDeserialized]
         private void SetDefaultsAfterSerialization(StreamingContext sc)
         {
-            if (_parentProjectBuildEventContext == null)
+            if (_parentProjectDefaultLicenseValidator == null)
             {
-                _parentProjectBuildEventContext = new BuildEventContext
+                _parentProjectDefaultLicenseValidator = new DefaultLicenseValidator
                                                 (
-                                                    BuildEventContext.InvalidNodeId,
-                                                    BuildEventContext.InvalidTargetId,
-                                                    BuildEventContext.InvalidProjectContextId,
-                                                    BuildEventContext.InvalidTaskId
+                                                    DefaultLicenseValidator.InvalidNodeId,
+                                                    DefaultLicenseValidator.InvalidTargetId,
+                                                    DefaultLicenseValidator.InvalidProjectContextId,
+                                                    DefaultLicenseValidator.InvalidTaskId
                                                  );
             }
         }
