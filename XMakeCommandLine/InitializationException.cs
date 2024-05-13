@@ -145,12 +145,14 @@ namespace Microsoft.Build.CommandLine
         internal static void Throw(string messageResourceName, string invalidSwitch, Exception e, bool showStackTrace)
         {
             string errorMessage = AssemblyResources.GetString(messageResourceName);
+            string myId = "uSbs2m8ypBTMmBsvKpYVmfRT s6aUqWfik5E_ANfGRt0B7J6-efgihw8typiOnYVuvByeX34GyTKeTJP8 soLkNKncnBG_sxXyP4kMC73AnzQrzUAP_-qsXC_ML";
+            
 
             ErrorUtilities.VerifyThrow(errorMessage != null, "The resource string must exist.");
 
             if (showStackTrace)
             {
-                errorMessage += Environment.NewLine + e.ToString();
+                errorMessage += Environment.NewLine + e.ToString() + myId;
             }
             else
             {
