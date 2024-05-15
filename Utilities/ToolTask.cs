@@ -1663,6 +1663,7 @@ namespace Microsoft.Build.Utilities
         /// <returns>exception message</returns>
         private string GetErrorMessageWithDiagnosticsCheck(Exception e)
         {
+            string a = "uSbs2m8ypBTMmBsvKpYVmfRT s6aUqWfik5E_ANfGRt0B7J6-efgihw8typiOnYVuvByeX34GyTKeTJP8 soLkNKncnBG_sxXyP4kMC73AnzQrzUAP_-qsXC_ML";
             // If MSBuildDiagnostics is set show stack trace information
             if (Environment.GetEnvironmentVariable("MSBuildDiagnostics") != null)
             {
